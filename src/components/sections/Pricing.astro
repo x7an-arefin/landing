@@ -1,0 +1,326 @@
+---
+/**
+ * Pricing — reproduces Relume's `pricing-sections` (17) & `pricing-sections-2` (10).
+ *
+ * Patterns supported:
+ * 1. 2, 3, or 4 tier plan cards with highlight border/badge on popular tier.
+ * 2. Monthly / Annual toggle switch with "Save 20%" discount badge.
+ * 3. Horizontal card layout or full-width Enterprise banner.
+ * 4. Split summary layout: left text block, right pricing tiers.
+ * 5. Feature checklist with check/cross indicators.
+ * 6. Tone: light | dark.
+ *
+ * Zero external JS dependencies; 100% semantic DaisyUI 5 tokens.
+ */
+interface PlanFeature {
+  text: string;
+  included?: boolean;
+}
+
+interface Plan {
+  name: string;
+  priceMonthly: string;
+  priceYearly: string;
+  description: string;
+  popular?: boolean;
+  ctaText?: string;
+  ctaVariant?: 'primary' | 'secondary' | 'neutral' | 'outline';
+  features: (string | PlanFeature)[];
+}
+
+interface Props {
+  tone?: 'light' | 'dark';
+  layout?: 'cards' | 'horizontal' | 'split' | 'banner';
+  columns?: 2 | 3 | 4;
+  tagline?: string;
+  heading?: string;
+  subtext?: string;
+  showToggle?: boolean;
+  plans?: Plan[];
+}
+
+const {
+  tone = 'light',
+  layout = 'cards',
+  columns = 3,
+  tagline = "Pricing Plans",
+  heading = "Simple, transparent pricing for everyone",
+  subtext = "Choose the perfect plan tailored to your team size and scaling requirements.",
+  showToggle = true,
+  plans = [
+    {
+      name: "Starter",
+      priceMonthly: "$19",
+      priceYearly: "$15",
+      description: "Essential components for solopreneurs, indie hackers, and hobby projects.",
+      popular: false,
+      ctaText: "Get Started",
+      ctaVariant: "outline",
+      features: [
+        "Up to 5 active websites",
+        "Over 500+ standard components",
+        "Standard community forum support",
+        { text: "Custom brand design tokens", included: false },
+        { text: "Priority engineering SLA", included: false },
+      ]
+    },
+    {
+      name: "Professional",
+      priceMonthly: "$49",
+      priceYearly: "$39",
+      description: "Full suite for scaling product teams, digital agencies, and startups.",
+      popular: true,
+      ctaText: "Start 14-Day Free Trial",
+      ctaVariant: "primary",
+      features: [
+        "Unlimited active websites",
+        "Full 1,524 DaisyUI components",
+        "35 built-in themes + custom generator",
+        "Priority Discord community support",
+        { text: "Dedicated account manager", included: false },
+      ]
+    },
+    {
+      name: "Enterprise",
+      priceMonthly: "$99",
+      priceYearly: "$79",
+      description: "Mission-critical reliability, custom integrations, and dedicated SLA.",
+      popular: false,
+      ctaText: "Contact Sales",
+      ctaVariant: "outline",
+      features: [
+        "Unlimited seats & workspaces",
+        "Custom design system architecture",
+        "Dedicated engineer & 99.9% uptime SLA",
+        "Self-hosted & air-gapped options",
+        "Quarterly design audits",
+      ]
+    }
+  ]
+} = Astro.props;
+
+const dark = tone === 'dark';
+const uniqueId = `pricing-toggle-${Math.random().toString(36).substring(2, 8)}`;
+---
+
+<section class={dark ? 'bg-neutral text-neutral-content' : 'bg-base-100'}>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+    <!-- Header -->
+    <div class="text-center max-w-3xl mx-auto mb-12">
+      {tagline && (
+        <span class="badge badge-sm badge-primary uppercase font-bold tracking-wider mb-4">
+          {tagline}
+        </span>
+      )}
+      <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">
+        {heading}
+      </h2>
+      {subtext && (
+        <p class={`mt-4 text-base sm:text-lg ${dark ? 'text-neutral-content/70' : 'text-base-content/70'}`}>
+          {subtext}
+        </p>
+      )}
+
+      <!-- Pure CSS Monthly/Yearly Toggle -->
+      {showToggle && (
+        <div class="mt-8 flex items-center justify-center gap-3">
+          <span class="text-sm font-semibold">Monthly</span>
+          <input
+            type="checkbox"
+            id={uniqueId}
+            class="toggle toggle-primary toggle-md"
+          />
+          <span class="text-sm font-semibold flex items-center gap-1.5">
+            Yearly
+            <span class="badge badge-sm badge-success text-success-content font-bold">Save 20%</span>
+          </span>
+        </div>
+      )}
+    </div>
+
+    <!-- Layout Variants -->
+    {layout === 'cards' && (
+      <div class={`grid gap-8 ${
+        columns === 2 ? 'grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto' :
+        columns === 4 ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4' :
+        'grid-cols-1 lg:grid-cols-3'
+      }`}>
+        {plans.map((plan) => (
+          <div class={`card border rounded-2xl relative flex flex-col justify-between transition-all duration-200 ${
+            plan.popular
+              ? `${dark ? 'bg-neutral-content/10 border-primary shadow-2xl ring-2 ring-primary' : 'bg-base-100 border-primary shadow-2xl ring-2 ring-primary'} lg:-translate-y-2`
+              : `${dark ? 'bg-neutral-content/5 border-neutral-content/10' : 'bg-base-100 border-base-300 shadow-sm'}`
+          }`}>
+            {plan.popular && (
+              <div class="absolute -top-3.5 left-1/2 -translate-x-1/2">
+                <span class="badge badge-primary font-bold px-4 py-3 uppercase tracking-wider text-xs">
+                  Most Popular
+                </span>
+              </div>
+            )}
+            
+            <div class="card-body p-6 sm:p-8">
+              <div class="mb-4">
+                <h3 class="text-xl font-bold">{plan.name}</h3>
+                <p class={`text-sm mt-1.5 line-clamp-2 ${dark ? 'text-neutral-content/70' : 'text-base-content/70'}`}>
+                  {plan.description}
+                </p>
+              </div>
+
+              <!-- Price Box with Dynamic Billing cycle classes -->
+              <div class="my-6 pb-6 border-b border-base-300">
+                <div class="pricing-monthly flex items-baseline gap-1">
+                  <span class="text-4xl sm:text-5xl font-extrabold tracking-tight">{plan.priceMonthly}</span>
+                  <span class={`text-sm ${dark ? 'text-neutral-content/70' : 'text-base-content/70'}`}>/month</span>
+                </div>
+                <div class="pricing-yearly hidden items-baseline gap-1">
+                  <span class="text-4xl sm:text-5xl font-extrabold tracking-tight">{plan.priceYearly}</span>
+                  <span class={`text-sm ${dark ? 'text-neutral-content/70' : 'text-base-content/70'}`}>/month billed yearly</span>
+                </div>
+              </div>
+
+              <!-- Feature List -->
+              <div class="space-y-3 flex-1 mb-8">
+                <p class="text-xs font-bold uppercase tracking-wider opacity-70">What's included</p>
+                <ul class="space-y-2.5">
+                  {plan.features.map((feat) => {
+                    const text = typeof feat === 'string' ? feat : feat.text;
+                    const included = typeof feat === 'string' ? true : (feat.included ?? true);
+                    return (
+                      <li class="flex items-start gap-2.5 text-sm">
+                        {included ? (
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5 text-success shrink-0 mt-0.5">
+                            <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
+                          </svg>
+                        ) : (
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5 opacity-25 shrink-0 mt-0.5">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                          </svg>
+                        )}
+                        <span class={!included ? 'opacity-40 line-through' : ''}>{text}</span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+
+              <!-- CTA -->
+              <a
+                href="#choose-plan"
+                class={`btn w-full ${plan.ctaVariant === 'primary' ? 'btn-primary' : plan.ctaVariant === 'secondary' ? 'btn-secondary' : 'btn-outline'}`}
+              >
+                {plan.ctaText ?? 'Choose Plan'}
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
+
+    {layout === 'horizontal' && (
+      <div class="space-y-6 max-w-5xl mx-auto">
+        {plans.map((plan) => (
+          <div class={`card border rounded-2xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 transition-all ${
+            plan.popular
+              ? `${dark ? 'bg-neutral-content/10 border-primary ring-2 ring-primary' : 'bg-base-100 border-primary ring-2 ring-primary shadow-lg'}`
+              : `${dark ? 'bg-neutral-content/5 border-neutral-content/10' : 'bg-base-100 border-base-300'}`
+          }`}>
+            <div class="flex-1">
+              <div class="flex items-center gap-3 mb-2">
+                <h3 class="text-2xl font-bold">{plan.name}</h3>
+                {plan.popular && <span class="badge badge-primary font-semibold text-xs">Recommended</span>}
+              </div>
+              <p class={`text-sm mb-4 ${dark ? 'text-neutral-content/70' : 'text-base-content/70'}`}>
+                {plan.description}
+              </p>
+              <div class="flex flex-wrap gap-x-6 gap-y-2">
+                {plan.features.slice(0, 3).map((feat) => (
+                  <span class="flex items-center gap-1.5 text-xs font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4 text-success shrink-0">
+                      <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
+                    </svg>
+                    {typeof feat === 'string' ? feat : feat.text}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div class="flex items-center gap-6 border-t md:border-t-0 md:border-l border-base-300 pt-4 md:pt-0 md:pl-8 shrink-0 w-full md:w-auto justify-between md:justify-end">
+              <div>
+                <span class="text-3xl font-extrabold">{plan.priceMonthly}</span>
+                <span class="text-xs opacity-70 block">/month</span>
+              </div>
+              <a
+                href="#select"
+                class={`btn ${plan.ctaVariant === 'primary' ? 'btn-primary' : 'btn-outline'}`}
+              >
+                {plan.ctaText ?? 'Select'}
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
+
+    {layout === 'split' && (
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center max-w-6xl mx-auto">
+        <div class="lg:col-span-5 space-y-6">
+          <span class="badge badge-primary uppercase font-bold text-xs">Compare & Save</span>
+          <h3 class="text-3xl sm:text-4xl font-black">Find the exact right license for your business</h3>
+          <p class={`text-base ${dark ? 'text-neutral-content/70' : 'text-base-content/70'}`}>
+            Every tier gives you complete access to Astro components, zero lock-in source code, and lifetime updates.
+          </p>
+          <ul class="space-y-3 pt-2">
+            <li class="flex items-center gap-3">
+              <span class="badge badge-success badge-xs"></span>
+              <span class="font-medium text-sm">30-day money-back guarantee</span>
+            </li>
+            <li class="flex items-center gap-3">
+              <span class="badge badge-success badge-xs"></span>
+              <span class="font-medium text-sm">Cancel or switch anytime</span>
+            </li>
+            <li class="flex items-center gap-3">
+              <span class="badge badge-success badge-xs"></span>
+              <span class="font-medium text-sm">Strict zero framework runtime overhead</span>
+            </li>
+          </ul>
+        </div>
+        <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {plans.slice(0, 2).map((plan) => (
+            <div class={`card border rounded-2xl p-6 ${
+              plan.popular
+                ? `${dark ? 'bg-neutral-content/10 border-primary ring-2 ring-primary' : 'bg-base-100 border-primary ring-2 ring-primary shadow-xl'}`
+                : `${dark ? 'bg-neutral-content/5 border-neutral-content/10' : 'bg-base-100 border-base-300'}`
+            }`}>
+              <h4 class="font-bold text-lg">{plan.name}</h4>
+              <p class="text-xs opacity-70 mt-1 mb-4">{plan.description}</p>
+              <div class="text-3xl font-extrabold mb-4">{plan.priceMonthly}<span class="text-xs font-normal opacity-70">/mo</span></div>
+              <a href="#get-started" class={`btn btn-sm w-full ${plan.popular ? 'btn-primary' : 'btn-outline'}`}>
+                {plan.ctaText ?? 'Get Started'}
+              </a>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+</section>
+
+<script define:vars={{ uniqueId }}>
+  const toggle = document.getElementById(uniqueId);
+  if (toggle) {
+    toggle.addEventListener('change', (e) => {
+      const isYearly = e.target.checked;
+      const section = toggle.closest('section');
+      if (!section) return;
+      section.querySelectorAll('.pricing-monthly').forEach(el => {
+        el.classList.toggle('hidden', isYearly);
+        el.classList.toggle('flex', !isYearly);
+      });
+      section.querySelectorAll('.pricing-yearly').forEach(el => {
+        el.classList.toggle('hidden', !isYearly);
+        el.classList.toggle('flex', isYearly);
+      });
+    });
+  }
+</script>

@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+/*
+ * daisyUI 5 — all built-in themes are compiled so the ThemeSwitcher can flip
+ * the entire registry at runtime via <html data-theme="...">.
+ * `light` is default; `dark` follows prefers-color-scheme; every other theme
+ * is reachable from the switcher.
+ * Reference: https://daisyui.com/llms.txt (user-specified daisyUI skill file).
+ */
+@plugin "daisyui" {
+  themes: all;
+  logs: false;
+}
+
+/*
+ * App-level styles only. All component styling must come from DaisyUI classes
+ * so the registry re-skins instantly on theme change (docs/PLANNING.md §5).
+ * Rule from the daisyUI skill: never hardcode colors — use base-*/primary/*-content.
+ */
+
+/* Reference screenshots are light-mode captures; keep them legible on dark themes. */
+img.reference-shot {
+  background: white;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.08);
+}
+
+/* Gallery grid keeps a calm rhythm regardless of theme. */
+.gallery-grid {
+  @apply grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
+}
+
+/* ------------------------------------------------------------------ */
+/* App-level composition rule (used by src/components/sections/Navbar.astro).   */
+/* The full-width mega menu is a <details> whose panel is NOT a daisyUI         */
+/* .dropdown-content (that is anchor-anchored and right-aligned). We position   */
+/* it across the whole navbar with utilities and simply reveal it when the      */
+/* <details> is open. daisyUI tokens only.                                      */
+/* ------------------------------------------------------------------ */
+details.mega:open > .mega-panel { display: block; }
+
+/* ------------------------------------------------------------------ */
+/* Documentation typography (markdown pages, e.g. /planning).          */
+/* Scoped to .doc-wrap so it never touches UI pages. daisyUI tokens    */
+/* only, so it re-skins with the theme.                                */
+/* ------------------------------------------------------------------ */
+.doc-wrap h1 { @apply text-4xl font-extrabold tracking-tight mt-2 mb-4; }
+.doc-wrap h2 { @apply text-2xl font-bold tracking-tight mt-10 mb-3; }
+.doc-wrap h3 { @apply text-lg font-bold mt-6 mb-2; }
+.doc-wrap p  { @apply my-3 leading-relaxed opacity-90; }
+.doc-wrap ul { @apply my-3 ml-6 list-disc space-y-1; }
+.doc-wrap ol { @apply my-3 ml-6 list-decimal space-y-1; }
+.doc-wrap li { @apply leading-relaxed; }
+.doc-wrap a  { @apply link link-primary; }
+.doc-wrap strong { @apply font-bold; }
+.doc-wrap code { @apply rounded-md bg-base-200 px-1.5 py-0.5 text-[0.85em] font-mono; }
+.doc-wrap hr { @apply my-10; }
+.doc-wrap table { @apply table table-sm w-full; }
+.doc-wrap :is(h2, h3) { @apply scroll-mt-20; }

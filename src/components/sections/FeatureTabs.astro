@@ -1,0 +1,90 @@
+---
+/**
+ * FeatureTabs — reproduces Relume's `feature-sections-tabs` (24).
+ *
+ * Verified live 2026-09-22: the reference previews render the tab bar as
+ * static text (active tab pre-selected, no switching in the preview DOM —
+ * 0 buttons/radios), but the `interaction` flag means the real component
+ * switches panels. We go one step further and make the tabs genuinely
+ * functional with **zero JS** using daisyUI 5's radio-tab pattern:
+ * `<input type="radio" class="tab">` + following `.tab-content` — the
+ * checked radio shows its panel, nothing else.
+ *
+ * Anatomy: optional centered header (tagline + heading + text + buttons)
+ * above a tab bar (`style="underline"` = plain `tabs` like layouts 501–504,
+ * `style="box"` = bordered cells like layouts 507–508) and panels — each
+ * panel: tagline + heading + text + image on the right.
+ */
+interface Tab { label: string; tagline?: string; title: string; text?: string; media?: 'image' | 'video' | false }
+interface Props {
+  tone?: 'light' | 'dark';
+  style?: 'underline' | 'box';
+  header?: { tagline?: string; title: string; text?: string; buttons?: boolean };
+  tabs: Tab[];
+}
+const {
+  tone = 'light',
+  style = 'underline',
+  header,
+  tabs = [],
+} = Astro.props;
+
+const dark = tone === 'dark';
+const PHOTO = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-10 opacity-30"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /></svg>';
+const PLAY = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 translate-x-0.5"><path d="M8 5.14v13.72a1 1 0 0 0 1.52.85l11-6.86a1 1 0 0 0 0-1.7l-11-6.86A1 1 0 0 0 8 5.14Z" /></svg>';
+const mediaBg = dark ? 'bg-neutral-content/10' : 'bg-base-300';
+const X = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare.';
+// Unique radio-group name per rendered instance (tabs must share one name to
+// be mutually exclusive). Module counter is deterministic in static builds.
+let uid = 0;
+const radioName = `ft-${(uid = uid + 1)}-${style}`;
+---
+<section class={dark ? 'bg-neutral text-neutral-content' : 'bg-base-100'}>
+  <div class="mx-auto max-w-7xl px-4 py-16">
+    {header && (
+      <div class="mb-10 text-center">
+        {header.tagline && <p class="text-xs font-bold tracking-wide">{header.tagline}</p>}
+        <h2 class="mt-2 text-3xl md:text-4xl font-extrabold tracking-tight">{header.title}</h2>
+        {header.text && <p class="mt-3 text-sm opacity-70 mx-auto max-w-2xl">{header.text}</p>}
+        {header.buttons !== false && (
+          <div class="mt-6 flex items-center justify-center gap-2">
+            <button class={`btn ${dark ? 'btn-neutral bg-base-100 text-base-content' : 'btn-neutral'}`}>Button</button>
+            <button class="btn btn-ghost gap-1">Button <span>›</span></button>
+          </div>
+        )}
+      </div>
+    )}
+
+    <!--
+      Zero-JS tabs (daisyUI 5): each radio input styled as .tab controls the
+      .tab-content that immediately follows it. Unique name per section.
+    -->
+    <div class={`tabs ${style === 'box' ? 'tabs-box' : 'tabs-border'} ${dark ? 'border-neutral-content/20' : ''} justify-center`}>
+      {tabs.map((t, i) => (
+        <Fragment>
+          <input type="radio" name={radioName} class="tab" aria-label={t.label} {...(i === 0 ? { checked: true } : {})} />
+          <div class={`tab-content ${dark ? 'border-neutral-content/20' : 'border-base-300'} p-8 w-full`}>
+            <div class="grid items-center gap-10 lg:grid-cols-2">
+              <div>
+                <p class="text-xs font-bold tracking-wide">{t.tagline ?? 'Tagline'}</p>
+                <h3 class="mt-2 text-2xl md:text-3xl font-extrabold tracking-tight max-w-md">{t.title}</h3>
+                <p class="mt-3 text-sm opacity-70 max-w-md">{t.text ?? X}</p>
+              </div>
+              {(t.media ?? 'image') !== false && (
+                <div>
+                  {t.media === 'video' ? (
+                    <div class={`relative aspect-[4/3] ${mediaBg} flex items-center justify-center`}>
+                      <span class="absolute size-12 rounded-lg bg-base-100/80 text-base-content flex items-center justify-center" set:html={PLAY} />
+                    </div>
+                  ) : (
+                    <div class={`aspect-[4/3] ${mediaBg} flex items-center justify-center`}><span set:html={PHOTO} /></div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </Fragment>
+      ))}
+    </div>
+  </div>
+</section>

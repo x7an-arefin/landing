@@ -1,0 +1,22 @@
+---
+/**
+ * Timeline — daisyUI 5 `timeline` (llms.txt → Timeline). Mirrors Relume's timelines (21).
+ * @param {{date?:string, title:string, body?:string}[]} [events]
+ */
+const { events = [] } = Astro.props;
+---
+<ul class="timeline timeline-compact timeline-vertical">
+  {events.map((e, i) => (
+    <li>
+      <div class="timeline-start">{i % 2 === 0 && e.date}</div>
+      <div class="timeline-middle"><div class="size-3 rounded-full bg-primary"></div></div>
+      <div class={`timeline-end ${i % 2 === 0 ? 'pb-10' : 'pt-10'}`}>
+        <div class="card card-body bg-base-100 shadow-sm w-64">
+          <h3 class="card-title text-base">{e.title}</h3>
+          {i % 2 === 1 && e.date && <p class="text-xs opacity-60">{e.date}</p>}
+          {e.body && <p class="text-sm opacity-75">{e.body}</p>}
+        </div>
+      </div>
+    </li>
+  ))}
+</ul>

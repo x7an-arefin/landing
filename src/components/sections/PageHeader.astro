@@ -1,0 +1,90 @@
+---
+/**
+ * PageHeader — reproduces Relume's `page-headers` (5). App-shell page header:
+ *
+ *  1 (section_page-header1): breadcrumb + "Header Title" + subtext | search + [Button][Button]
+ *  2 (section_page-header2): + meta row (Location / Team / Created date, iconed)
+ *  3 (section_page-header3): image banner above, breadcrumb row below it
+ *  4 (section_page-header4): user profile — avatar + "Name Surname" + subtext
+ *  5 (section_page-header5): banner + profile card overlapping the banner edge
+ *
+ * Verified live 2026-09-21: static (0 video/canvas; the search box and
+ * buttons are decorative controls). Zero JS; semantic colors.
+ */
+interface Props {
+  breadcrumb?: string[];
+  title?: string;
+  subtitle?: string;
+  meta?: { label: string; icon: 'pin' | 'users' | 'date' }[];
+  /** image banner above the text (3) or overlapping the profile card (5) */
+  banner?: boolean;
+  user?: { name?: string; sub?: string };
+}
+const {
+  breadcrumb = ['Dashboard', 'Pages', 'Page name'],
+  title = 'Header Title',
+  subtitle = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum.',
+  meta = [],
+  banner = false,
+  user,
+} = Astro.props;
+
+const crumb = breadcrumb.map((b, i) => `<span class="${i === breadcrumb.length - 1 ? '' : 'opacity-50'}">${b}</span>`).join('<span class="opacity-30">/</span>');
+
+const PIN = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-3.5 opacity-60"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" /></svg>';
+const USERS = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-3.5 opacity-60"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" /></svg>';
+const DATE = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-3.5 opacity-60"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" /></svg>';
+const AVATAR = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-8 opacity-60"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" /></svg>';
+const ICONS = { pin: PIN, users: USERS, date: DATE } as Record<string, string>;
+const PHOTO = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-10 opacity-30"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /></svg>';
+---
+<section class="bg-base-100">
+  <div class="mx-auto max-w-7xl px-4 py-8">
+    {banner && !user && (
+      <div class="mb-6 h-40 rounded-box bg-base-300 flex items-center justify-center">
+        <span set:html={PHOTO} />
+      </div>
+    )}
+
+    <div class={banner && user ? '-mt-16' : ''}>
+      <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between ${user ? 'relative z-10 bg-base-100 border border-base-300 rounded-box p-5 shadow-sm' : ''}">
+        <!-- Left: breadcrumb + title/meta or profile -->
+        <div>
+          <nav class="text-xs" set:html={crumb} />
+          {user ? (
+            <div class="mt-2 flex items-center gap-3">
+              <span class="size-12 rounded-full bg-base-300 flex items-center justify-center" set:html={AVATAR} />
+              <div>
+                <h1 class="font-bold leading-tight">{user.name ?? 'Name Surname'}</h1>
+                <p class="text-xs opacity-50">{user.sub ?? 'Subtitle here'}</p>
+              </div>
+            </div>
+          ) : (
+            <>
+              <h1 class="mt-1 font-bold text-lg">{title}</h1>
+              {meta.length > 0 ? (
+                <div class="mt-1 flex flex-wrap items-center gap-x-5 gap-y-1 text-xs opacity-60">
+                  {meta.map((m) => (
+                    <span class="flex items-center gap-1"><span set:html={ICONS[m.icon]} />{m.label}</span>
+                  ))}
+                </div>
+              ) : (
+                <p class="mt-1 text-xs opacity-50">{subtitle}</p>
+              )}
+            </>
+          )}
+        </div>
+
+        <!-- Right: search + actions -->
+        <div class="flex items-center gap-2">
+          <label class="flex items-center gap-2 border border-base-300 rounded-btn px-3 h-9 text-sm opacity-80">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-4"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>
+            Search
+          </label>
+          <button class="btn btn-sm btn-outline">Button</button>
+          <button class="btn btn-sm btn-neutral">Button</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

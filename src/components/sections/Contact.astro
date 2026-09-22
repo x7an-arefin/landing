@@ -1,0 +1,162 @@
+---
+/**
+ * Contact — reproduces Relume's `contact-sections` (30).
+ *
+ * Patterns supported:
+ * 1. Split layout: Company details (address, phone, email, hours) left + contact message form right.
+ * 2. 3-card info column or integrated side block.
+ * 3. Inquiry message form with topic selection dropdown.
+ * 4. Tone: light | dark.
+ *
+ * Zero external JS; 100% semantic DaisyUI 5 tokens.
+ */
+interface ContactInfo {
+  icon: string;
+  label: string;
+  value: string;
+  subvalue?: string;
+  link?: string;
+}
+
+interface Props {
+  tone?: 'light' | 'dark';
+  tagline?: string;
+  heading?: string;
+  subtext?: string;
+  contacts?: ContactInfo[];
+}
+
+const {
+  tone = 'light',
+  tagline = "Get in Touch",
+  heading = "Let's build something remarkable together",
+  subtext = "Have questions about licensing, custom theme builds, or enterprise SLAs? Our core team is here to assist.",
+  contacts = [
+    {
+      icon: "email",
+      label: "Email",
+      value: "hello@registry.io",
+      subvalue: "Typical response in 2 hours",
+      link: "mailto:hello@registry.io"
+    },
+    {
+      icon: "phone",
+      label: "Phone Support",
+      value: "+1 (555) 234-5678",
+      subvalue: "Mon-Fri from 9am to 6pm EST",
+      link: "tel:+15552345678"
+    },
+    {
+      icon: "office",
+      label: "Headquarters",
+      value: "548 Market St, Suite 320",
+      subvalue: "San Francisco, CA 94104"
+    }
+  ]
+} = Astro.props;
+
+const dark = tone === 'dark';
+---
+
+<section class={dark ? 'bg-neutral text-neutral-content' : 'bg-base-100'}>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+      <!-- Left: Contact Details Cards -->
+      <div class="lg:col-span-5 space-y-8">
+        <div>
+          {tagline && (
+            <span class="badge badge-sm badge-primary uppercase font-bold tracking-wider mb-3">
+              {tagline}
+            </span>
+          )}
+          <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">
+            {heading}
+          </h2>
+          <p class={`mt-3 text-base ${dark ? 'text-neutral-content/70' : 'text-base-content/70'}`}>
+            {subtext}
+          </p>
+        </div>
+
+        <div class="space-y-4">
+          {contacts.map((c) => (
+            <div class={`card border rounded-xl p-5 flex flex-row items-center gap-4 ${
+              dark ? 'bg-neutral-content/5 border-neutral-content/10' : 'bg-base-100 border-base-300'
+            }`}>
+              <div class="size-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                {c.icon === 'email' ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-6">
+                    <path d="M3 4a2 2 0 00-2 2v1.161l8.441 4.221a1.25 1.25 0 001.118 0L19 7.162V6a2 2 0 00-2-2H3z" />
+                    <path d="M19 8.839l-7.77 3.885a2.75 2.75 0 01-2.46 0L1 8.839V14a2 2 0 002 2h14a2 2 0 002-2V8.839z" />
+                  </svg>
+                ) : c.icon === 'phone' ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-6">
+                    <path fill-rule="evenodd" d="M2 3.5A1.5 1.5 0 013.5 2h1.148a1.5 1.5 0 011.465 1.175l.716 3.223a1.5 1.5 0 01-1.052 1.767l-.933.267c-.41.117-.643.555-.48.95a11.542 11.542 0 006.254 6.254c.395.163.833-.07.95-.48l.267-.933a1.5 1.5 0 011.767-1.052l3.223.716A1.5 1.5 0 0118 15.352V16.5a1.5 1.5 0 01-1.5 1.5H15c-1.149 0-2.263-.15-3.326-.43A13.022 13.022 0 012.43 5.826 11.45 11.45 0 012 3.5z" clip-rule="evenodd" />
+                  </svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-6">
+                    <path fill-rule="evenodd" d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 00.281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 103 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 003.03 2.198l.019.009.006.002h.001l.002.001zM10 12a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+                  </svg>
+                )}
+              </div>
+              <div>
+                <div class="text-xs uppercase font-bold tracking-wider opacity-60">{c.label}</div>
+                {c.link ? (
+                  <a href={c.link} class="text-base font-bold link link-hover">{c.value}</a>
+                ) : (
+                  <div class="text-base font-bold">{c.value}</div>
+                )}
+                {c.subvalue && <div class="text-xs opacity-60 mt-0.5">{c.subvalue}</div>}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Right: Message Form -->
+      <div class="lg:col-span-7">
+        <form class={`card border rounded-2xl p-6 sm:p-8 shadow-sm ${
+          dark ? 'bg-neutral-content/5 border-neutral-content/10' : 'bg-base-100 border-base-300'
+        }`}>
+          <div class="space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="form-control">
+                <label class="label"><span class="label-text font-bold text-xs uppercase">Your Name</span></label>
+                <input type="text" placeholder="John Carter" required class="input input-bordered w-full" />
+              </div>
+              <div class="form-control">
+                <label class="label"><span class="label-text font-bold text-xs uppercase">Your Email</span></label>
+                <input type="email" placeholder="john@example.com" required class="input input-bordered w-full" />
+              </div>
+            </div>
+
+            <div class="form-control">
+              <label class="label"><span class="label-text font-bold text-xs uppercase">Inquiry Topic</span></label>
+              <select class="select select-bordered w-full">
+                <option>Commercial Licensing & Teams</option>
+                <option>Custom DaisyUI Theme Development</option>
+                <option>Component System Architecture SLA</option>
+                <option>General Support / Question</option>
+              </select>
+            </div>
+
+            <div class="form-control">
+              <label class="label"><span class="label-text font-bold text-xs uppercase">Message</span></label>
+              <textarea rows="5" placeholder="How can we assist you?" required class="textarea textarea-bordered w-full"></textarea>
+            </div>
+
+            <div class="form-control">
+              <label class="cursor-pointer label justify-start gap-2">
+                <input type="checkbox" required class="checkbox checkbox-primary checkbox-xs" />
+                <span class="label-text text-xs">I consent to the collection of my information for responding to this inquiry.</span>
+              </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-full">
+              Send Message
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>

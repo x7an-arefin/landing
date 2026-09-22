@@ -1,0 +1,13 @@
+---
+/**
+ * Rating — daisyUI 5 read-only `rating` (llms.txt → Rating: use <div> + mask-star
+ * + aria-current for noninteractive ratings). Zero JS.
+ * @param {number} [value]  0–5
+ */
+const { value = 5 } = Astro.props;
+---
+<div class="rating">
+  {Array.from({ length: 5 }, (_, i) => (
+    <div class={`mask mask-star ${i < value ? 'fill-warning' : ''}`} aria-label={`${i + 1} star`} aria-current={i < value ? 'true' : undefined}></div>
+  ))}
+</div>

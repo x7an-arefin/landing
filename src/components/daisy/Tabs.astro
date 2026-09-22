@@ -1,0 +1,46 @@
+---
+/**
+ * Tabs — daisyUI 5 `tabs` with RADIO inputs (llms.txt → Tab: "to change the tab
+ * content after the user clicks a tab, use radio inputs"). The radios style the
+ * tab buttons themselves; ~10 lines of vanilla JS swap the panels.
+ * Mirrors Relume's feature-sections-tabs (24 components).
+ * @param {{label:string, content:string}[]} [tabs]
+ * @param {string} [style]  '' | box | bordered | lift
+ */
+const { tabs = [], style = 'box' } = Astro.props;
+const uid = `tabs-${Math.random().toString(36).slice(2, 8)}`;
+const cls = ['tabs', style && `tabs-${style}`, 'w-full'].filter(Boolean).join(' ');
+---
+<div class="w-full" data-tabs>
+  <div role="tablist" class={cls}>
+    {tabs.map((t, i) => (
+      <input
+        type="radio"
+        name={uid}
+        class="tab"
+        aria-label={t.label}
+        checked={i === 0 ? 'checked' : undefined}
+        data-tab-btn={i}
+      />
+    ))}
+  </div>
+  {tabs.map((t, i) => (
+    <div class="mt-4 rounded-box bg-base-100 p-6 text-sm shadow-sm" data-tab-panel={i} hidden={i > 0 ? '' : undefined}>
+      {t.content}
+    </div>
+  ))}
+</div>
+
+<script>
+  document.querySelectorAll('[data-tabs]').forEach((scope) => {
+    const btns = scope.querySelectorAll('[data-tab-btn]');
+    btns.forEach((btn) => {
+      btn.addEventListener('change', () => {
+        const i = Number(btn.dataset.tabBtn);
+        scope.querySelectorAll('[data-tab-panel]').forEach((p) => {
+          p.hidden = Number(p.dataset.tabPanel) !== i;
+        });
+      });
+    });
+  });
+</script>

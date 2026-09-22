@@ -1,0 +1,83 @@
+---
+/**
+ * ContactModal — reproduces Relume's `contact-modals` (6).
+ *
+ * Patterns supported:
+ * 1. Native HTML5 `<dialog class="modal">` inquiry dialog.
+ * 2. Trigger button with custom text.
+ * 3. Inquiry message form with immediate feedback.
+ * 4. Backdrop click & escape key to dismiss.
+ * 5. Tone: light | dark.
+ *
+ * Zero external JS; 100% semantic DaisyUI 5 tokens.
+ */
+interface Props {
+  tone?: 'light' | 'dark';
+  modalId?: string;
+  buttonText?: string;
+}
+
+const {
+  tone = 'light',
+  modalId = `contact-modal-${Math.random().toString(36).substring(2, 8)}`,
+  buttonText = "Contact Us (Modal)"
+} = Astro.props;
+
+const dark = tone === 'dark';
+---
+
+<div class="inline-block">
+  <!-- Trigger Button -->
+  <button
+    type="button"
+    class="btn btn-outline"
+    onclick={`document.getElementById('${modalId}').showModal()`}
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
+      <path d="M3 4a2 2 0 00-2 2v1.161l8.441 4.221a1.25 1.25 0 001.118 0L19 7.162V6a2 2 0 00-2-2H3z" />
+      <path d="M19 8.839l-7.77 3.885a2.75 2.75 0 01-2.46 0L1 8.839V14a2 2 0 002 2h14a2 2 0 002-2V8.839z" />
+    </svg>
+    {buttonText}
+  </button>
+
+  <!-- Native HTML5 Dialog Modal -->
+  <dialog id={modalId} class="modal modal-bottom sm:modal-middle">
+    <div class={`modal-box p-6 sm:p-8 max-w-lg ${dark ? 'bg-neutral text-neutral-content' : 'bg-base-100 text-base-content'}`}>
+      <!-- Close button -->
+      <form method="dialog">
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-4 top-4" aria-label="Close">✕</button>
+      </form>
+
+      <div class="mb-6">
+        <h3 class="font-extrabold text-2xl tracking-tight">Send Us a Direct Message</h3>
+        <p class="text-xs opacity-60 mt-1">We typically reply within 2 business hours.</p>
+      </div>
+
+      <form class="space-y-4" method="dialog">
+        <div class="form-control">
+          <label class="label"><span class="label-text font-bold text-xs uppercase">Your Name</span></label>
+          <input type="text" placeholder="Sarah Connor" required class="input input-bordered w-full" />
+        </div>
+
+        <div class="form-control">
+          <label class="label"><span class="label-text font-bold text-xs uppercase">Email Address</span></label>
+          <input type="email" placeholder="sarah@example.com" required class="input input-bordered w-full" />
+        </div>
+
+        <div class="form-control">
+          <label class="label"><span class="label-text font-bold text-xs uppercase">How can we help?</span></label>
+          <textarea rows="4" placeholder="Describe your inquiry..." required class="textarea textarea-bordered w-full"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-full mt-2">
+          Submit Message
+        </button>
+      </form>
+    </div>
+
+    <!-- Backdrop click -->
+    <form method="dialog" class="modal-backdrop">
+      <button>close</button>
+    </form>
+  </dialog>
+</div>

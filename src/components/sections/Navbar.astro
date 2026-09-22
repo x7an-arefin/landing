@@ -1,0 +1,192 @@
+---
+/**
+ * Navbar — reproduces Relume's `navbars` category (22 components) as one
+ * flexible section component.
+ *
+ * Covered variants (see docs/components-map.md → navbars):
+ *  - navbar1..3   : logo + inline links (+ one dropdown) + CTA button(s)
+ *  - navbar4      : centered logo (align="center")
+ *  - navbar5..10  : mega menu (menu.width="mega"): multi-column groups,
+ *                   optional "Featured from Blog" column, 2–4 columns
+ *  - navbar11..12 : compact right-aligned dropdown (menu.width="menu")
+ *  - navbar13     : compact sticky centered (align="center" compact sticky)
+ *  - navbar14     : dark bar (tone="dark")
+ *  - navbar15..22 : mobile states — the overlay below IS those screenshots:
+ *                   logo + close + stacked links (+ <slot name="mobile-extra">
+ *                   for the contact block in navbar22, big links, etc.)
+ *
+ * Behavior (verified against live Relume preview 2026-09-21):
+ *  - Desktop submenus: native <details> (click / keyboard, zero JS).
+ *  - Mobile: checkbox + peer full-screen overlay (zero JS, daisyUI drawer-button).
+ *  - Mega panel: full navbar width, positioned via .mega-panel rule in global.css.
+ */
+export interface MenuItem { label: string; href?: string }
+export interface MenuSpec {
+  width?: 'menu' | 'mega';
+  groups?: { title?: string; items: MenuItem[] }[];
+  blog?: { heading: string; cards: { title: string; image?: string }[] };
+}
+export interface NavItem { label: string; href?: string; menu?: MenuSpec }
+
+interface Props {
+  links: NavItem[];
+  /** navbar4: logo centered, links pushed right */
+  align?: 'start' | 'center';
+  /** navbar14: dark bar */
+  tone?: 'light' | 'dark';
+  ctas?: { label: string; variant?: 'primary' | 'outline' }[];
+  /** navbar13: sticky compact */
+  compact?: boolean;
+  sticky?: boolean;
+}
+const { links = [], align = 'start', tone = 'light', ctas = [], compact = false, sticky = false } = Astro.props;
+const uid = `nav-${Math.random().toString(36).slice(2, 8)}`;
+
+const toneCls = tone === 'dark' ? 'bg-neutral text-neutral-content' : 'bg-base-100';
+const heightCls = compact ? 'min-h-12' : 'min-h-16';
+const plain = links.filter((l) => !l.menu);
+const withMenu = links.filter((l) => l.menu);
+const compactMenus = withMenu.filter((l) => l.menu?.width !== 'mega');
+const megaMenus = withMenu.filter((l) => l.menu?.width === 'mega');
+
+const colCount = (m: MenuSpec) => Math.max(1, (m.groups?.length ?? 0) + (m.blog ? 1 : 0));
+
+// (frontmatter is TS, not TSX — icons are strings rendered via set:html)
+const CHEVRON = '<svg xmlns="http://www.w3.org/2000/svg" class="size-4 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>';
+---
+<nav class={`navbar relative ${sticky ? 'sticky top-0 z-40' : ''} ${toneCls} ${heightCls} ${compact ? '' : 'shadow-sm'}`}>
+  <!-- Mobile overlay toggle (zero-JS: checkbox + peer; see global .drawer-note) -->
+  <input id={uid} type="checkbox" class="peer sr-only" />
+
+  {align === 'center' ? (
+    <>
+      <div class="navbar-center">
+        <a class="btn btn-ghost font-bold text-xl" href="/"><slot name="logo">Logo</slot></a>
+      </div>
+      <div class="navbar-end gap-2">
+        <ul class="menu menu-horizontal gap-1 px-2 hidden lg:flex">
+          {plain.map((l) => <li><a href={l.href} class="normal-case">{l.label}</a></li>)}
+          {compactMenus.map((l) => (
+            <li>
+              <details class="dropdown dropdown-end">
+                <summary class="cursor-pointer normal-case">{l.label}</summary>
+                <ul class="dropdown-content menu p-2 shadow-xl bg-base-100 text-base-content rounded-box border border-base-300 w-56 z-50">
+                  {(l.menu!.groups ?? [{ items: [] }]).map((g) => (
+                    <Fragment>
+                      {g.title && <li class="menu-title">{g.title}</li>}
+                      {g.items.map((it) => <li><a class="normal-case">{it.label}</a></li>)}
+                    </Fragment>
+                  ))}
+                </ul>
+              </details>
+            </li>
+          ))}
+        </ul>
+        {ctas.map((c, i) => (
+          <button class={`btn btn-sm ${i === 0 && ctas.length > 1 ? 'btn-outline' : 'btn-primary'} hidden sm:inline-flex`}>{c.label}</button>
+        ))}
+        <label for={uid} class="btn btn-ghost btn-circle drawer-button lg:hidden" aria-label="Open menu">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block size-5 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        </label>
+      </div>
+    </>
+  ) : (
+    <>
+      <div class="navbar-start">
+        <a class="btn btn-ghost font-bold text-xl" href="/"><slot name="logo">Logo</slot></a>
+      </div>
+      <div class="navbar-center hidden lg:flex">
+        <ul class="menu menu-horizontal gap-1 px-2">
+          {plain.map((l) => <li><a href={l.href} class="normal-case">{l.label}</a></li>)}
+          {compactMenus.map((l) => (
+            <li>
+              <details class="dropdown dropdown-end">
+                <summary class="cursor-pointer normal-case">{l.label}</summary>
+                <ul class="dropdown-content menu p-2 shadow-xl bg-base-100 text-base-content rounded-box border border-base-300 w-56 z-50">
+                  {(l.menu!.groups ?? [{ items: [] }]).map((g) => (
+                    <Fragment>
+                      {g.title && <li class="menu-title">{g.title}</li>}
+                      {g.items.map((it) => <li><a class="normal-case">{it.label}</a></li>)}
+                    </Fragment>
+                  ))}
+                </ul>
+              </details>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div class="navbar-end gap-2">
+        {megaMenus.map((l) => (
+          <details class="mega hidden lg:block">
+            <summary class="btn btn-ghost normal-case cursor-pointer gap-1">{l.label}<span set:html={CHEVRON} /></summary>
+            <div class="mega-panel absolute left-0 right-0 top-full hidden bg-base-100 text-base-content border-b border-base-300 shadow-xl z-40">
+              <div class="max-w-7xl mx-auto px-4 py-6 grid gap-8" style={`grid-template-columns: repeat(${colCount(l.menu!)}, minmax(0, 1fr))`}>
+                {(l.menu!.groups ?? []).map((g) => (
+                  <div>
+                    {g.title && <p class="font-bold text-sm mb-3">{g.title}</p>}
+                    <ul class="space-y-2">
+                      {g.items.map((it) => <li><a class="text-sm opacity-80 hover:opacity-100 hover:underline">{it.label}</a></li>)}
+                    </ul>
+                  </div>
+                ))}
+                {l.menu!.blog && (
+                  <div class="border-l border-base-300 pl-6">
+                    <p class="font-bold text-sm mb-3">{l.menu!.blog.heading}</p>
+                    <ul class="space-y-4">
+                      {l.menu!.blog.cards.map((card) => (
+                        <li class="flex gap-3 items-center">
+                          {card.image
+                            ? <figure class="w-20 h-14 bg-base-200 overflow-hidden shrink-0"><img src={card.image} alt="" class="w-full h-full object-cover" loading="lazy" /></figure>
+                            : <div class="w-20 h-14 bg-base-200 shrink-0"></div>}
+                          <a class="text-sm font-medium hover:underline">{card.title}</a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </div>
+          </details>
+        ))}
+        {ctas.map((c, i) => (
+          <button class={`btn btn-sm ${i === 0 && ctas.length > 1 ? 'btn-outline' : 'btn-primary'} hidden sm:inline-flex`}>{c.label}</button>
+        ))}
+        <label for={uid} class="btn btn-ghost btn-circle drawer-button lg:hidden" aria-label="Open menu">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block size-5 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        </label>
+      </div>
+    </>
+  )}
+
+  <!-- Mobile overlay (this is what navbars 15–22 in the catalog show) -->
+  <div class="fixed inset-0 z-50 hidden peer-checked:flex flex-col bg-base-100 text-base-content p-4 lg:hidden">
+    <div class="flex items-center justify-between">
+      <span class="font-bold text-xl"><slot name="logo">Logo</slot></span>
+      <label for={uid} class="btn btn-ghost btn-circle drawer-button" aria-label="Close menu">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block size-5 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 18 6M6 6l12 12"></path></svg>
+      </label>
+    </div>
+    <ul class="menu menu-vertical p-2 text-lg grow">
+      {links.map((l) => (
+        <li>
+          {l.menu
+            ? (
+              <details>
+                <summary class="cursor-pointer">{l.label}</summary>
+                <ul>
+                  {(l.menu.groups ?? []).flatMap((g) => g.items).map((it) => <li><a>{it.label}</a></li>)}
+                </ul>
+              </details>
+            )
+            : <a href={l.href}>{l.label}</a>}
+        </li>
+      ))}
+    </ul>
+    <div class="flex gap-2 pb-4">
+      {ctas.map((c, i) => (
+        <button class={`btn btn-sm ${i === 0 && ctas.length > 1 ? 'btn-outline' : 'btn-primary'}`}>{c.label}</button>
+      ))}
+    </div>
+    <slot name="mobile-extra" />
+  </div>
+</nav>

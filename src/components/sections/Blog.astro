@@ -1,0 +1,293 @@
+---
+/**
+ * Blog — reproduces Relume's `blog-sections` (36), `blog-headers` (16),
+ * `blog-headers-2` (16), and `blog-post-headers` (5) = 73 components.
+ *
+ * Patterns supported:
+ * 1. layout="grid" — 2, 3, or 4 column article cards (thumbnail, tag, title, excerpt, author meta).
+ * 2. layout="featured" — 1 dominant featured article left, 3 stacked recent stories right.
+ * 3. layout="header" — blog index hero: title, category filter tabs, search box.
+ * 4. layout="post-header" — single blog post hero: category badge, big title, author row, hero banner.
+ *
+ * Zero-JS: native radio tabs for category filtering, semantic DaisyUI tokens.
+ */
+interface Author {
+  name: string;
+  avatar?: string;
+  role?: string;
+}
+
+interface BlogPost {
+  title: string;
+  excerpt?: string;
+  category?: string;
+  date?: string;
+  readTime?: string;
+  author?: Author;
+  image?: string;
+  featured?: boolean;
+}
+
+interface Props {
+  layout?: 'grid' | 'featured' | 'header' | 'post-header';
+  cols?: 2 | 3;
+  tone?: 'light' | 'dark';
+  tagline?: string;
+  heading?: string;
+  subtext?: string;
+  categories?: string[];
+  items?: BlogPost[];
+  post?: BlogPost;
+}
+
+const {
+  layout = 'grid',
+  cols = 3,
+  tone = 'light',
+  tagline = "Our Blog",
+  heading = "Insights, stories & engineering updates",
+  subtext = "The latest thinking on Astro, DaisyUI, modern CSS, and component design systems.",
+  categories = ["All", "Architecture", "Design Systems", "Tutorials", "Company"],
+  items = [
+    {
+      title: "Building a Zero-Flash Theme Engine in Astro",
+      excerpt: "How we leveraged pre-paint head scripts and DaisyUI CSS variables to deliver instant theme swapping.",
+      category: "Architecture",
+      date: "Sep 22, 2026",
+      readTime: "5 min read",
+      author: { name: "Devon Reed", role: "Systems Architect" }
+    },
+    {
+      title: "Why Pure Astro and Raw JS Outperform Framework SPAs",
+      excerpt: "Benchmarking hydration cost, runtime JS budget, and long-term maintainability for design systems.",
+      category: "Design Systems",
+      date: "Sep 18, 2026",
+      readTime: "7 min read",
+      author: { name: "Eleanor Vance", role: "Engineering Lead" }
+    },
+    {
+      title: "Mastering DaisyUI 5 Color Semantic Tokens",
+      excerpt: "A practical guide to avoiding hardcoded hex colors and keeping all 35 themes seamlessly harmonious.",
+      category: "Tutorials",
+      date: "Sep 12, 2026",
+      readTime: "4 min read",
+      author: { name: "Amara Patel", role: "Product Designer" }
+    }
+  ],
+  post = {
+    title: "The Future of Web Components: Instant Theming and Native Primitives",
+    excerpt: "Exploring the boundary between CSS custom properties, native HTML5 details/dialog, and zero-JS interactive patterns.",
+    category: "Architecture",
+    date: "Sep 22, 2026",
+    readTime: "6 min read",
+    author: { name: "Devon Reed", role: "Systems Architect" }
+  }
+} = Astro.props;
+
+const dark = tone === 'dark';
+const primaryPost = items[0] || post;
+const sidePosts = items.slice(1);
+---
+
+<section class={dark ? 'bg-neutral text-neutral-content' : 'bg-base-100'}>
+  <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+    {layout === 'header' && (
+      <div>
+        <div class="text-center max-w-3xl mx-auto mb-10">
+          {tagline && <span class="badge badge-primary badge-sm font-semibold mb-3">{tagline}</span>}
+          <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight">{heading}</h1>
+          {subtext && <p class="mt-4 text-sm opacity-70 leading-relaxed">{subtext}</p>}
+        </div>
+
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-base-content/10 pb-6 mb-12">
+          <div class="tabs tabs-box bg-base-200/60 p-1 rounded-box flex-wrap">
+            {categories.map((cat, idx) => (
+              <input type="radio" name="blog-cat" class="tab" aria-label={cat} checked={idx === 0} />
+            ))}
+          </div>
+          <div class="w-full sm:w-72">
+            <input type="search" placeholder="Search articles..." class="input input-bordered input-sm w-full rounded-box" />
+          </div>
+        </div>
+
+        <div class="grid gap-8 md:grid-cols-3">
+          {items.map((item) => (
+            <article class={`card rounded-box border overflow-hidden transition-all hover:shadow-md ${
+              dark ? 'border-neutral-content/15 bg-neutral-content/5' : 'border-base-300 bg-base-100'
+            }`}>
+              <div class="aspect-16/9 bg-base-300 relative flex items-center justify-center text-base-content/30">
+                <svg xmlns="http://www.w3.org/2000/svg" class="size-12 opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                </svg>
+              </div>
+              <div class="card-body p-6">
+                <div class="flex items-center gap-2 mb-2">
+                  {item.category && <span class="badge badge-primary badge-xs font-semibold">{item.category}</span>}
+                  <span class="text-xs opacity-60">{item.readTime}</span>
+                </div>
+                <h2 class="card-title text-lg font-bold hover:text-primary transition-colors line-clamp-2">
+                  <a href="#">{item.title}</a>
+                </h2>
+                {item.excerpt && <p class="text-xs opacity-70 line-clamp-3 mt-1 leading-relaxed">{item.excerpt}</p>}
+                
+                {item.author && (
+                  <div class="mt-6 flex items-center gap-3 pt-4 border-t border-base-content/10">
+                    <div class="avatar placeholder">
+                      <div class={`size-8 rounded-full ${dark ? 'bg-neutral-content/20' : 'bg-base-300'}`}>
+                        <span class="text-xs font-bold">{item.author.name[0]}</span>
+                      </div>
+                    </div>
+                    <div class="text-xs">
+                      <div class="font-bold">{item.author.name}</div>
+                      <div class="opacity-60">{item.date}</div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {layout === 'grid' && (
+      <div>
+        {(heading || tagline) && (
+          <div class="mb-12">
+            {tagline && <span class="badge badge-primary badge-sm font-semibold mb-2">{tagline}</span>}
+            <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">{heading}</h2>
+            {subtext && <p class="mt-2 text-sm opacity-70 max-w-2xl">{subtext}</p>}
+          </div>
+        )}
+
+        <div class={`grid gap-8 ${cols === 2 ? 'md:grid-cols-2' : 'md:grid-cols-3'}`}>
+          {items.map((item) => (
+            <article class={`card rounded-box border overflow-hidden transition-all hover:shadow-md ${
+              dark ? 'border-neutral-content/15 bg-neutral-content/5' : 'border-base-300 bg-base-100'
+            }`}>
+              <div class="aspect-16/9 bg-base-300 relative flex items-center justify-center text-base-content/30">
+                <svg xmlns="http://www.w3.org/2000/svg" class="size-12 opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                </svg>
+              </div>
+              <div class="card-body p-6">
+                <div class="flex items-center gap-2 mb-2">
+                  {item.category && <span class="badge badge-primary badge-xs font-semibold">{item.category}</span>}
+                  <span class="text-xs opacity-60">{item.readTime}</span>
+                </div>
+                <h3 class="card-title text-base font-bold hover:text-primary transition-colors line-clamp-2">
+                  <a href="#">{item.title}</a>
+                </h3>
+                {item.excerpt && <p class="text-xs opacity-70 line-clamp-2 mt-1 leading-relaxed">{item.excerpt}</p>}
+                
+                {item.author && (
+                  <div class="mt-4 flex items-center gap-3 pt-3 border-t border-base-content/10">
+                    <div class="avatar placeholder">
+                      <div class={`size-7 rounded-full ${dark ? 'bg-neutral-content/20' : 'bg-base-300'}`}>
+                        <span class="text-xs font-bold">{item.author.name[0]}</span>
+                      </div>
+                    </div>
+                    <div class="text-xs">
+                      <span class="font-bold">{item.author.name}</span>
+                      <span class="opacity-50 mx-1">•</span>
+                      <span class="opacity-60">{item.date}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {layout === 'featured' && (
+      <div>
+        <div class="grid gap-8 lg:grid-cols-12 items-start">
+          <article class={`lg:col-span-7 card rounded-box border overflow-hidden ${
+            dark ? 'border-neutral-content/15 bg-neutral-content/5' : 'border-base-300 bg-base-100 shadow-sm'
+          }`}>
+            <div class="aspect-16/10 bg-base-300 flex items-center justify-center text-base-content/30">
+              <svg xmlns="http://www.w3.org/2000/svg" class="size-16 opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+              </svg>
+            </div>
+            <div class="card-body p-8">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="badge badge-primary badge-sm font-semibold">{primaryPost.category}</span>
+                <span class="text-xs opacity-60">{primaryPost.readTime}</span>
+              </div>
+              <h2 class="text-2xl sm:text-3xl font-extrabold hover:text-primary transition-colors">
+                <a href="#">{primaryPost.title}</a>
+              </h2>
+              <p class="text-sm opacity-70 mt-2 leading-relaxed">{primaryPost.excerpt}</p>
+              {primaryPost.author && (
+                <div class="mt-6 flex items-center gap-3">
+                  <div class="avatar placeholder">
+                    <div class={`size-10 rounded-full ${dark ? 'bg-neutral-content/20' : 'bg-base-300'}`}>
+                      <span class="text-sm font-bold">{primaryPost.author.name[0]}</span>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="font-bold text-sm">{primaryPost.author.name}</div>
+                    <div class="text-xs opacity-60">{primaryPost.date}</div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </article>
+
+          <div class="lg:col-span-5 space-y-6">
+            <h3 class="text-lg font-bold border-b border-base-content/10 pb-3">Latest Stories</h3>
+            {sidePosts.map((post) => (
+              <article class="flex gap-4 group">
+                <div class="size-24 rounded-box bg-base-300 shrink-0 flex items-center justify-center text-base-content/30">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="size-6 opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159" />
+                  </svg>
+                </div>
+                <div class="flex flex-col justify-center">
+                  <span class="text-xs font-semibold text-primary">{post.category}</span>
+                  <h4 class="text-sm font-bold group-hover:text-primary transition-colors line-clamp-2 mt-1">
+                    <a href="#">{post.title}</a>
+                  </h4>
+                  <span class="text-xs opacity-50 mt-1">{post.date}</span>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    )}
+
+    {layout === 'post-header' && (
+      <div class="max-w-4xl mx-auto">
+        <div class="mb-8">
+          {post.category && <span class="badge badge-primary badge-sm font-semibold mb-4">{post.category}</span>}
+          <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight">{post.title}</h1>
+          {post.excerpt && <p class="mt-4 text-base sm:text-lg opacity-75 leading-relaxed">{post.excerpt}</p>}
+          
+          {post.author && (
+            <div class="mt-8 flex items-center gap-4 border-y border-base-content/10 py-4">
+              <div class="avatar placeholder">
+                <div class={`size-12 rounded-full ${dark ? 'bg-neutral-content/20' : 'bg-base-300'}`}>
+                  <span class="text-base font-bold">{post.author.name[0]}</span>
+                </div>
+              </div>
+              <div>
+                <div class="font-bold text-sm">{post.author.name}</div>
+                <div class="text-xs opacity-60">{post.author.role} • {post.date} • {post.readTime}</div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div class="aspect-21/9 rounded-box overflow-hidden bg-base-300 flex items-center justify-center text-base-content/30 shadow-md">
+          <svg xmlns="http://www.w3.org/2000/svg" class="size-20 opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+          </svg>
+        </div>
+      </div>
+    )}
+  </div>
+</section>

@@ -1,0 +1,27 @@
+---
+/**
+ * Card — daisyUI 5 `card` (llms.txt → Card). The workhorse: covers Relume's
+ * card-headers, feature grids, product/portfolio/blog card cells.
+ * @param {string} [image]
+ * @param {string} [title]
+ * @param {string} [subtitle]
+ * @param {string[]} [tags]
+ * @param {string} [size]  '' | xs | sm | md | lg | xl
+ */
+const { image, title, subtitle, tags = [], size = '' } = Astro.props;
+const cls = ['card', 'bg-base-100', 'shadow-md', size && `card-${size}`].filter(Boolean).join(' ');
+---
+<div class={cls}>
+  {image && <figure><img src={image} alt={title || ''} loading="lazy" /></figure>}
+  <div class="card-body">
+    {tags.length > 0 && (
+      <div class="flex flex-wrap gap-1">
+        {tags.map((t) => <span class="badge badge-primary badge-sm">{t}</span>)}
+      </div>
+    )}
+    {title && <h2 class="card-title"><slot name="title">{title}</slot></h2>}
+    {subtitle && <p class="text-sm opacity-70">{subtitle}</p>}
+    <slot />
+    <div class="card-actions justify-end mt-2"><slot name="actions" /></div>
+  </div>
+</div>

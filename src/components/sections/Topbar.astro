@@ -1,0 +1,93 @@
+---
+/**
+ * Topbar — reproduces Relume's `topbars` category (4 components). These are the
+ * app-shell utility bars (sits above/beside application content, unlike the
+ * marketing Navbar):
+ *  - topbar1 : logo + links (+ dropdown) | search | bell | avatar
+ *  - topbar2 : logo | centered wide search | bell | avatar
+ *  - topbar3 : left search | bell | avatar + "Name Surname" user dropdown
+ *  - topbar4 : page title ("DashBoard") | search | bell | avatar
+ *
+ * Verified against live preview: thin bar, bottom border, search = labeled
+ * input with icon, bell = indicator dot, avatar = placeholder circle. Zero JS
+ * (user dropdown is a <details>).
+ */
+export interface TopbarLink { label: string; menu?: string[] }
+interface Props {
+  title?: string; // topbar4
+  logo?: string;  // topbar1/2/3
+  links?: TopbarLink[];
+  search?: 'right' | 'center' | 'left';
+  user?: { name: string; initials: string } | false;
+}
+const { title, logo, links = [], search = 'right', user = false } = Astro.props;
+const uid = `tb-${Math.random().toString(36).slice(2, 8)}`;
+
+// Frontmatter is TS (not TSX): markup helpers return strings, rendered via set:html.
+const searchBox = (wide = false) =>
+  `<label class="input input-bordered gap-2 ${wide ? 'w-full max-w-xl' : 'w-56'}">
+    <svg xmlns="http://www.w3.org/2000/svg" class="size-4 opacity-40 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>
+    <input type="search" placeholder="Search" class="grow" />
+  </label>`;
+const BELL =
+  `<div class="indicator">
+    <span class="indicator-item badge badge-error badge-xs">1</span>
+    <button class="btn btn-ghost btn-circle" aria-label="Notifications">
+      <svg xmlns="http://www.w3.org/2000/svg" class="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" /></svg>
+    </button>
+  </div>`;
+const AVATAR =
+  `<div class="avatar placeholder">
+    <div class="bg-base-300 text-base-content/50 w-9 rounded-full">
+      <svg xmlns="http://www.w3.org/2000/svg" class="size-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2c-4.4 0-8 2.2-8 5v1h16v-1c0-2.8-3.6-5-8-5Z" /></svg>
+    </div>
+  </div>`;
+---
+<header class="navbar bg-base-100 border-b border-base-300 min-h-16">
+  <div class="navbar-start gap-2">
+    {title && <h1 class="font-bold text-lg">{title}</h1>}
+    {logo && <a class="btn btn-ghost font-black text-2xl" href="/">{logo}</a>}
+    {links.length > 0 && (
+      <ul class="menu menu-horizontal gap-1 px-2 hidden md:flex">
+        {links.map((l) =>
+          l.menu ? (
+            <li>
+              <details class="dropdown dropdown-end">
+                <summary class="cursor-pointer normal-case">{l.label}</summary>
+                <ul class="dropdown-content menu p-2 shadow-xl bg-base-100 rounded-box border border-base-300 w-44 z-50">
+                  {l.menu.map((m) => <li><a class="normal-case">{m}</a></li>)}
+                </ul>
+              </details>
+            </li>
+          ) : (
+            <li><a class="normal-case">{l.label}</a></li>
+          )
+        )}
+      </ul>
+    )}
+    {search === 'left' && <div class="hidden sm:block"><span set:html={searchBox()} /></div>}
+  </div>
+
+  {search === 'center' && (
+    <div class="navbar-center hidden sm:flex"><span set:html={searchBox(true)} /></div>
+  )}
+
+  <div class="navbar-end gap-1">
+    {search === 'right' && <div class="hidden sm:block"><span set:html={searchBox()} /></div>}
+    <span set:html={BELL} />
+    <span set:html={AVATAR} />
+    {user && (
+      <details class="dropdown dropdown-end">
+        <summary class="btn btn-ghost btn-sm gap-1 cursor-pointer">
+          {user.name}
+          <svg xmlns="http://www.w3.org/2000/svg" class="size-4 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>
+        </summary>
+        <ul class="dropdown-content menu p-2 shadow-xl bg-base-100 rounded-box border border-base-300 w-44 z-50">
+          <li><a>Profile</a></li>
+          <li><a>Settings</a></li>
+          <li><a>Log out</a></li>
+        </ul>
+      </details>
+    )}
+  </div>
+</header>

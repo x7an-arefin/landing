@@ -1,0 +1,72 @@
+---
+/**
+ * CookieConsent — reproduces Relume's `cookies` (5).
+ *
+ * Patterns supported:
+ * 1. Fixed or inline bottom cookie consent bar.
+ * 2. Privacy text summary and policy link.
+ * 3. Primary "Accept All", secondary "Preferences", and "Decline" buttons.
+ * 4. Dismiss action.
+ * 5. Tone: light | dark.
+ *
+ * Zero external JS; 100% semantic DaisyUI 5 tokens.
+ */
+interface Props {
+  tone?: 'light' | 'dark';
+  position?: 'inline' | 'fixed';
+}
+
+const {
+  tone = 'light',
+  position = 'inline'
+} = Astro.props;
+
+const dark = tone === 'dark';
+const uniqueId = `cookie-banner-${Math.random().toString(36).substring(2, 8)}`;
+---
+
+<div id={uniqueId} class={`${
+  position === 'fixed' ? 'fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:max-w-md z-50' : 'w-full max-w-2xl mx-auto my-4'
+}`}>
+  <div class={`card border rounded-2xl p-5 sm:p-6 shadow-2xl ${
+    dark ? 'bg-neutral text-neutral-content border-neutral-content/20' : 'bg-base-100 text-base-content border-base-300'
+  }`}>
+    <div class="flex items-start gap-3.5 mb-4">
+      <div class="text-2xl p-2 rounded-xl bg-primary/10 text-primary shrink-0">
+        🍪
+      </div>
+      <div>
+        <h4 class="font-extrabold text-base">We value your privacy</h4>
+        <p class={`text-xs mt-1 leading-relaxed ${dark ? 'text-neutral-content/75' : 'text-base-content/75'}`}>
+          We use strictly necessary cookies to ensure our component playground and theme engine run smoothly. No third-party ad tracking scripts are ever loaded.
+          Read our <a href="#privacy" class="link link-primary font-bold">Cookie Policy</a>.
+        </p>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex flex-wrap items-center justify-end gap-2 pt-2 border-t border-base-300">
+      <button
+        type="button"
+        class="btn btn-xs btn-ghost"
+        onclick={`document.getElementById('${uniqueId}').remove()`}
+      >
+        Decline Non-Essential
+      </button>
+      <button
+        type="button"
+        class="btn btn-xs btn-outline"
+        onclick={`document.getElementById('${uniqueId}').remove()`}
+      >
+        Customize
+      </button>
+      <button
+        type="button"
+        class="btn btn-xs btn-primary"
+        onclick={`document.getElementById('${uniqueId}').remove()`}
+      >
+        Accept All Cookies
+      </button>
+    </div>
+  </div>
+</div>

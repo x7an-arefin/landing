@@ -1,0 +1,31 @@
+---
+/**
+ * Navbar — daisyUI 5 `navbar` (llms.txt → Navbar). Mobile menu via native
+ * <details> (zero JS). Mirrors Relume's `navbars` (22 components).
+ * @param {{label:string, href:string, active?:boolean}[]} [links]
+ */
+const { links = [] } = Astro.props;
+---
+<nav class="navbar bg-base-100 shadow-sm sticky top-0 z-40 min-h-16">
+  <div class="navbar-start">
+    <a class="btn btn-ghost text-xl font-bold" href="/"><slot name="logo">◆ Registry</slot></a>
+  </div>
+  <div class="navbar-center hidden lg:flex">
+    <ul class="menu menu-horizontal gap-1 px-2">
+      {links.map((l) => (
+        <li><a class={l.active ? 'menu-active' : ''} href={l.href}>{l.label}</a></li>
+      ))}
+    </ul>
+  </div>
+  <div class="navbar-end">
+    <slot name="actions" />
+    <details class="dropdown lg:hidden">
+      <summary class="btn btn-ghost btn-circle m-1 cursor-pointer list-none" aria-label="menu">
+        <svg xmlns="http://www.w3.org/2000/svg" class="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>
+      </summary>
+      <ul class="dropdown-content menu menu-sm z-50 mt-3 rounded-box bg-base-100 p-2 shadow-xl">
+        {links.map((l) => <li><a class={l.active ? 'menu-active' : ''} href={l.href}>{l.label}</a></li>)}
+      </ul>
+    </details>
+  </div>
+</nav>

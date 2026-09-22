@@ -1,0 +1,63 @@
+---
+/**
+ * SectionHeader — reproduces Relume's `section-headers` (4). App-shell list
+ * header for content/table pages:
+ *
+ *  1 (section-header1): heading + subtext | [Button][Button] + tab row
+ *  2 (section-header2): heading + subtext | search + Filter + sort
+ *  3 (section-header3): heading + subtext | [Button][Button] + tab row
+ *  4 (section-header4): heading + subtext | search + sort + tab row
+ *
+ * Verified live 2026-09-22: static (search/sort are decorative controls).
+ * Zero JS; semantic colors only.
+ */
+interface Props {
+  heading?: string;
+  subtext?: string;
+  /** search+sort (2) or buttons (1,3) */
+  actions?: 'search+sort' | 'buttons';
+  tabs?: string[];
+}
+const {
+  heading = 'Heading goes here',
+  subtext = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros.',
+  actions = 'buttons',
+  tabs = [],
+} = Astro.props;
+---
+<section class="bg-base-100">
+  <div class="mx-auto max-w-7xl px-4 py-6">
+    <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div>
+        <h1 class="font-bold text-lg">{heading}</h1>
+        <p class="mt-0.5 text-xs opacity-50">{subtext}</p>
+      </div>
+      <div class="flex items-center gap-2">
+        {actions === 'search+sort' ? (
+          <>
+            <label class="flex items-center gap-2 border border-base-300 rounded-btn px-3 h-9 text-sm opacity-80">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-4"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>
+              Search
+            </label>
+            <select class="select select-bordered select-sm h-9 w-32">
+              <option>Filtering</option>
+            </select>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-4 opacity-40"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5 7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5" /></svg>
+          </>
+        ) : (
+          <>
+            <button class="btn btn-sm btn-outline">Button</button>
+            <button class="btn btn-sm btn-neutral">Button</button>
+          </>
+        )}
+      </div>
+    </div>
+    {tabs.length > 0 && (
+      <div class="mt-4 flex flex-wrap gap-4 text-xs">
+        {tabs.map((t, i) => (
+          <span class={i === 0 ? 'font-bold border-b-2 border-base-content pb-1' : 'opacity-50'}>{t}</span>
+        ))}
+      </div>
+    )}
+  </div>
+</section>

@@ -1,0 +1,22 @@
+---
+/**
+ * Accordion — daisyUI 5 `collapse` driven by RADIO inputs (llms.txt → Accordion):
+ * radios with the same `name` form one group, only one item open at a time. Zero JS.
+ * Mirrors Relume's faq-sections (14 components).
+ * @param {{title:string, content:string}[]} [items]
+ * @param {'collapse-arrow'|'collapse-plus'} [modifier]
+ * @param {string} [group]  unique radio name per accordion on the page
+ */
+const { items = [], modifier = 'collapse-arrow', group = 'accordion' } = Astro.props;
+const uid = `${group}-${Math.random().toString(36).slice(2, 8)}`;
+---
+<div class="space-y-1">
+  {items.map((it, i) => (
+    <div class={`collapse ${modifier} bg-base-100`}>
+      <input type="radio" name={uid} class="peer" id={`${uid}-${i}`} checked={i === 0 ? 'checked' : undefined} />
+      <div class="collapse-title font-medium">{it.title}</div>
+      <div class="collapse-content text-sm opacity-80">{it.content}</div>
+    </div>
+  ))}
+  <slot />
+</div>

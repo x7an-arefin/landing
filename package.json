@@ -1,0 +1,20 @@
+{
+  "name": "astro-daisyui-registry",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Component registry template: pure Astro + raw JavaScript + DaisyUI 5. Catalog mirrors the Relume component library (1524 components, 68 categories).",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "7.3.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.14",
+    "daisyui": "^5.7.1",
+    "tailwindcss": "^4.1.14"
+  }
+}

@@ -1,0 +1,24 @@
+---
+/**
+ * Footer — daisyUI 5 `footer` (llms.txt → Footer: use base-200 background).
+ * Mirrors Relume's `footers` (17 components).
+ * @param {{title:string, links:{label:string, href?:string}[]}[]} [cols]
+ */
+const { cols = [] } = Astro.props;
+const year = new Date().getFullYear();
+---
+<footer class="footer footer-horizontal bg-base-200 p-10 text-base-content/80">
+  <aside>
+    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="currentColor" class="fill-primary"><path d="M12 2 2 7l10 5 10-5-10-5Zm0 9L2 16l10 5 10-5-10-5Z" /></svg>
+    <p class="font-bold text-base-content">Astro + DaisyUI Registry <br /><span class="font-normal opacity-60">Pure Astro. Raw JS. One theme to rule them all.</span></p>
+  </aside>
+  {cols.map((c) => (
+    <nav>
+      <h6 class="footer-title">{c.title}</h6>
+      {c.links.map((l) => <a href={l.href ?? "#"} class="link link-hover">{l.label}</a>)}
+    </nav>
+  ))}
+  <div class="mx-auto w-full border-t border-base-content/10 pt-6 text-center text-sm opacity-60">
+    © {year} — built with Astro + DaisyUI
+  </div>
+</footer>

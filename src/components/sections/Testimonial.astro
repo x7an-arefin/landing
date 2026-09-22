@@ -1,0 +1,173 @@
+---
+/**
+ * Testimonial — reproduces Relume's `testimonial-sections` (41).
+ *
+ * Patterns supported:
+ * 1. layout="single" — big featured quote, 5-star rating, author avatar + name + role + company logo.
+ * 2. layout="grid" — 2, 3, or 4 column grid of testimonial cards (bordered or surface card).
+ * 3. layout="split" — quote left, author portrait / photo right.
+ *
+ * Zero JS; semantic colors only (themes swap cleanly).
+ */
+interface TestimonialItem {
+  quote: string;
+  name: string;
+  role?: string;
+  company?: string;
+  avatar?: string;
+  rating?: number;
+}
+
+interface Props {
+  layout?: 'single' | 'grid' | 'split';
+  cols?: 2 | 3 | 4;
+  tone?: 'light' | 'dark';
+  bordered?: boolean;
+  heading?: string;
+  subtext?: string;
+  items?: TestimonialItem[];
+}
+
+const {
+  layout = 'single',
+  cols = 3,
+  tone = 'light',
+  bordered = true,
+  heading,
+  subtext,
+  items = [
+    {
+      quote: "This component library completely transformed our design workflow. The instant theme switching is a game changer.",
+      name: "Alex Rivera",
+      role: "VP of Product, Acme Corp",
+      company: "Acme Corp",
+      rating: 5,
+    },
+    {
+      quote: "Clean, zero-JS Astro components with DaisyUI classes. It's exactly what our engineering team needed.",
+      name: "Sarah Chen",
+      role: "Lead Frontend Engineer",
+      company: "Nexus Labs",
+      rating: 5,
+    },
+    {
+      quote: "High fidelity, accessible, and ridiculously easy to customize. Saved us weeks of development time.",
+      name: "Marcus Vance",
+      role: "Founder & CTO",
+      company: "Orbit AI",
+      rating: 5,
+    }
+  ],
+} = Astro.props;
+
+const dark = tone === 'dark';
+const primaryItem = items[0] || {
+  quote: "This component library completely transformed our workflow.",
+  name: "Alex Rivera",
+  role: "VP of Product",
+  rating: 5,
+};
+
+const STAR = '<span class="mask mask-star-2 bg-warning size-4 inline-block"></span>';
+---
+
+<section class={dark ? 'bg-neutral text-neutral-content' : 'bg-base-100'}>
+  <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+    {heading && (
+      <div class={`mb-12 ${layout === 'single' ? 'text-center' : ''}`}>
+        <h2 class="text-3xl font-extrabold tracking-tight sm:text-4xl">{heading}</h2>
+        {subtext && <p class="mt-3 text-sm opacity-70 max-w-2xl mx-auto">{subtext}</p>}
+      </div>
+    )}
+
+    {layout === 'single' && (
+      <div class="mx-auto max-w-3xl text-center">
+        {primaryItem.rating && (
+          <div class="mb-6 flex justify-center gap-1">
+            {Array.from({ length: primaryItem.rating }).map(() => (
+              <span set:html={STAR} />
+            ))}
+          </div>
+        )}
+        <blockquote class="text-xl font-medium sm:text-2xl lg:text-3xl leading-snug">
+          "{primaryItem.quote}"
+        </blockquote>
+        <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
+          <div class="avatar placeholder">
+            <div class={`size-12 rounded-full ring-2 ring-primary/30 ${dark ? 'bg-neutral-content/20 text-neutral-content' : 'bg-base-300 text-base-content'}`}>
+              <span class="text-sm font-bold">{primaryItem.name.split(' ').map(n => n[0]).join('')}</span>
+            </div>
+          </div>
+          <div class="text-center sm:text-left">
+            <div class="font-bold">{primaryItem.name}</div>
+            <div class="text-xs opacity-70">{primaryItem.role}{primaryItem.company ? ` • ${primaryItem.company}` : ''}</div>
+          </div>
+        </div>
+      </div>
+    )}
+
+    {layout === 'grid' && (
+      <div class={`grid gap-6 ${cols === 2 ? 'md:grid-cols-2' : cols === 4 ? 'sm:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-3'}`}>
+        {items.map((item) => (
+          <div class={`flex flex-col justify-between rounded-box p-6 ${
+            bordered 
+              ? dark ? 'border border-neutral-content/15 bg-neutral-content/5' : 'border border-base-300 bg-base-100'
+              : dark ? 'bg-neutral-content/10' : 'bg-base-200'
+          }`}>
+            <div>
+              {item.rating && (
+                <div class="mb-4 flex gap-1">
+                  {Array.from({ length: item.rating }).map(() => (
+                    <span set:html={STAR} />
+                  ))}
+                </div>
+              )}
+              <blockquote class="text-sm leading-relaxed opacity-90">
+                "{item.quote}"
+              </blockquote>
+            </div>
+            <div class="mt-6 flex items-center gap-3 pt-4 border-t border-base-content/10">
+              <div class="avatar placeholder">
+                <div class={`size-10 rounded-full ${dark ? 'bg-neutral-content/20' : 'bg-base-300'}`}>
+                  <span class="text-xs font-bold">{item.name.split(' ').map(n => n[0]).join('')}</span>
+                </div>
+              </div>
+              <div>
+                <div class="text-sm font-bold">{item.name}</div>
+                <div class="text-xs opacity-60">{item.role}</div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
+
+    {layout === 'split' && (
+      <div class="grid items-center gap-12 lg:grid-cols-2">
+        <div class="space-y-6">
+          {primaryItem.rating && (
+            <div class="flex gap-1">
+              {Array.from({ length: primaryItem.rating }).map(() => (
+                <span set:html={STAR} />
+              ))}
+            </div>
+          )}
+          <blockquote class="text-2xl font-bold sm:text-3xl leading-snug">
+            "{primaryItem.quote}"
+          </blockquote>
+          <div>
+            <div class="text-base font-bold">{primaryItem.name}</div>
+            <div class="text-sm opacity-70">{primaryItem.role}</div>
+          </div>
+        </div>
+        <div class="relative aspect-4/3 overflow-hidden rounded-box bg-base-300 shadow-md">
+          <div class="flex h-full w-full items-center justify-center bg-base-200 text-base-content/40">
+            <svg xmlns="http://www.w3.org/2000/svg" class="size-16 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
+</section>

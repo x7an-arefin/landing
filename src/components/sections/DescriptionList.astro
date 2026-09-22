@@ -1,0 +1,124 @@
+---
+/**
+ * DescriptionList — reproduces Relume's `description-lists` (4).
+ *
+ * Patterns supported:
+ * 1. Semantic `<dl>`, `<dt>`, `<dd>` definition structure.
+ * 2. Split 2-column key-value rows or stacked key-value blocks.
+ * 3. Alternating zebra-striped rows or clean divided line layout.
+ * 4. Rich attachments / pill badges in values.
+ * 5. Tone: light | dark.
+ *
+ * Zero external JS; 100% semantic DaisyUI 5 tokens.
+ */
+interface FieldItem {
+  label: string;
+  value: string;
+  isBadge?: boolean;
+  badgeType?: 'primary' | 'success' | 'warning' | 'ghost';
+  attachment?: {
+    filename: string;
+    filesize: string;
+    url?: string;
+  };
+}
+
+interface Props {
+  tone?: 'light' | 'dark';
+  tagline?: string;
+  heading?: string;
+  subtext?: string;
+  fields?: FieldItem[];
+}
+
+const {
+  tone = 'light',
+  tagline = "System Specifications",
+  heading = "Project Information & Metadata",
+  subtext = "Comprehensive technical manifest for this repository and deployment cluster.",
+  fields = [
+    { label: "Application Name", value: "Antigravity DaisyUI Registry" },
+    { label: "Framework & SSR Engine", value: "Astro 5.0 (Node / Static Multi-Target)" },
+    { label: "Component Catalog", value: "1,524 Components across 68 Categories", isBadge: true, badgeType: "primary" },
+    { label: "CSS & Design System", value: "DaisyUI 5 with 35 Built-In Reactive Themes" },
+    { label: "Runtime JavaScript Budget", value: "Strict Zero-JS (Zero React/Vue runtime packages)", isBadge: true, badgeType: "success" },
+    { label: "Repository License", value: "MIT Open Source Commercial License" },
+    {
+      label: "Architecture Schema",
+      value: "",
+      attachment: {
+        filename: "daisyui-astroruntime-manifest.json",
+        filesize: "4.2 MB",
+        url: "#download"
+      }
+    }
+  ]
+} = Astro.props;
+
+const dark = tone === 'dark';
+---
+
+<section class={dark ? 'bg-neutral text-neutral-content' : 'bg-base-100'}>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+    <!-- Header -->
+    <div class="mb-8">
+      {tagline && (
+        <span class="badge badge-sm badge-primary uppercase font-bold tracking-wider mb-2">
+          {tagline}
+        </span>
+      )}
+      <h2 class="text-3xl font-extrabold tracking-tight">
+        {heading}
+      </h2>
+      {subtext && (
+        <p class={`mt-1 text-sm ${dark ? 'text-neutral-content/70' : 'text-base-content/70'}`}>
+          {subtext}
+        </p>
+      )}
+    </div>
+
+    <!-- Description List Container -->
+    <div class={`border rounded-2xl overflow-hidden shadow-sm ${
+      dark ? 'border-neutral-content/10 bg-neutral-content/5' : 'border-base-300 bg-base-100'
+    }`}>
+      <dl class="divide-y divide-base-300">
+        {fields.map((f, idx) => (
+          <div class={`px-6 py-4 sm:grid sm:grid-cols-3 sm:gap-4 transition-colors ${
+            idx % 2 === 1 ? (dark ? 'bg-neutral-content/5' : 'bg-base-200/40') : ''
+          }`}>
+            <dt class="text-sm font-bold opacity-80 sm:col-span-1">
+              {f.label}
+            </dt>
+            <dd class="mt-1 text-sm sm:col-span-2 sm:mt-0">
+              {f.isBadge ? (
+                <span class={`badge badge-sm font-semibold ${
+                  f.badgeType === 'primary' ? 'badge-primary' :
+                  f.badgeType === 'success' ? 'badge-success' : 'badge-ghost'
+                }`}>
+                  {f.value}
+                </span>
+              ) : f.attachment ? (
+                <div class="flex items-center justify-between border border-base-300 rounded-lg p-2.5 max-w-sm">
+                  <div class="flex items-center gap-2 overflow-hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4 shrink-0 text-primary">
+                      <path fill-rule="evenodd" d="M15.621 4.379a3 3 0 00-4.242 0l-7 7a3 3 0 004.241 4.243h.001l.497-.5a.75.75 0 011.064 1.057l-.498.501-.002.002a4.5 4.5 0 01-6.364-6.364l7-7a4.5 4.5 0 016.368 6.36l-3.455 3.553A2.625 2.625 0 119.5 9.525l3.45-3.451a.75.75 0 111.061 1.06l-3.45 3.451a1.125 1.125 0 001.587 1.595l3.454-3.553a3 3 0 000-4.242z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="truncate text-xs font-mono">{f.attachment.filename}</span>
+                    <span class="text-xs opacity-50 shrink-0">({f.attachment.filesize})</span>
+                  </div>
+                  <a href={f.attachment.url ?? "#download"} class="link link-primary text-xs font-semibold shrink-0 ml-2">
+                    Download
+                  </a>
+                </div>
+              ) : (
+                <span class={dark ? 'text-neutral-content/90' : 'text-base-content/90'}>
+                  {f.value}
+                </span>
+              )}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </div>
+</section>

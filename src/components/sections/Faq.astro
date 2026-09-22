@@ -1,0 +1,161 @@
+---
+/**
+ * Faq — reproduces Relume's `faq-sections` (14).
+ *
+ * Patterns supported:
+ * 1. layout="centered" — centered heading, single column of accordions (max-w-3xl).
+ * 2. layout="split" — heading + subtext + contact CTA left, accordions right.
+ * 3. layout="grid" — 2-column accordion grid.
+ *
+ * Zero-JS: uses daisyUI `collapse collapse-plus` with radio inputs for single-open accordions.
+ * Semantic tokens only.
+ */
+interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+interface Props {
+  layout?: 'centered' | 'split' | 'grid';
+  tone?: 'light' | 'dark';
+  groupName?: string;
+  heading?: string;
+  subtext?: string;
+  contactCard?: boolean;
+  items?: FaqItem[];
+}
+
+const {
+  layout = 'centered',
+  tone = 'light',
+  groupName = 'faq-accordion',
+  heading = "Frequently Asked Questions",
+  subtext = "Find quick answers to common questions about our platform and services.",
+  contactCard = true,
+  items = [
+    {
+      question: "How does the theme switching work?",
+      answer: "All components use pure DaisyUI semantic color variables (like base-100, primary, and neutral). By changing the data-theme attribute on the html tag, the entire library re-skins instantly with zero runtime overhead."
+    },
+    {
+      question: "Are these components built with pure Astro and raw JavaScript?",
+      answer: "Yes! There are no client-side framework dependencies (no React, Vue, or Svelte). Where interactions exist, we favor native HTML5 (details, dialog, radio inputs) or ≤ 10 lines of vanilla JavaScript."
+    },
+    {
+      question: "Can I customize the typography and border radii?",
+      answer: "Absolutely. DaisyUI themes allow setting --rounded-box, --rounded-btn, and typography classes via Tailwind and CSS variables directly."
+    },
+    {
+      question: "Is this component library accessible?",
+      answer: "All primitives adhere to semantic HTML standards, proper focus management, keyboard navigation, and ARIA attributes."
+    },
+    {
+      question: "How do I add my own brand colors?",
+      answer: "You can define a custom DaisyUI theme in your Tailwind configuration or global CSS using oklch color tokens. Every component inherits the new palette automatically."
+    }
+  ],
+} = Astro.props;
+
+const dark = tone === 'dark';
+---
+
+<section class={dark ? 'bg-neutral text-neutral-content' : 'bg-base-100'}>
+  <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+    {layout === 'centered' && (
+      <div class="mx-auto max-w-3xl">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-extrabold tracking-tight sm:text-4xl">{heading}</h2>
+          {subtext && <p class="mt-3 text-sm opacity-70">{subtext}</p>}
+        </div>
+
+        <div class="space-y-4">
+          {items.map((item, idx) => (
+            <div class={`collapse collapse-plus rounded-box border ${
+              dark ? 'border-neutral-content/20 bg-neutral-content/5' : 'border-base-300 bg-base-100'
+            }`}>
+              <input type="radio" name={groupName} checked={idx === 0} />
+              <div class="collapse-title text-base font-semibold">
+                {item.question}
+              </div>
+              <div class="collapse-content text-sm opacity-80 leading-relaxed">
+                <p>{item.answer}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {contactCard && (
+          <div class={`mt-12 rounded-box p-8 text-center border ${
+            dark ? 'border-neutral-content/15 bg-neutral-content/5' : 'border-base-300 bg-base-200/50'
+          }`}>
+            <h3 class="font-bold text-lg">Still have questions?</h3>
+            <p class="mt-1 text-sm opacity-70">Can't find the answer you're looking for? Reach out to our team.</p>
+            <div class="mt-4">
+              <a href="#contact" class="btn btn-primary btn-sm">Contact Support</a>
+            </div>
+          </div>
+        )}
+      </div>
+    )}
+
+    {layout === 'split' && (
+      <div class="grid gap-12 lg:grid-cols-12">
+        <div class="lg:col-span-5 space-y-6">
+          <h2 class="text-3xl font-extrabold tracking-tight sm:text-4xl">{heading}</h2>
+          {subtext && <p class="text-sm opacity-70 leading-relaxed">{subtext}</p>}
+          
+          {contactCard && (
+            <div class={`rounded-box p-6 border ${
+              dark ? 'border-neutral-content/15 bg-neutral-content/5' : 'border-base-300 bg-base-200/50'
+            }`}>
+              <h3 class="font-bold text-base">Need dedicated help?</h3>
+              <p class="mt-1 text-xs opacity-70">Our engineering team is ready to assist with custom integrations.</p>
+              <a href="#contact" class="mt-4 inline-block btn btn-outline btn-sm">Get in Touch</a>
+            </div>
+          )}
+        </div>
+
+        <div class="lg:col-span-7 space-y-4">
+          {items.map((item, idx) => (
+            <div class={`collapse collapse-plus rounded-box border ${
+              dark ? 'border-neutral-content/20 bg-neutral-content/5' : 'border-base-300 bg-base-100'
+            }`}>
+              <input type="radio" name={groupName} checked={idx === 0} />
+              <div class="collapse-title text-base font-semibold">
+                {item.question}
+              </div>
+              <div class="collapse-content text-sm opacity-80 leading-relaxed">
+                <p>{item.answer}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {layout === 'grid' && (
+      <div>
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-extrabold tracking-tight sm:text-4xl">{heading}</h2>
+          {subtext && <p class="mt-3 text-sm opacity-70 max-w-2xl mx-auto">{subtext}</p>}
+        </div>
+
+        <div class="grid gap-4 md:grid-cols-2">
+          {items.map((item, idx) => (
+            <div class={`collapse collapse-plus rounded-box border ${
+              dark ? 'border-neutral-content/20 bg-neutral-content/5' : 'border-base-300 bg-base-100'
+            }`}>
+              <input type="radio" name={`${groupName}-${idx}`} />
+              <div class="collapse-title text-base font-semibold">
+                {item.question}
+              </div>
+              <div class="collapse-content text-sm opacity-80 leading-relaxed">
+                <p>{item.answer}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+</section>

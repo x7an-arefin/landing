@@ -1,0 +1,36 @@
+---
+/**
+ * Modal — daisyUI 5 `modal` on the native <dialog> element (llms.txt → Modal:
+ * "if possible, use the HTML dialog element"). ~8 lines of vanilla JS to
+ * open/close; ESC + backdrop work natively.
+ * Mirrors Relume's contact-modals / sign-up-log-in-modals (11 components).
+ */
+const { title = 'DaisyUI Modal', trigger = 'Open modal' } = Astro.props;
+const uid = `modal-${Math.random().toString(36).slice(2, 8)}`;
+---
+<div>
+  <button type="button" class="btn btn-primary btn-sm" data-modal-open={uid} aria-haspopup="dialog">{trigger}</button>
+
+  <dialog id={uid} class="modal">
+    <div class="modal-box rounded-2xl">
+      <h3 class="font-bold text-lg">{title}</h3>
+      <p class="py-4 text-sm opacity-75"><slot>No JavaScript needed: native <code>&lt;dialog&gt;</code> + daisyUI classes.</slot></p>
+      <div class="modal-action">
+        <form method="dialog" class="join">
+          <button type="submit" class="btn">Close</button>
+          <button type="button" class="btn btn-primary">Confirm</button>
+        </form>
+      </div>
+    </div>
+    <form method="dialog" class="modal-backdrop"><button>close</button></form>
+  </dialog>
+</div>
+
+<script>
+  document.querySelectorAll('[data-modal-open]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const dlg = document.getElementById(btn.dataset.modalOpen);
+      if (dlg) dlg.showModal();
+    });
+  });
+</script>

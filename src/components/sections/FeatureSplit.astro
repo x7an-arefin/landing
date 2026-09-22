@@ -1,0 +1,148 @@
+---
+/**
+ * FeatureSplit — reproduces Relume's `feature-sections-left-1-2-col` (64),
+ * `-left-1-2-col-part-2` (71), `-centre-1-2-col` (62) and `-right-1-2-col` (34).
+ *
+ * Verified from contact sheets + live previews 2026-09-22 (all static — the
+ * interaction flag on layout121/content5/6 is inline links, not state).
+ *
+ * Anatomy (composable, in order): optional tagline → heading → paragraph →
+ * optional stats (big number + caption ×2) → optional subheads (2 or 2×2,
+ * plain or iconed) → optional brand logo row → buttons. The media column is a
+ * light/dark placeholder image or video block, on the right (left/right-1-2-col),
+ * left (right-1-2-col), above/below (centre-1-2-col), or as a faint watermark
+ * behind the right-side text (layouts 49/61 style).
+ *
+ * Zero JS; semantic colors only.
+ */
+interface Subhead { title: string; text?: string; icon?: boolean }
+interface Props {
+  tone?: 'light' | 'dark';
+  align?: 'start' | 'center';
+  /** right|left = side-by-side · above|below = stacked (centre family) · watermark = faint image behind text · false = no media */
+  mediaSide?: 'right' | 'left' | 'above' | 'below' | 'watermark' | false;
+  mediaKind?: 'image' | 'video';
+  tagline?: string;
+  title?: string;
+  text?: string;
+  stats?: { value: string; caption: string }[];
+  subheads?: Subhead[];
+  logos?: string[];
+  buttons?: boolean;
+}
+const {
+  tone = 'light',
+  align = 'start',
+  mediaSide = 'right',
+  mediaKind = 'image',
+  tagline,
+  title = 'Medium length section heading goes here',
+  text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat.',
+  stats = [],
+  subheads = [],
+  logos = [],
+  buttons = true,
+} = Astro.props;
+
+const dark = tone === 'dark';
+const centered = align === 'center';
+const mediaBg = dark ? 'bg-neutral-content/10' : 'bg-base-300';
+const stacked = mediaSide === 'above' || mediaSide === 'below';
+const PHOTO = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-10 opacity-30"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /></svg>';
+const PLAY = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 translate-x-0.5"><path d="M8 5.14v13.72a1 1 0 0 0 1.52.85l11-6.86a1 1 0 0 0 0-1.7l-11-6.86A1 1 0 0 0 8 5.14Z" /></svg>';
+const ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-5"><path stroke-linecap="round" stroke-linejoin="round" d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" /></svg>';
+const LOGO = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-4 opacity-60"><path stroke-linecap="round" stroke-linejoin="round" d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" /></svg>';
+
+const BTN = `<button class="btn btn-outline">Button</button><button class="btn btn-ghost gap-1">Button <span>›</span></button>`;
+---
+<section class={dark ? 'bg-neutral text-neutral-content' : 'bg-base-100'}>
+  <div class="mx-auto max-w-7xl px-4 py-16">
+    {mediaSide === 'above' && (
+      <div class="mb-12">
+        {mediaKind === 'video' ? (
+          <div class={`relative aspect-[16/7] ${mediaBg} flex items-center justify-center`}>
+            <span class="absolute size-12 rounded-lg bg-base-100/80 text-base-content flex items-center justify-center" set:html={PLAY} />
+          </div>
+        ) : (
+          <div class={`aspect-[16/7] ${mediaBg} flex items-center justify-center`}><span set:html={PHOTO} /></div>
+        )}
+      </div>
+    )}
+
+    <div class={`grid items-center gap-12 ${mediaSide === 'right' || mediaSide === 'left' || mediaSide === 'watermark' ? 'lg:grid-cols-2' : ''} ${centered ? 'justify-items-center text-center' : ''}`}>
+      <!-- Text column -->
+      <div class={`relative ${mediaSide === 'left' ? 'order-2' : ''} ${centered ? 'max-w-2xl' : ''}`}>
+        {tagline && <p class={`text-xs font-bold tracking-wide ${centered ? '' : ''}`}>{tagline}</p>}
+        {title && <h2 class={`mt-2 text-3xl md:text-4xl font-extrabold tracking-tight ${centered ? '' : 'max-w-xl'}`}>{title}</h2>}
+        {text && <p class={`mt-4 opacity-70 text-sm ${centered ? 'mx-auto max-w-xl' : 'max-w-lg'}`}>{text}</p>}
+
+        {stats.length > 0 && (
+          <div class={`mt-8 grid gap-6 ${stats.length > 1 ? 'grid-cols-2' : 'grid-cols-1'} ${centered ? 'max-w-md mx-auto' : 'max-w-md'}`}>
+            {stats.map((s) => (
+              <div>
+                <p class="text-3xl font-extrabold">{s.value}</p>
+                <p class="mt-1 text-xs opacity-60">{s.caption}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {subheads.length > 0 && (
+          <div class={`mt-8 grid gap-x-8 gap-y-6 ${subheads.length > 2 ? 'sm:grid-cols-2' : 'grid-cols-2'} ${centered ? 'max-w-md mx-auto text-left' : 'max-w-xl'}`}>
+            {subheads.map((s) => (
+              <div>
+                <p class="flex items-center gap-2 text-sm font-bold">
+                  {s.icon && <span set:html={ICON} />}{s.title}
+                </p>
+                {s.text && <p class="mt-1 text-xs opacity-60">{s.text}</p>}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {logos.length > 0 && (
+          <div class={`mt-8 flex flex-wrap items-center gap-x-8 gap-y-3 ${centered ? 'justify-center' : ''}`}>
+            {logos.map((l) => (
+              <span class="flex items-center gap-2 text-sm font-semibold opacity-70"><span set:html={LOGO} />{l}</span>
+            ))}
+          </div>
+        )}
+
+        {buttons && (
+          <div class={`mt-8 flex items-center gap-2 ${centered ? 'justify-center' : ''}`} set:html={BTN} />
+        )}
+
+        {mediaSide === 'watermark' && (
+          <div class={`pointer-events-none absolute -top-8 right-0 hidden lg:block opacity-20`}>
+            <div class={`size-64 ${dark ? 'bg-base-100' : 'bg-base-300'} flex items-center justify-center`}><span set:html={PHOTO} /></div>
+          </div>
+        )}
+      </div>
+
+      <!-- Media column (side by side) -->
+      {(mediaSide === 'right' || mediaSide === 'left') && (
+        <div class={mediaSide === 'left' ? 'order-1' : ''}>
+          {mediaKind === 'video' ? (
+            <div class={`relative aspect-[4/3] ${mediaBg} flex items-center justify-center`}>
+              <span class="absolute size-12 rounded-lg bg-base-100/80 text-base-content flex items-center justify-center" set:html={PLAY} />
+            </div>
+          ) : (
+            <div class={`aspect-[4/3] ${mediaBg} flex items-center justify-center`}><span set:html={PHOTO} /></div>
+          )}
+        </div>
+      )}
+    </div>
+
+    {mediaSide === 'below' && (
+      <div class={`${centered ? 'mx-auto max-w-3xl' : 'max-w-4xl'} mt-12`}>
+        {mediaKind === 'video' ? (
+          <div class={`relative aspect-[16/7] ${mediaBg} flex items-center justify-center`}>
+            <span class="absolute size-12 rounded-lg bg-base-100/80 text-base-content flex items-center justify-center" set:html={PLAY} />
+          </div>
+        ) : (
+          <div class={`aspect-[16/7] ${mediaBg} flex items-center justify-center`}><span set:html={PHOTO} /></div>
+        )}
+      </div>
+    )}
+  </div>
+</section>

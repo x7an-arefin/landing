@@ -1,0 +1,175 @@
+---
+/**
+ * AppShell — reproduces Relume's `application-shells` (16).
+ *
+ * Patterns supported:
+ * 1. Responsive drawer layout (`drawer lg:drawer-open`) with mobile drawer toggle.
+ * 2. Sticky top navigation bar: search input, notification indicator, user dropdown menu.
+ * 3. Left sidebar navigation: brand logo, category links, active item pill, workspace switcher.
+ * 4. Flexible dashboard content body slot with breadcrumbs and action button.
+ * 5. Tone: light | dark.
+ *
+ * Zero external JS; 100% semantic DaisyUI 5 tokens.
+ */
+interface Props {
+  tone?: 'light' | 'dark';
+  title?: string;
+  subtitle?: string;
+}
+
+const {
+  tone = 'light',
+  title = "Registry Overview",
+  subtitle = "Manage your team's design system components, themes, and deployments."
+} = Astro.props;
+
+const dark = tone === 'dark';
+---
+
+<div class={`min-h-[500px] rounded-2xl overflow-hidden border border-base-300 shadow-sm ${
+  dark ? 'bg-neutral text-neutral-content' : 'bg-base-100 text-base-content'
+}`}>
+  <div class="drawer lg:drawer-open">
+    <input id="app-shell-drawer" type="checkbox" class="drawer-toggle" />
+
+    <!-- Main Content Area -->
+    <div class="drawer-content flex flex-col">
+      <!-- Top Navbar -->
+      <header class="navbar bg-base-100 border-b border-base-300 px-4 sm:px-6 sticky top-0 z-20">
+        <div class="flex-none lg:hidden">
+          <label for="app-shell-drawer" aria-label="open sidebar" class="btn btn-square btn-ghost">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block size-6 stroke-current">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </label>
+        </div>
+
+        <div class="flex-1">
+          <!-- Search input -->
+          <div class="form-control max-w-xs w-full hidden sm:block">
+            <input type="text" placeholder="Search components (Cmd+K)..." class="input input-sm input-bordered w-full" />
+          </div>
+        </div>
+
+        <div class="flex-none flex items-center gap-3">
+          <!-- Notifications -->
+          <button class="btn btn-ghost btn-circle btn-sm relative" aria-label="Notifications">
+            <svg xmlns="http://www.w3.org/2000/svg" class="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+            <span class="badge badge-xs badge-primary absolute top-1.5 right-1.5"></span>
+          </button>
+
+          <!-- User Avatar Menu -->
+          <div class="dropdown dropdown-end">
+            <label tabindex="0" class="btn btn-ghost btn-circle avatar btn-sm">
+              <div class="w-8 rounded-full ring-1 ring-base-300">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&q=80" alt="User" />
+              </div>
+            </label>
+            <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow-lg bg-base-100 rounded-box w-52 border border-base-300">
+              <li><a href="#profile">Profile Settings</a></li>
+              <li><a href="#teams">Team Management</a></li>
+              <li><a href="#billing">Subscription</a></li>
+              <li class="border-t border-base-200"><a href="#logout" class="text-error">Log Out</a></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+
+      <!-- Dashboard Main Body -->
+      <main class="p-6 sm:p-8 flex-1 bg-base-200/30">
+        <!-- Breadcrumb & Action Row -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+          <div>
+            <div class="text-xs breadcrumbs mb-1 opacity-70">
+              <ul>
+                <li><a>Workspace</a></li>
+                <li><a>Components</a></li>
+                <li class="font-semibold">Overview</li>
+              </ul>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-black">{title}</h1>
+            <p class="text-xs sm:text-sm opacity-70 mt-1">{subtitle}</p>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button class="btn btn-sm btn-outline">Export Schema</button>
+            <button class="btn btn-sm btn-primary">+ Create Component</button>
+          </div>
+        </div>
+
+        <!-- Metric Stat Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+          <div class="stat bg-base-100 border border-base-300 rounded-xl">
+            <div class="stat-title text-xs">Total Components</div>
+            <div class="stat-value text-2xl font-black">1,443</div>
+            <div class="stat-desc text-success">↗︎ +82 added this phase</div>
+          </div>
+          <div class="stat bg-base-100 border border-base-300 rounded-xl">
+            <div class="stat-title text-xs">Themes Supported</div>
+            <div class="stat-value text-2xl font-black">35</div>
+            <div class="stat-desc">Instant semantic switching</div>
+          </div>
+          <div class="stat bg-base-100 border border-base-300 rounded-xl">
+            <div class="stat-title text-xs">Completion Ratio</div>
+            <div class="stat-value text-2xl font-black text-primary">94.7%</div>
+            <div class="stat-desc text-info">Phase 8 / 9 active</div>
+          </div>
+        </div>
+
+        <!-- Slot or Mock Content -->
+        <div class="bg-base-100 border border-base-300 rounded-xl p-6 min-h-[160px] flex items-center justify-center text-center">
+          <div>
+            <div class="text-base font-bold">Application Viewport Content</div>
+            <div class="text-xs opacity-60 mt-1">Scrollable main content area inside responsive app frame.</div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Sidebar Navigation Drawer -->
+    <div class="drawer-side z-30">
+      <label for="app-shell-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+      <aside class="bg-base-100 border-r border-base-300 w-64 min-h-full flex flex-col justify-between p-4">
+        <div>
+          <!-- Brand -->
+          <div class="flex items-center gap-2 px-2 py-3 mb-4 border-b border-base-300">
+            <div class="size-8 rounded-lg bg-primary text-primary-content flex items-center justify-center font-black">
+              ▲
+            </div>
+            <div>
+              <div class="font-black text-sm tracking-tight leading-none">Antigravity</div>
+              <div class="text-[10px] opacity-60 uppercase tracking-wider font-bold">DaisyUI Registry</div>
+            </div>
+          </div>
+
+          <!-- Navigation Links -->
+          <ul class="menu menu-sm gap-1">
+            <li><a class="active font-bold">📊 Dashboard</a></li>
+            <li><a>🧩 All Components (1,524)</a></li>
+            <li><a>🎨 Theme Studio (35)</a></li>
+            <li><a>📁 Documentation</a></li>
+            <li class="menu-title text-[10px] uppercase font-bold mt-4">Settings</li>
+            <li><a>👥 Team & Seats</a></li>
+            <li><a>🔑 API Keys & Webhooks</a></li>
+          </ul>
+        </div>
+
+        <!-- Workspace Footer Profile -->
+        <div class="p-2 border-t border-base-300 flex items-center justify-between">
+          <div class="flex items-center gap-2 overflow-hidden">
+            <div class="size-8 rounded-full bg-base-300 flex items-center justify-center font-bold text-xs shrink-0">
+              AC
+            </div>
+            <div class="truncate">
+              <div class="text-xs font-bold truncate">Acme Global</div>
+              <div class="text-[10px] opacity-60 truncate">Pro Enterprise Plan</div>
+            </div>
+          </div>
+          <span class="badge badge-xs badge-success"></span>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>

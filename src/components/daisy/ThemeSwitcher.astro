@@ -1,0 +1,69 @@
+---
+/**
+ * ThemeSwitcher — the whole point of this registry: one control flips the
+ * entire site. daisyUI 5 pre-compiles every theme as CSS custom properties,
+ * so the swap is an instant attribute change (src/lib/themes.js).
+ * Dropdown uses the daisyUI 5 <details> pattern (llms.txt → Dropdown): opens
+ * and closes on click, zero framework JS. No FOUC: Layout.astro restores the
+ * saved theme in <head> before first paint.
+ */
+import { THEMES } from '../../lib/themes.js';
+---
+<!--
+  daisyUI 5 note: do NOT add tabindex to this <summary>. The rule
+  `.dropdown:focus-within > [tabindex]:first-child { pointer-events: none }`
+  then kills the native open/close toggle (verified against compiled CSS).
+-->
+<details class="dropdown" data-theme-menu>
+  <summary class="btn btn-ghost btn-sm gap-2 m-1 cursor-pointer list-none">
+    <svg xmlns="http://www.w3.org/2000/svg" class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.53 16.122a3 3 0 0 0-5.78 1.128 2.25 2.25 0 0 1-2.4 2.245 4.5 4.5 0 0 0 8.4-2.245c0-.399-.078-.78-.22-1.128Zm0 0a15.998 15.998 0 0 0 3.388-1.62m-5.043-.025a15.994 15.994 0 0 1 1.622-3.395m3.42 3.42a15.995 15.995 0 0 0 4.764-4.648l3.876-5.814a1.151 1.151 0 0 0-1.597-1.597L14.146 6.32a15.996 15.996 0 0 0-4.649 4.763m3.42 3.42a6.776 6.776 0 0 0-3.42-3.42" /></svg>
+    <span data-theme-name>theme</span>
+  </summary>
+  <ul class="dropdown-content menu z-50 mt-2 w-52 rounded-box bg-base-100 p-2 shadow-xl max-h-96 overflow-y-auto">
+    {THEMES.map((t) => (
+      <li>
+        <a data-theme-option={t} class="flex items-center gap-2">
+          <span class="size-4 rounded-full border border-base-300" data-theme-dot={t}></span>
+          {t}
+        </a>
+      </li>
+    ))}
+  </ul>
+</details>
+
+<script>
+  import { THEMES, currentTheme, setTheme } from '../../lib/themes.js';
+
+  // Swatch colors: read each compiled theme's --color-primary via a detached
+  // probe element, so the switcher previews the real palette.
+  const dots = {};
+  THEMES.forEach((t) => {
+    const p = document.createElement('div');
+    p.dataset.theme = t;
+    p.style.cssText = 'position:absolute;visibility:hidden;';
+    p.innerHTML = '<span class="bg-primary"></span>';
+    document.body.appendChild(p);
+    dots[t] = getComputedStyle(p.querySelector('span')).backgroundColor;
+    p.remove();
+  });
+
+  const label = document.querySelector('[data-theme-name]');
+  const mark = () => {
+    if (label) label.textContent = currentTheme();
+    document.querySelectorAll('[data-theme-dot]').forEach((d) => {
+      const t = d.dataset.themeDot;
+      d.style.background = dots[t] || 'transparent';
+      d.style.outline = currentTheme() === t ? '2px solid currentColor' : 'none';
+    });
+  };
+  mark();
+
+  document.querySelectorAll('[data-theme-option]').forEach((a) => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      setTheme(a.dataset.themeOption);
+      mark();
+      a.closest('details').open = false;
+    });
+  });
+</script>

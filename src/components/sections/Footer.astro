@@ -1,0 +1,147 @@
+---
+/**
+ * Footer — reproduces Relume's `footers` category (17 components).
+ *
+ * Covered variants (docs/components-map.md → footers):
+ *  - footer1,5,8,9,10 : logo + 2–6 link columns + newsletter + social + contact block
+ *  - footer2,3        : slim 2–3 column, no newsletter
+ *  - footer4          : single row of inline links + subscribe
+ *  - footer6          : newsletter band on top + wide 6-column
+ *  - footer7          : centered (centered=true)
+ *  - footer11,12,13,16: CTA heading + buttons above the columns (cta)
+ *  - footer14,15,17   : big wordmark (wordmark)
+ *
+ * Composition = daisyUI `footer`/`menu`/`input`/`badge` + Tailwind grid.
+ * Zero JS. Semantic colors only → re-skins with the theme.
+ */
+export interface FooterColumn { title: string; links: string[] }
+interface Props {
+  logo?: string;
+  columns?: FooterColumn[];
+  inlineLinks?: string[];
+  newsletter?: { title?: string; text?: string; note?: string } | boolean;
+  social?: boolean;
+  contact?: { address?: string; phone?: string; email?: string } | boolean;
+  cta?: { heading: string; text?: string; buttons?: { label: string; variant?: 'primary' | 'outline' }[] };
+  wordmark?: string;
+  centered?: boolean;
+  copyright?: string;
+  legal?: string[];
+}
+const {
+  logo = 'Logo',
+  columns = [],
+  inlineLinks = [],
+  newsletter = true,
+  social = true,
+  contact = false,
+  cta,
+  wordmark,
+  centered = false,
+  copyright = '© 2025 Relume. All rights reserved.',
+  legal = ['Privacy Policy', 'Terms of Service', 'Cookies Settings'],
+} = Astro.props;
+
+const nl = typeof newsletter === 'object' ? newsletter : {};
+
+// Frontmatter is TS (not TSX): icon paths only; SVGs are inlined in the body.
+const SOCIAL_PATHS: Record<string, string> = {
+  facebook: 'M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z',
+  instagram: 'M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm5 6a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm5.5-.5h.01',
+  linkedin: 'M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2zM4 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4z',
+  x: 'M4 4l7.5 9.5L4.5 20H7l5.5-5.5L17 20h3l-7.8-9.9L19.5 4H17l-5 5-3.5-5H4z',
+  youtube: 'M2.5 17a24 24 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49 49 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24 24 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49 49 0 0 1-16.2 0A2 2 0 0 1 2.5 17zM10 15l5-3-5-3z',
+};
+const SOCIALS = Object.keys(SOCIAL_PATHS);
+---
+<!--
+  daisyUI v5 `footer` is a CSS grid (grid-auto-flow: column) whose DIRECT
+  children are the link columns. Full-width blocks (CTA, wordmark, copyright)
+  live OUTSIDE the grid, in plain block flow, so the footer grid only ever
+  contains columns — its intended use.
+-->
+<footer class="bg-base-200 text-base-content/90 p-10">
+  {cta && (
+    <div class={`w-full mb-8 ${centered ? 'text-center' : ''}`}>
+      <h2 class="text-3xl font-extrabold tracking-tight">{cta.heading}</h2>
+      {cta.text && <p class="opacity-70 max-w-xl mt-2">{cta.text}</p>}
+      {cta.buttons?.length ? (
+        <div class={`flex gap-3 mt-4 ${centered ? 'justify-center' : ''}`}>
+          {cta.buttons.map((b, i) => (
+            <button class={`btn ${i === 0 && cta.buttons!.length > 1 ? 'btn-outline' : 'btn-primary'}`}>{b.label}</button>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  )}
+
+  <div class={`footer gap-x-10 ${centered ? 'footer-center' : 'footer-horizontal'}`}>
+    {/* Brand + newsletter + contact (one grid column) */}
+    <div class="max-w-xs">
+    <p class="text-2xl font-bold text-base-content">{logo}</p>
+    {newsletter && (
+      <div>
+        <p class="font-semibold">{nl.title || 'Join our newsletter'}</p>
+        <p class="text-sm opacity-60 mt-1">{nl.text || 'To stay up to date on our features and releases.'}</p>
+        <form class="join mt-3">
+          <input type="email" placeholder="Enter your email" class="input input-bordered join-item grow" />
+          <button class="btn btn-primary join-item">Subscribe</button>
+        </form>
+        {nl.note && <p class="text-xs opacity-50 mt-2">{nl.note}</p>}
+      </div>
+    )}
+    {contact && (
+      <div class="text-sm opacity-80">
+        {(typeof contact === 'object' ? contact : {}).address && <p>{(contact as any).address}</p>}
+        {(typeof contact === 'object' ? contact : {}).phone && <p>{(contact as any).phone}</p>}
+        {(typeof contact === 'object' ? contact : {}).email && <p>{(contact as any).email}</p>}
+      </div>
+    )}
+  </div>
+
+  {/* Link columns (one grid column each) */}
+  {columns.map((c) => (
+    <nav>
+      <h6 class="footer-title">{c.title}</h6>
+      {c.links.map((l) => <a class="link link-hover">{l}</a>)}
+    </nav>
+  ))}
+
+  {/* Inline links (footer4 / footer7 style) */}
+  {inlineLinks.length > 0 && (
+    <div class="flex flex-wrap gap-x-6 gap-y-2">
+      {inlineLinks.map((l) => <a class="link link-hover">{l}</a>)}
+    </div>
+  )}
+
+  {/* Social (one grid column) */}
+  {social && (
+    <div>
+      <p class="footer-title">Follow us</p>
+      <div class="flex gap-3">
+        {SOCIALS.map((s) => (
+          <a class="opacity-70 hover:opacity-100" aria-label={s}>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-4"><path d={SOCIAL_PATHS[s]} /></svg>
+          </a>
+        ))}
+      </div>
+    </div>
+  )}
+
+  </div>
+
+  {/* Big wordmark (footer15/16/17) — full row */}
+  {wordmark && (
+    <div class={`w-full mt-8 ${centered ? 'text-center' : ''}`}>
+      <p class="text-[10vw] md:text-8xl font-black leading-none tracking-tight">{wordmark}</p>
+    </div>
+  )}
+
+  {/* Copyright row — full row */}
+  <div class="w-full border-t border-base-content/10 mt-8 pt-4 flex flex-col md:flex-row items-center justify-between gap-3 text-sm opacity-70">
+    <p>{copyright}</p>
+    <div class="flex gap-5">
+      {legal.map((l) => <a class="link link-hover">{l}</a>)}
+    </div>
+  </div>
+</footer>

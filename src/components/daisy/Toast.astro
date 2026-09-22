@@ -1,0 +1,25 @@
+---
+/**
+ * Toast — daisyUI 5 `toast` (llms.txt → Toast: wrapper that stacks in a corner).
+ * Auto-dismiss uses ~6 lines of vanilla JS; manual dismiss via data-toast-close.
+ */
+const { placement = 'toast-bottom toast-end', seconds = 4 } = Astro.props;
+---
+<div class={`toast ${placement} z-50 gap-2`}>
+  <div class="alert alert-success shadow-lg" data-toast data-seconds={seconds}>
+    <span>Saved! This toast auto-dismisses.</span>
+    <button class="btn btn-ghost btn-xs" data-toast-close aria-label="dismiss">✕</button>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('[data-toast]').forEach((el) => {
+    const dismiss = () => {
+      el.classList.add('opacity-0', 'scale-95', 'transition', 'duration-300');
+      setTimeout(() => el.remove(), 350);
+    };
+    const btn = el.querySelector('[data-toast-close]');
+    if (btn) btn.addEventListener('click', dismiss);
+    setTimeout(dismiss, Number(el.dataset.seconds || 4) * 1000);
+  });
+</script>

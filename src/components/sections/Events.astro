@@ -1,0 +1,209 @@
+---
+/**
+ * Events — reproduces Relume's `event-sections` (37), `event-headers` (6),
+ * and `event-item-headers` (11) = 54 components.
+ *
+ * Patterns supported:
+ * 1. layout="list" — row-based event agenda with date badges, metadata icons, and RSVP buttons.
+ * 2. layout="cards" — 3-column event card grid with image thumbnail and category pills.
+ * 3. layout="header" — featured summit/webinar hero header with date countdown badge & speakers.
+ * 4. tone="light" | "dark".
+ *
+ * Zero JS; 100% semantic DaisyUI tokens.
+ */
+interface EventItem {
+  title: string;
+  month: string;
+  day: string;
+  time?: string;
+  location?: string;
+  category?: string;
+  description?: string;
+  link?: string;
+}
+
+interface Props {
+  layout?: 'list' | 'cards' | 'header';
+  tone?: 'light' | 'dark';
+  tagline?: string;
+  heading?: string;
+  subtext?: string;
+  items?: EventItem[];
+  featuredEvent?: EventItem;
+}
+
+const {
+  layout = 'list',
+  tone = 'light',
+  tagline = "Upcoming Events",
+  heading = "Conferences, workshops & live technical demos",
+  subtext = "Join our engineering team and community contributors for deep dives and hands-on labs.",
+  items = [
+    {
+      month: "OCT",
+      day: "14",
+      title: "Building Component Registries with Pure Astro & DaisyUI",
+      time: "10:00 AM – 11:30 AM EST",
+      location: "Virtual Stage (Discord Live)",
+      category: "Architecture",
+      description: "Learn how to build 1,500+ design tokens and components with zero framework overhead.",
+      link: "#"
+    },
+    {
+      month: "OCT",
+      day: "28",
+      title: "Advanced CSS Custom Properties & Multi-Theme Architecture",
+      time: "2:00 PM – 3:30 PM EST",
+      location: "San Francisco, CA & Online",
+      category: "Design Systems",
+      description: "Techniques for zero-flash theme persistence, OKLCH color spaces, and high-contrast accessibility.",
+      link: "#"
+    },
+    {
+      month: "NOV",
+      day: "12",
+      title: "State Machines & Zero-JS Patterns for Web Forms",
+      time: "1:00 PM – 2:00 PM EST",
+      location: "Virtual Stage",
+      category: "Engineering",
+      description: "How HTML5 dialog, details, and CSS peer selectors eliminate bloated client JS.",
+      link: "#"
+    }
+  ],
+  featuredEvent = {
+    month: "OCT",
+    day: "14",
+    title: "Global Web Components Summit 2026",
+    time: "Oct 14-16, 2026 • 9:00 AM EST",
+    location: "Moscone Center, SF & Live Streaming",
+    category: "Keynote Conference",
+    description: "Three full days of keynotes, architectural workshops, and live coding sessions exploring the frontier of lightweight web development.",
+    link: "#"
+  }
+} = Astro.props;
+
+const dark = tone === 'dark';
+const TIME_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4 opacity-60"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .265.14.504.364.632l3.5 2a.75.75 0 00.772-1.284L10.75 9.75V5z" clip-rule="evenodd" /></svg>';
+const PIN_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4 opacity-60"><path fill-rule="evenodd" d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 00.281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 103 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 002.273 1.765 11.79 11.79 0 001.04 573l.018.008.004.002zM10 12a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" /></svg>';
+---
+
+<section class={dark ? 'bg-neutral text-neutral-content' : 'bg-base-100'}>
+  <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+    {layout === 'header' && (
+      <div class="grid gap-12 lg:grid-cols-12 items-center">
+        <div class="lg:col-span-7 space-y-6">
+          <div class="flex items-center gap-2">
+            <span class="badge badge-primary badge-sm font-semibold">{featuredEvent.category}</span>
+            <span class="text-xs opacity-70 flex items-center gap-1"><span set:html={TIME_ICON} /> {featuredEvent.time}</span>
+          </div>
+          <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight">{featuredEvent.title}</h1>
+          <p class="text-base opacity-75 leading-relaxed">{featuredEvent.description}</p>
+          
+          <div class="flex items-center gap-2 text-xs opacity-80 pt-1">
+            <span set:html={PIN_ICON} />
+            <span>{featuredEvent.location}</span>
+          </div>
+
+          <div class="pt-4 flex flex-wrap gap-4">
+            <a href={featuredEvent.link || "#"} class="btn btn-primary">Register Free</a>
+            <a href="#agenda" class="btn btn-outline">View Full Agenda</a>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 aspect-4/3 rounded-box overflow-hidden bg-base-300 border border-base-300 flex items-center justify-center relative shadow-md">
+          <div class="flex flex-col items-center text-center p-8">
+            <div class="rounded-box p-4 bg-primary text-primary-content font-bold mb-4 shadow-sm">
+              <div class="text-xs tracking-wider uppercase">{featuredEvent.month}</div>
+              <div class="text-4xl font-extrabold">{featuredEvent.day}</div>
+            </div>
+            <h3 class="font-bold text-lg">{featuredEvent.title}</h3>
+            <p class="text-xs opacity-60 mt-1">{featuredEvent.location}</p>
+          </div>
+        </div>
+      </div>
+    )}
+
+    {layout === 'list' && (
+      <div>
+        <div class="mb-12">
+          {tagline && <span class="badge badge-primary badge-sm font-semibold mb-2">{tagline}</span>}
+          <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">{heading}</h2>
+          {subtext && <p class="mt-2 text-sm opacity-70 max-w-2xl">{subtext}</p>}
+        </div>
+
+        <div class="divide-y divide-base-content/10">
+          {items.map((event) => (
+            <div class="py-8 flex flex-col md:flex-row md:items-center justify-between gap-6 group">
+              <div class="flex items-start gap-6">
+                <div class={`rounded-box size-16 shrink-0 flex flex-col items-center justify-center font-bold border ${
+                  dark ? 'border-neutral-content/20 bg-neutral-content/10' : 'border-base-300 bg-base-200'
+                }`}>
+                  <span class="text-xs text-primary uppercase font-extrabold">{event.month}</span>
+                  <span class="text-xl leading-none">{event.day}</span>
+                </div>
+
+                <div>
+                  <div class="flex items-center gap-2 mb-1">
+                    {event.category && <span class="badge badge-primary badge-xs font-semibold">{event.category}</span>}
+                    {event.time && (
+                      <span class="text-xs opacity-60 flex items-center gap-1">
+                        <span set:html={TIME_ICON} /> {event.time}
+                      </span>
+                    )}
+                  </div>
+                  <h3 class="text-lg font-bold group-hover:text-primary transition-colors">
+                    {event.title}
+                  </h3>
+                  {event.description && <p class="text-xs opacity-70 mt-1 max-w-2xl leading-relaxed">{event.description}</p>}
+                  {event.location && (
+                    <div class="mt-2 flex items-center gap-1.5 text-xs opacity-60">
+                      <span set:html={PIN_ICON} /> {event.location}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div class="shrink-0 self-start md:self-center">
+                <a href={event.link || "#"} class="btn btn-outline btn-sm">RSVP Now</a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {layout === 'cards' && (
+      <div>
+        <div class="text-center mb-12">
+          {tagline && <span class="badge badge-primary badge-sm font-semibold mb-2">{tagline}</span>}
+          <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">{heading}</h2>
+          {subtext && <p class="mt-2 text-sm opacity-70 max-w-2xl mx-auto">{subtext}</p>}
+        </div>
+
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {items.map((event) => (
+            <div class={`card rounded-box border overflow-hidden flex flex-col justify-between ${
+              dark ? 'border-neutral-content/15 bg-neutral-content/5' : 'border-base-300 bg-base-100 shadow-sm'
+            }`}>
+              <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                  <div class="badge badge-primary badge-sm font-semibold">{event.category}</div>
+                  <div class="text-xs font-bold text-primary font-mono">{event.month} {event.day}</div>
+                </div>
+                <h3 class="font-bold text-base line-clamp-2">{event.title}</h3>
+                {event.description && <p class="text-xs opacity-70 mt-2 line-clamp-3 leading-relaxed">{event.description}</p>}
+              </div>
+
+              <div class="px-6 pb-6 pt-3 border-t border-base-content/10 flex items-center justify-between">
+                <span class="text-xs opacity-60 flex items-center gap-1">
+                  <span set:html={PIN_ICON} /> {event.location ? event.location.split(',')[0] : 'Online'}
+                </span>
+                <a href={event.link || "#"} class="btn btn-primary btn-xs">Register</a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+</section>

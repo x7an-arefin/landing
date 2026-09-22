@@ -1,0 +1,72 @@
+---
+/**
+ * FeatureCols — reproduces Relume's `feature-sections-3-col` (61) and
+ * `feature-sections-3-col-2` (61).
+ *
+ * Verified from contact sheets 2026-09-22 (all static). Anatomy:
+ * optional centered heading + optional brand logo row, then 3–4 feature
+ * columns — each: icon (cube glyph) + short heading + small text, optional
+ * bullet sub-items. Columns render as bare text, or as bordered cards
+ * (`cards=true`); light or dark full-bleed tone.
+ *
+ * Zero JS; semantic colors only.
+ */
+interface Col { title: string; text?: string; bullets?: string[] }
+interface Props {
+  tone?: 'light' | 'dark';
+  align?: 'start' | 'center';
+  cards?: boolean;
+  heading?: string;
+  subtext?: string;
+  cols: Col[];
+  logos?: string[];
+}
+const {
+  tone = 'light',
+  align = 'center',
+  cards = false,
+  heading,
+  subtext,
+  cols = [],
+  logos = [],
+} = Astro.props;
+
+const dark = tone === 'dark';
+const ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-5"><path stroke-linecap="round" stroke-linejoin="round" d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" /></svg>';
+const LOGO = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-4 opacity-60"><path stroke-linecap="round" stroke-linejoin="round" d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" /></svg>';
+---
+<section class={dark ? 'bg-neutral text-neutral-content' : 'bg-base-100'}>
+  <div class="mx-auto max-w-7xl px-4 py-16">
+    {heading && (
+      <div class={`mb-10 ${align === 'center' ? 'text-center' : ''}`}>
+        <h2 class={`text-3xl md:text-4xl font-extrabold tracking-tight ${align === 'center' ? 'mx-auto' : ''} max-w-2xl`}>{heading}</h2>
+        {subtext && <p class={`mt-3 text-sm opacity-70 ${align === 'center' ? 'mx-auto' : ''} max-w-xl`}>{subtext}</p>}
+      </div>
+    )}
+
+    <div class={`grid gap-8 ${cols.length >= 4 ? 'sm:grid-cols-2 lg:grid-cols-4' : 'sm:grid-cols-3'}`}>
+      {cols.map((c) => (
+        <div class={cards ? `rounded-box border p-6 ${dark ? 'border-neutral-content/15 bg-neutral-content/5' : 'border-base-300 bg-base-100'}` : ''}>
+          <span set:html={ICON} />
+          <h3 class="mt-3 font-bold">{c.title}</h3>
+          {c.text && <p class="mt-1 text-xs opacity-60">{c.text}</p>}
+          {c.bullets && c.bullets.length > 0 && (
+            <ul class="mt-3 space-y-1 text-xs opacity-60">
+              {c.bullets.map((b) => (
+                <li class="flex gap-2"><span class="opacity-40">•</span>{b}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+      ))}
+    </div>
+
+    {logos.length > 0 && (
+      <div class={`mt-12 flex flex-wrap items-center gap-x-10 gap-y-4 ${align === 'center' ? 'justify-center' : ''}`}>
+        {logos.map((l) => (
+          <span class="flex items-center gap-2 text-sm font-semibold opacity-70"><span set:html={LOGO} />{l}</span>
+        ))}
+      </div>
+    )}
+  </div>
+</section>

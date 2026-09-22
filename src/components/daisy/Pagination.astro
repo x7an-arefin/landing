@@ -1,0 +1,16 @@
+---
+/**
+ * Pagination — daisyUI 5 (llms.txt → Pagination): a `join` of `btn` items.
+ * @param {number} [pages]
+ * @param {number} [current]
+ */
+const { pages = 5, current = 1 } = Astro.props;
+const nums = Array.from({ length: pages }, (_, i) => i + 1);
+---
+<div class="join">
+  <a class="join-item btn btn-sm" href={`#page-${Math.max(1, current - 1)}`} aria-disabled={current === 1 ? 'true' : undefined}>‹</a>
+  {nums.map((n) => (
+    <a class={`join-item btn btn-sm ${n === current ? 'btn-primary' : ''}`} href={`#page-${n}`} aria-current={n === current ? 'page' : undefined}>{n}</a>
+  ))}
+  <a class="join-item btn btn-sm" href={`#page-${Math.min(pages, current + 1)}`} aria-disabled={current === pages ? 'true' : undefined}>›</a>
+</div>

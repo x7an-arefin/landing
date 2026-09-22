@@ -1,0 +1,15 @@
+---
+/**
+ * Dropdown — daisyUI 5 via <details>/<summary> (llms.txt → Dropdown: opens and
+ * closes only when clicked). Zero JS.
+ * @param {string} [label]  trigger button text
+ * @param {string[]} [items] menu links
+ */
+const { label = 'Open dropdown', items = [] } = Astro.props;
+---
+<details class="dropdown">
+  <summary class="btn btn-outline btn-sm m-1 cursor-pointer list-none">{label}</summary>
+  <ul class="dropdown-content menu p-2 shadow-xl bg-base-100 rounded-box w-52 z-50">
+    {items.map((it) => <li><a>{it}</a></li>)}
+  </ul>
+</details>

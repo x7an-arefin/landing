@@ -1,0 +1,161 @@
+---
+/**
+ * Careers — reproduces Relume's `career-sections` (27).
+ *
+ * Patterns supported:
+ * 1. layout="grouped" — openings categorized by department with position cards.
+ * 2. layout="cards" — grid of role listings with location & type tags.
+ * 3. layout="split" — culture statement & perks left, open positions list right.
+ * 4. tone="light" | "dark".
+ *
+ * Zero JS; pure semantic DaisyUI tokens.
+ */
+interface JobOpening {
+  title: string;
+  department: string;
+  type: string;
+  location: string;
+  link?: string;
+}
+
+interface DepartmentGroup {
+  name: string;
+  roles: JobOpening[];
+}
+
+interface Props {
+  layout?: 'grouped' | 'cards' | 'split';
+  tone?: 'light' | 'dark';
+  tagline?: string;
+  heading?: string;
+  subtext?: string;
+  departments?: DepartmentGroup[];
+}
+
+const {
+  layout = 'grouped',
+  tone = 'light',
+  tagline = "Careers at Astro-Registry",
+  heading = "Do the best architectural work of your life",
+  subtext = "We are an engineering-driven team obsessed with web standards, component ergonomics, and developer velocity.",
+  departments = [
+    {
+      name: "Engineering",
+      roles: [
+        { title: "Senior Systems Engineer (Astro & Node)", department: "Engineering", type: "Full-time", location: "Remote (Global)" },
+        { title: "Design Systems Developer", department: "Engineering", type: "Full-time", location: "San Francisco, CA or Remote" },
+        { title: "Performance & A11y Specialist", department: "Engineering", type: "Full-time", location: "Remote (US/EU)" }
+      ]
+    },
+    {
+      name: "Product & Design",
+      roles: [
+        { title: "Principal Product Designer", department: "Design", type: "Full-time", location: "Remote (Global)" },
+        { title: "Technical Writer & DX Evangelist", department: "Product", type: "Full-time", location: "Remote" }
+      ]
+    }
+  ]
+} = Astro.props;
+
+const dark = tone === 'dark';
+const ARROW = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4 inline-block transition-transform group-hover:translate-x-1"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd" /></svg>';
+---
+
+<section class={dark ? 'bg-neutral text-neutral-content' : 'bg-base-100'}>
+  <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+    <div class="mb-14">
+      {tagline && <span class="badge badge-primary badge-sm font-semibold mb-2">{tagline}</span>}
+      <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">{heading}</h2>
+      {subtext && <p class="mt-2 text-sm opacity-70 max-w-2xl">{subtext}</p>}
+    </div>
+
+    {layout === 'grouped' && (
+      <div class="space-y-12">
+        {departments.map((dept) => (
+          <div>
+            <h3 class="text-xl font-bold border-b border-base-content/10 pb-3 mb-6">
+              {dept.name}
+            </h3>
+            <div class="grid gap-4">
+              {dept.roles.map((job) => (
+                <div class={`flex flex-col sm:flex-row sm:items-center justify-between p-6 rounded-box border transition-all hover:border-primary group ${
+                  dark ? 'border-neutral-content/15 bg-neutral-content/5' : 'border-base-300 bg-base-100 shadow-sm'
+                }`}>
+                  <div>
+                    <h4 class="text-base font-bold group-hover:text-primary transition-colors">{job.title}</h4>
+                    <div class="mt-2 flex flex-wrap gap-2 text-xs">
+                      <span class="badge badge-ghost badge-sm">{job.department}</span>
+                      <span class="badge badge-ghost badge-sm">{job.type}</span>
+                      <span class="opacity-60 flex items-center">{job.location}</span>
+                    </div>
+                  </div>
+                  <div class="mt-4 sm:mt-0">
+                    <a href={job.link || "#"} class="btn btn-outline btn-sm group-hover:btn-primary">
+                      Apply Role <span set:html={ARROW} />
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
+
+    {layout === 'cards' && (
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {departments.flatMap(d => d.roles).map((job) => (
+          <div class={`rounded-box p-6 border flex flex-col justify-between group hover:border-primary transition-all ${
+            dark ? 'border-neutral-content/15 bg-neutral-content/5' : 'border-base-300 bg-base-100 shadow-sm'
+          }`}>
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="badge badge-primary badge-xs font-semibold">{job.department}</span>
+                <span class="text-xs opacity-60">{job.type}</span>
+              </div>
+              <h3 class="font-bold text-base group-hover:text-primary transition-colors">{job.title}</h3>
+              <p class="text-xs opacity-60 mt-2">{job.location}</p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-base-content/10">
+              <a href={job.link || "#"} class="text-xs font-bold text-primary inline-flex items-center gap-1">
+                View Specification <span set:html={ARROW} />
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
+
+    {layout === 'split' && (
+      <div class="grid gap-12 lg:grid-cols-12">
+        <div class="lg:col-span-5 space-y-6">
+          <div class={`rounded-box p-8 border ${
+            dark ? 'border-neutral-content/15 bg-neutral-content/5' : 'border-base-300 bg-base-200/50'
+          }`}>
+            <h3 class="font-bold text-xl mb-3">Why build with us?</h3>
+            <ul class="space-y-3 text-xs opacity-80 leading-relaxed">
+              <li class="flex gap-2"><span class="text-primary font-bold">✓</span> 100% remote, asynchronous-first culture</li>
+              <li class="flex gap-2"><span class="text-primary font-bold">✓</span> Competitive equity and transparent salaries</li>
+              <li class="flex gap-2"><span class="text-primary font-bold">✓</span> \$3,000 yearly continuous learning & conference budget</li>
+              <li class="flex gap-2"><span class="text-primary font-bold">✓</span> Flexible time off and wellness allowances</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7 space-y-4">
+          {departments.flatMap(d => d.roles).map((job) => (
+            <div class={`p-5 rounded-box border flex items-center justify-between group hover:border-primary transition-all ${
+              dark ? 'border-neutral-content/15 bg-neutral-content/5' : 'border-base-300 bg-base-100'
+            }`}>
+              <div>
+                <h4 class="font-bold text-sm group-hover:text-primary transition-colors">{job.title}</h4>
+                <div class="text-xs opacity-60 mt-1">{job.location} • {job.type}</div>
+              </div>
+              <a href={job.link || "#"} class="btn btn-primary btn-xs">Apply</a>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+</section>

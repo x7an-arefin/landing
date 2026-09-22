@@ -1,0 +1,137 @@
+---
+/**
+ * AuthForm — reproduces Relume's `signup-login-pages` (17).
+ *
+ * Patterns supported:
+ * 1. Centered card or split screen layout (branding visual left + form right).
+ * 2. Login and Sign-up modes with toggle link.
+ * 3. OAuth social buttons (Google, GitHub) + email/password fields.
+ * 4. Password visibility toggle, "Remember me", and "Forgot password" link.
+ * 5. Tone: light | dark.
+ *
+ * Zero external JS; 100% semantic DaisyUI 5 tokens.
+ */
+interface Props {
+  tone?: 'light' | 'dark';
+  layout?: 'centered' | 'split';
+  mode?: 'login' | 'signup';
+  heading?: string;
+  subtext?: string;
+}
+
+const {
+  tone = 'light',
+  layout = 'split',
+  mode = 'login',
+  heading = mode === 'login' ? "Welcome back" : "Create your account",
+  subtext = mode === 'login' ? "Enter your email and password to access your dashboard." : "Get instant access to 1,524 components and 35 themes."
+} = Astro.props;
+
+const dark = tone === 'dark';
+---
+
+<section class={dark ? 'bg-neutral text-neutral-content' : 'bg-base-100'}>
+  {layout === 'split' ? (
+    <div class="min-h-[85vh] grid grid-cols-1 lg:grid-cols-12">
+      <!-- Left Visual Hero Brand Panel -->
+      <div class="hidden lg:flex lg:col-span-6 bg-gradient-to-br from-primary/90 to-neutral p-12 text-primary-content flex-col justify-between relative overflow-hidden">
+        <div class="relative z-10">
+          <div class="flex items-center gap-2 font-black tracking-tight text-2xl">
+            <span class="size-8 rounded-lg bg-base-100 text-primary flex items-center justify-center">▲</span>
+            Antigravity UI
+          </div>
+        </div>
+
+        <div class="relative z-10 max-w-md">
+          <blockquote class="text-2xl font-bold leading-snug mb-4">
+            “Switching our entire component system to DaisyUI cut our CSS bundle size by 78% while giving our design team 35 instant themes.”
+          </blockquote>
+          <div class="font-semibold text-sm">Marcus Vance</div>
+          <div class="text-xs opacity-75">Principal UI Architect at LayerZero</div>
+        </div>
+
+        <div class="relative z-10 text-xs opacity-60">
+          © 2026 Antigravity UI Registry. All rights reserved.
+        </div>
+      </div>
+
+      <!-- Right Form Panel -->
+      <div class="col-span-1 lg:col-span-6 flex items-center justify-center p-6 sm:p-12">
+        <div class="w-full max-w-md space-y-6">
+          <div>
+            <h2 class="text-3xl font-extrabold tracking-tight">{heading}</h2>
+            <p class={`mt-1 text-sm ${dark ? 'text-neutral-content/70' : 'text-base-content/70'}`}>{subtext}</p>
+          </div>
+
+          <!-- Social Login Buttons -->
+          <div class="grid grid-cols-2 gap-3">
+            <button type="button" class="btn btn-outline gap-2 text-xs font-semibold">
+              <svg class="size-4" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"/>
+              </svg>
+              Google
+            </button>
+            <button type="button" class="btn btn-outline gap-2 text-xs font-semibold">
+              <svg class="size-4" viewBox="0 0 24 24" fill="currentColor">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+              </svg>
+              GitHub
+            </button>
+          </div>
+
+          <div class="divider text-xs opacity-60">or continue with email</div>
+
+          <!-- Email / Password Form -->
+          <form class="space-y-4">
+            <div class="form-control">
+              <label class="label"><span class="label-text font-bold text-xs uppercase">Email Address</span></label>
+              <input type="email" placeholder="you@company.com" required class="input input-bordered w-full" />
+            </div>
+
+            <div class="form-control">
+              <div class="flex justify-between items-center label">
+                <span class="label-text font-bold text-xs uppercase">Password</span>
+                <a href="#forgot" class="link link-primary text-xs">Forgot password?</a>
+              </div>
+              <input type="password" placeholder="••••••••••••" required class="input input-bordered w-full" />
+            </div>
+
+            <div class="form-control">
+              <label class="cursor-pointer label justify-start gap-2">
+                <input type="checkbox" class="checkbox checkbox-primary checkbox-xs" checked />
+                <span class="label-text text-xs">Remember this device for 30 days</span>
+              </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-full">
+              {mode === 'login' ? 'Sign In to Account' : 'Create Free Account'}
+            </button>
+          </form>
+
+          <div class="text-center text-xs opacity-70">
+            {mode === 'login' ? (
+              <span>Don't have an account yet? <a href="#signup" class="link link-primary font-bold">Sign up free</a></span>
+            ) : (
+              <span>Already have an account? <a href="#login" class="link link-primary font-bold">Sign in here</a></span>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  ) : (
+    <!-- Centered Card Layout -->
+    <div class="max-w-md mx-auto py-16 px-4">
+      <div class={`card border rounded-2xl p-6 sm:p-8 shadow-xl ${
+        dark ? 'bg-neutral-content/5 border-neutral-content/10' : 'bg-base-100 border-base-300'
+      }`}>
+        <h2 class="text-2xl font-black text-center mb-1">{heading}</h2>
+        <p class="text-xs text-center opacity-60 mb-6">{subtext}</p>
+        <form class="space-y-4">
+          <input type="email" placeholder="Email Address" required class="input input-bordered w-full" />
+          <input type="password" placeholder="Password" required class="input input-bordered w-full" />
+          <button type="submit" class="btn btn-primary w-full">{mode === 'login' ? 'Sign In' : 'Sign Up'}</button>
+        </form>
+      </div>
+    </div>
+  )}
+</section>

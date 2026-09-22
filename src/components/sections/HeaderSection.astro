@@ -1,0 +1,97 @@
+---
+/**
+ * HeaderSection — reproduces Relume's `header-sections` (27).
+ *
+ * Patterns supported:
+ * 1. Big editorial headline with category eyebrow badge.
+ * 2. Subtext summary and primary/secondary CTA buttons.
+ * 3. Search input bar variant for resource/doc hubs.
+ * 4. Breadcrumbs path header.
+ * 5. Tone: light | dark.
+ *
+ * Zero external JS; 100% semantic DaisyUI 5 tokens.
+ */
+interface Props {
+  tone?: 'light' | 'dark';
+  align?: 'left' | 'center';
+  tagline?: string;
+  heading?: string;
+  subtext?: string;
+  showSearch?: boolean;
+  showBreadcrumbs?: boolean;
+}
+
+const {
+  tone = 'light',
+  align = 'center',
+  tagline = "Component Documentation",
+  heading = "Everything you need to build next-generation Astro applications",
+  subtext = "Browse all 1,524 fully responsive, accessible DaisyUI 5 components. Copy pure HTML/Astro source directly with zero client JS runtime dependencies.",
+  showSearch = true,
+  showBreadcrumbs = true
+} = Astro.props;
+
+const dark = tone === 'dark';
+---
+
+<section class={`relative py-16 sm:py-24 border-b border-base-300 ${
+  dark ? 'bg-neutral text-neutral-content' : 'bg-base-100 text-base-content'
+}`}>
+  <div class={`max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 ${align === 'center' ? 'text-center' : 'text-left'}`}>
+    <!-- Breadcrumbs -->
+    {showBreadcrumbs && (
+      <div class={`text-xs breadcrumbs mb-4 opacity-70 ${align === 'center' ? 'flex justify-center' : ''}`}>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/sections">Components</a></li>
+          <li class="font-bold">Header Sections</li>
+        </ul>
+      </div>
+    )}
+
+    <!-- Category Eyebrow -->
+    {tagline && (
+      <span class="badge badge-sm badge-primary uppercase font-bold tracking-wider mb-4">
+        {tagline}
+      </span>
+    )}
+
+    <!-- Headline -->
+    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1]">
+      {heading}
+    </h1>
+
+    <!-- Subtext -->
+    {subtext && (
+      <p class={`mt-4 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed ${
+        dark ? 'text-neutral-content/75' : 'text-base-content/75'
+      }`}>
+        {subtext}
+      </p>
+    )}
+
+    <!-- Search Input Variant -->
+    {showSearch && (
+      <div class="mt-8 max-w-md mx-auto">
+        <div class="join w-full shadow-sm">
+          <input
+            type="text"
+            placeholder="Search across 1,524 components..."
+            class="input input-bordered join-item w-full"
+          />
+          <button class="btn btn-primary join-item">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
+              <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    )}
+
+    <!-- Action Buttons -->
+    <div class={`mt-8 flex flex-wrap gap-4 ${align === 'center' ? 'justify-center' : 'justify-start'}`}>
+      <a href="#browse" class="btn btn-primary">Browse All Sections</a>
+      <a href="#quickstart" class="btn btn-outline">Read Quickstart Guide</a>
+    </div>
+  </div>
+</section>

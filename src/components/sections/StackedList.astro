@@ -1,0 +1,186 @@
+---
+/**
+ * StackedList — reproduces Relume's `stacked-lists` (10).
+ *
+ * Patterns supported:
+ * 1. Stacked item rows separated by dividers (`divide-y divide-base-300`) or card variant.
+ * 2. Avatar with status indicator ring/dot.
+ * 3. Primary title, meta description, and right-aligned timestamp/badge.
+ * 4. Trailing action buttons (View, Manage, Dropdown).
+ * 5. Tone: light | dark.
+ *
+ * Zero external JS; 100% semantic DaisyUI 5 tokens.
+ */
+interface ListItem {
+  id: string | number;
+  title: string;
+  subtitle: string;
+  meta?: string;
+  time?: string;
+  statusBadge?: string;
+  statusColor?: 'success' | 'warning' | 'primary' | 'ghost';
+  avatar?: string;
+  icon?: string;
+}
+
+interface Props {
+  tone?: 'light' | 'dark';
+  variant?: 'divided' | 'cards';
+  tagline?: string;
+  heading?: string;
+  subtext?: string;
+  items?: ListItem[];
+}
+
+const {
+  tone = 'light',
+  variant = 'divided',
+  tagline = "Activity & Logs",
+  heading = "Recent Workspace Deployments",
+  subtext = "Continuous delivery pipelines and deployment logs across active branches.",
+  items = [
+    {
+      id: 1,
+      title: "production / main",
+      subtitle: "Deployed release v2.4.0 with optimized Astro 5 SSR bundle.",
+      meta: "Commit: 9b2d8f1 by @yotech66",
+      time: "10 mins ago",
+      statusBadge: "Successful",
+      statusColor: "success",
+      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80"
+    },
+    {
+      id: 2,
+      title: "preview / feature-pricing-phase6",
+      subtitle: "Automated test suite passed 120/120 checks in 42s.",
+      meta: "Commit: 4c892a0 by @dan-bot",
+      time: "48 mins ago",
+      statusBadge: "Active Preview",
+      statusColor: "primary",
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80"
+    },
+    {
+      id: 3,
+      title: "staging / migrate-daisyui5",
+      subtitle: "Theme switching regression check in progress on Chromium.",
+      meta: "Commit: 104b7ea by @sarah-ui",
+      time: "2 hours ago",
+      statusBadge: "Building",
+      statusColor: "warning",
+      avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=120&q=80"
+    },
+    {
+      id: 4,
+      title: "canary / telemetry-collector",
+      subtitle: "Worker instance auto-scaled to 12 replicas due to traffic spike.",
+      meta: "Trigger: CloudWatch alarm threshold",
+      time: "Yesterday",
+      statusBadge: "Stable",
+      statusColor: "ghost",
+      avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80"
+    }
+  ]
+} = Astro.props;
+
+const dark = tone === 'dark';
+---
+
+<section class={dark ? 'bg-neutral text-neutral-content' : 'bg-base-100'}>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+    <!-- Header -->
+    <div class="mb-8">
+      {tagline && (
+        <span class="badge badge-sm badge-primary uppercase font-bold tracking-wider mb-2">
+          {tagline}
+        </span>
+      )}
+      <h2 class="text-3xl font-extrabold tracking-tight">
+        {heading}
+      </h2>
+      {subtext && (
+        <p class={`mt-1 text-sm ${dark ? 'text-neutral-content/70' : 'text-base-content/70'}`}>
+          {subtext}
+        </p>
+      )}
+    </div>
+
+    <!-- Stacked Items Container -->
+    {variant === 'divided' ? (
+      <div class={`border rounded-2xl overflow-hidden shadow-sm ${
+        dark ? 'border-neutral-content/10 bg-neutral-content/5' : 'border-base-300 bg-base-100'
+      }`}>
+        <ul class="divide-y divide-base-300">
+          {items.map((item) => (
+            <li class="p-5 sm:p-6 hover:bg-base-200/40 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div class="flex items-start gap-4">
+                {item.avatar && (
+                  <div class="avatar shrink-0 mt-0.5">
+                    <div class="size-10 rounded-full ring-2 ring-base-300">
+                      <img src={item.avatar} alt={item.title} />
+                    </div>
+                  </div>
+                )}
+                <div>
+                  <div class="flex items-center gap-2.5 flex-wrap">
+                    <span class="font-bold text-base">{item.title}</span>
+                    {item.statusBadge && (
+                      <span class={`badge badge-xs font-semibold ${
+                        item.statusColor === 'success' ? 'badge-success' :
+                        item.statusColor === 'warning' ? 'badge-warning' :
+                        item.statusColor === 'primary' ? 'badge-primary' : 'badge-ghost'
+                      }`}>
+                        {item.statusBadge}
+                      </span>
+                    )}
+                  </div>
+                  <p class={`text-sm mt-0.5 ${dark ? 'text-neutral-content/70' : 'text-base-content/70'}`}>
+                    {item.subtitle}
+                  </p>
+                  {item.meta && (
+                    <span class="text-xs font-mono opacity-50 block mt-1">
+                      {item.meta}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <!-- Right Actions -->
+              <div class="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center shrink-0 gap-2 border-t sm:border-t-0 pt-2 sm:pt-0 border-base-300">
+                {item.time && (
+                  <span class="text-xs opacity-60 font-medium">
+                    {item.time}
+                  </span>
+                )}
+                <a href="#view" class="btn btn-xs btn-outline">
+                  View Log
+                </a>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ) : (
+      <!-- Card Variant -->
+      <div class="space-y-3">
+        {items.map((item) => (
+          <div class={`card border rounded-xl p-5 hover:shadow-md transition-all ${
+            dark ? 'bg-neutral-content/5 border-neutral-content/10' : 'bg-base-100 border-base-300'
+          }`}>
+            <div class="flex items-center justify-between gap-4">
+              <div class="flex items-center gap-3">
+                {item.avatar && (
+                  <img src={item.avatar} alt={item.title} class="size-9 rounded-full object-cover" />
+                )}
+                <div>
+                  <div class="font-bold text-sm">{item.title}</div>
+                  <div class="text-xs opacity-60">{item.subtitle}</div>
+                </div>
+              </div>
+              <button class="btn btn-xs btn-ghost">Manage</button>
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+</section>

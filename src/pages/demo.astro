@@ -1,0 +1,221 @@
+---
+/**
+ * Demo — live showcase of every building block implemented so far.
+ * Purpose: (1) prove the theme-switch requirement (flip the theme in the navbar,
+ * everything re-skins), (2) show the exact daisyUI 5 patterns each Relume
+ * category will be built from.
+ */
+import Layout from '../layouts/Layout.astro';
+import Button from '../components/daisy/Button.astro';
+import Badge from '../components/daisy/Badge.astro';
+import Field from '../components/daisy/Field.astro';
+import Alert from '../components/daisy/Alert.astro';
+import Tooltip from '../components/daisy/Tooltip.astro';
+import Card from '../components/daisy/Card.astro';
+import Tabs from '../components/daisy/Tabs.astro';
+import Accordion from '../components/daisy/Accordion.astro';
+import Modal from '../components/daisy/Modal.astro';
+import Drawer from '../components/daisy/Drawer.astro';
+import Dropdown from '../components/daisy/Dropdown.astro';
+import Pagination from '../components/daisy/Pagination.astro';
+import Stats from '../components/daisy/Stats.astro';
+import Steps from '../components/daisy/Steps.astro';
+import Timeline from '../components/daisy/Timeline.astro';
+import Table from '../components/daisy/Table.astro';
+import Toast from '../components/daisy/Toast.astro';
+import Rating from '../components/daisy/Rating.astro';
+import Section from '../components/ui/Section.astro';
+---
+<Layout title="Demo — Astro + DaisyUI Registry">
+  <Toast />
+  <section class="max-w-5xl mx-auto px-4 py-10">
+    <div class="mb-10">
+      <h1 class="text-4xl font-extrabold tracking-tight">Component demo</h1>
+      <p class="opacity-75 mt-2 max-w-2xl">
+        Building blocks for the catalog, 100% daisyUI 5 classes + raw JavaScript.
+        Use the <strong>theme switcher in the navbar</strong> — every component on this
+        page re-skins instantly, no reload, no JS re-render.
+      </p>
+    </div>
+
+    <Section title="Button" relume="all CTA/nav categories">
+      <div class="flex flex-wrap gap-3">
+        <Button>Default</Button>
+        <Button variant="secondary">Secondary</Button>
+        <Button variant="accent">Accent</Button>
+        <Button variant="neutral">Neutral</Button>
+        <Button style="outline">Outline</Button>
+        <Button style="soft" variant="success">Soft</Button>
+        <Button style="ghost">Ghost</Button>
+        <Button style="link">Link</Button>
+        <Button variant="error" disabled>Disabled</Button>
+        <Button size="xs">XS</Button><Button size="sm">SM</Button><Button size="lg">LG</Button>
+        <Button circle>⚙</Button>
+        <Button href="/components">As link</Button>
+      </div>
+    </Section>
+
+    <Section title="Badge" relume="category-filters, comparison-sections">
+      <div class="flex flex-wrap gap-2 items-center">
+        <Badge variant="primary">Primary</Badge>
+        <Badge variant="secondary">Secondary</Badge>
+        <Badge variant="accent">Accent</Badge>
+        <Badge variant="info">Info</Badge>
+        <Badge variant="success">Success</Badge>
+        <Badge variant="warning">Warning</Badge>
+        <Badge variant="error">Error</Badge>
+        <Badge style="outline" variant="primary">Outline</Badge>
+        <Badge style="soft" variant="success">Soft</Badge>
+        <Badge size="xs">XS</Badge><Badge size="sm">SM</Badge><Badge size="lg">LG</Badge>
+        <span class="btn btn-sm"><Badge size="xs" variant="secondary">9</Badge> In button</span>
+      </div>
+    </Section>
+
+    <Section title="Input / Label" relume="forms, contact-sections, onboarding-forms">
+      <div class="grid sm:grid-cols-2 gap-4 max-w-3xl">
+        <Field label="First name" placeholder="Ada" />
+        <Field label="Email" type="email" placeholder="ada@example.com" />
+        <Field label="Role" kind="select" options={[{ value: 'eng', label: 'Engineer' }, { value: 'design', label: 'Designer' }, { value: 'pm', label: 'PM' }]} />
+        <Field label="Notes" kind="textarea" placeholder="Tell us more…" />
+      </div>
+      <div class="flex flex-wrap gap-4 mt-4 items-center">
+        <label class="flex items-center gap-2 text-sm"><input type="checkbox" class="checkbox" /> Checkbox</label>
+        <label class="flex items-center gap-2 text-sm"><input type="checkbox" class="checkbox checkbox-success" checked /> Success</label>
+        <label class="flex items-center gap-2 text-sm"><input type="radio" name="demo-radio" class="radio" /> Radio</label>
+        <label class="flex items-center gap-2 text-sm"><input type="checkbox" class="toggle" /> Toggle</label>
+        <label class="flex items-center gap-2 text-sm"><input type="checkbox" class="toggle toggle-success" checked /> On</label>
+        <input type="range" min="0" max="100" value="40" class="range" />
+      </div>
+    </Section>
+
+    <Section title="Alert" relume="cookies, onboarding-forms">
+      <div class="grid gap-3 max-w-3xl">
+        <Alert variant="info">Info: the cookie bar pattern for Relume's <code>cookies</code> category.</Alert>
+        <Alert variant="success" style="soft">Soft success with <slot>Action</slot>.</Alert>
+        <Alert variant="warning" style="outline">Outlined warning.</Alert>
+        <Alert variant="error">Error: form validation messages.</Alert>
+      </div>
+    </Section>
+
+    <Section title="Tooltip" relume="navbars (icon buttons), topbars">
+      <div class="flex gap-3">
+        <Tooltip content="Tooltips are pure CSS in daisyUI 5 (data-tip attribute)."><Button style="ghost" circle>?</Button></Tooltip>
+        <Tooltip content="Placement: left" placement="tooltip-left"><Button style="ghost" circle>←</Button></Tooltip>
+        <Tooltip content="Placement: right" placement="tooltip-right"><Button style="ghost" circle>→</Button></Tooltip>
+        <Tooltip content="Placement: bottom" placement="tooltip-bottom"><Button style="ghost" circle>↓</Button></Tooltip>
+      </div>
+    </Section>
+
+    <Section title="Tabs" relume="feature-sections-tabs, blog-headers (filter chips)">
+      <Tabs
+        style="box"
+        tabs={[
+          { label: 'Feature', content: 'Tab content 1 — radio-input driven, zero framework.' },
+          { label: 'Pricing', content: 'Tab content 2 — this is what Relume feature-sections-tabs (24 components) become.' },
+          { label: 'FAQ', content: 'Tab content 3 — ~10 lines of vanilla JS toggle the panels.' },
+        ]}
+      />
+    </Section>
+
+    <Section title="Accordion" relume="faq-sections (14 components)">
+      <Accordion
+        group="demo-faq"
+        items={[
+          { title: 'How does theming work?', content: 'daisyUI compiles every theme as CSS custom properties. Setting data-theme on <html> re-skins the whole page instantly.' },
+          { title: 'Any JavaScript?', content: 'Only where interaction needs state (tab panels, modal open/close, this registry\'s filters). Most components are pure CSS.' },
+          { title: 'How are Relume components reproduced?', content: 'Screenshot analysis → predict behavior → verify on the live Relume preview → implement with daisyUI classes. See /planning.' },
+        ]}
+      />
+    </Section>
+
+    <Section title="Modal" relume="contact-modals (6), sign-up-log-in-modals (5)">
+      <Modal title="Contact us" trigger="Open contact modal">
+        A form goes here — native <code>&lt;dialog&gt;</code>, ESC and backdrop close work without extra code.
+      </Modal>
+      <span class="mx-2 opacity-40">|</span>
+      <Dropdown label="Actions" items={['View', 'Edit', 'Duplicate', 'Delete']} />
+    </Section>
+
+    <Section title="Drawer / Sidebar" relume="application-shells (16), sidebars (9)">
+      <Drawer />
+    </Section>
+
+    <Section title="Stats" relume="stats-sections (60), stat-cards (8)">
+      <Stats
+        items={[
+          { title: 'Components', value: '1,524', desc: 'in the catalog' },
+          { title: 'Categories', value: '68', desc: 'unique patterns' },
+          { title: 'Themes', value: '35', desc: 'one attribute apart' },
+          { title: 'Dependencies', value: '1', desc: 'Astro (styling: daisyUI)' },
+        ]}
+      />
+    </Section>
+
+    <Section title="Steps" relume="multi-step-forms (46), onboarding-forms (15)">
+      <Steps labels={['Account', 'Profile', 'Workspace', 'Done']} active={2} />
+      <div class="mt-6"><Steps labels={['Mobile', 'Desktop', 'Ship']} active={3} /></div>
+    </Section>
+
+    <Section title="Timeline" relume="timelines (21), event-sections (37)">
+      <div class="max-w-2xl">
+        <Timeline
+          events={[
+            { date: 'Sep 2026', title: 'Catalog crawled', body: '1524 components + images from relume.' },
+            { date: 'Sep 2026', title: 'Registry scaffold', body: 'Astro + daisyUI 5 + this demo.' },
+            { date: 'Next', title: 'Reproduction phase', body: 'Category by category, per the planning doc.' },
+          ]}
+        />
+      </div>
+    </Section>
+
+    <Section title="Table" relume="tables (10), product-list-sections (12)">
+      <Table
+        head={['Component', 'Category', 'Status']}
+        rows={[
+          ['Hero', 'hero-header-sections', 'done'],
+          ['Pricing', 'pricing-sections', 'wip'],
+          ['FAQ', 'faq-sections', 'done'],
+          ['Blog', 'blog-sections', 'todo'],
+        ]}
+      />
+    </Section>
+
+    <Section title="Pagination + Rating + Card" relume="blog-headers, portfolio-sections, testimonial-sections">
+      <div class="flex flex-wrap items-center gap-6 mb-6">
+        <Pagination pages={5} current={2} />
+        <Rating value={4} />
+        <div class="avatar"><div class="w-10"><img src="/reference-images/team-sections/section_team1.jpg" alt="avatar" /></div></div>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-4 max-w-3xl">
+        <Card title="Card with image" subtitle="From daisyUI card classes" image="/reference-images/portfolio-sections/section_portfolio1.jpg" tags={['portfolio', 'grid']}>
+          <span class="text-sm opacity-70">Image + title + tags + actions.</span>
+          <Fragment slot="actions"><Button size="sm" style="outline">Open</Button></Fragment>
+        </Card>
+        <Card title="Plain card" subtitle="Feature card pattern">
+          <p class="text-sm opacity-70">Feature-sections-grid-cards (53 components) are exactly this shape: icon, title, text, hover.</p>
+        </Card>
+      </div>
+    </Section>
+
+    <Section title="Divider / Join / Kbd / Progress" relume="long-form-content-sections, feature-sections">
+      <div class="max-w-md space-y-4">
+        <div class="join">
+          <input type="text" class="input input-bordered join-item grow" placeholder="Search" />
+          <Button class="join-item">Go</Button>
+        </div>
+        <div class="divider">or</div>
+        <progress class="progress progress-primary" value="70" max="100"></progress>
+        <p class="text-sm">Press <kbd class="kbd">⌘</kbd><kbd class="kbd">K</kbd> for the (future) command palette.</p>
+        <div class="divider"></div>
+        <div class="flex gap-2">
+          <Badge style="dash">Dash</Badge>
+          <Badge style="ghost">Ghost</Badge>
+          <span class="status"></span>
+          <span class="status status-success"></span>
+          <span class="status status-warning"></span>
+          <span class="status status-error"></span>
+        </div>
+      </div>
+    </Section>
+  </section>
+</Layout>

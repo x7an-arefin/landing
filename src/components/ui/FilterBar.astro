@@ -1,0 +1,61 @@
+---
+/**
+ * FilterBar — search + category chips, driven by ~25 lines of vanilla JS
+ * (no framework). Filters the grid by toggling `hidden` on cards.
+ */
+import { categories, all } from '../../lib/registry.js';
+const cats = categories();
+const total = all().length;
+---
+<div class="join w-full max-w-md mb-2" role="search">
+  <input type="search" class="input input-bordered join-item grow" placeholder={`Search ${total} components…`} data-filter-search aria-label="Search components" />
+  <button class="btn btn-ghost join-item" data-filter-reset aria-label="Reset filter">✕</button>
+</div>
+<div class="flex gap-2 flex-wrap mb-6 max-h-28 overflow-y-auto pr-2" data-filter-cats>
+  <button class="btn btn-sm btn-neutral" data-cat="*">All ({total})</button>
+  {cats.map((c) => (
+    <button class="btn btn-sm btn-ghost" data-cat={c.name} title={c.name}>{c.name} <span class="opacity-50">({c.count})</span></button>
+  ))}
+</div>
+<div class="mb-4 text-sm opacity-70" data-filter-count>{total} components</div>
+
+<script>
+  // The bar and its controls live inside the [data-gallery] section.
+  const section = document.querySelector('[data-gallery]');
+  if (section) {
+    const search = section.querySelector('[data-filter-search]');
+    const reset = section.querySelector('[data-filter-reset]');
+    const chips = section.querySelectorAll('[data-cat]');
+    const countEl = section.querySelector('[data-filter-count]');
+    const cards = section.querySelectorAll('[data-card]');
+    let cat = '*';
+
+    const apply = () => {
+      const q = (search?.value || '').trim().toLowerCase();
+      let n = 0;
+      cards.forEach((c) => {
+        const okCat = cat === '*' || c.dataset.category === cat;
+        const okQ = !q || (c.dataset.name || '').includes(q);
+        c.hidden = !(okCat && okQ);
+        if (!c.hidden) n++;
+      });
+      if (countEl) countEl.textContent = `${n} of ${cards.length} components`;
+    };
+    search?.addEventListener('input', apply);
+    chips.forEach((b) =>
+      b.addEventListener('click', () => {
+        cat = b.dataset.cat;
+        chips.forEach((x) => x.classList.toggle('btn-neutral', x === b));
+        chips.forEach((x) => x.classList.toggle('btn-ghost', x !== b));
+        apply();
+      })
+    );
+    reset?.addEventListener('click', () => {
+      if (search) search.value = '';
+      cat = '*';
+      chips.forEach((x) => x.classList.toggle('btn-neutral', x.dataset.cat === '*'));
+      chips.forEach((x) => x.classList.toggle('btn-ghost', x.dataset.cat !== '*'));
+      apply();
+    });
+  }
+</script>

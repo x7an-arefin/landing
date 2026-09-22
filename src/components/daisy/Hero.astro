@@ -1,0 +1,24 @@
+---
+/**
+ * Hero — daisyUI 5 `hero` (llms.txt → Hero: hero-overlay sits above the bg image).
+ * Maps to Relume's hero-header-sections / page-headers / product-headers.
+ * @param {string} [eyebrow]
+ * @param {string} [title]
+ * @param {string} [subtitle]
+ * @param {string} [image]
+ */
+const { eyebrow, title, subtitle, image } = Astro.props;
+---
+<div class={`hero min-h-[60vh] ${image ? '' : 'bg-base-100'}`}>
+  {image && <img src={image} alt="" />}
+  {image && <div class="hero-overlay bg-base-100/60"></div>}
+  <div class={`hero-content flex-col lg:flex-row ${image ? 'gap-12' : ''}`}>
+    <div class="max-w-xl text-center lg:text-left">
+      {eyebrow && <span class="badge badge-primary mb-4">{eyebrow}</span>}
+      <h1 class="text-5xl font-extrabold tracking-tight"><slot name="title">{title}</slot></h1>
+      <p class="py-6 text-lg opacity-75"><slot name="subtitle">{subtitle}</slot></p>
+      <div class="flex flex-wrap gap-3 justify-center lg:justify-start"><slot name="actions" /></div>
+    </div>
+    {image && <div class="w-full max-w-md"><slot name="media" /></div>}
+  </div>
+</div>

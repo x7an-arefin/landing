@@ -1,0 +1,16 @@
+---
+/**
+ * Steps — daisyUI 5 `steps` (llms.txt → Steps). Mirrors Relume's multi-step-forms (46).
+ * @param {string[]} [labels]
+ * @param {number} [active]  1-based
+ * @param {boolean} [vertical]
+ */
+const { labels = [], active = 1, vertical = false } = Astro.props;
+---
+<ul class={`steps ${vertical ? 'steps-vertical' : ''} w-full`}>
+  {labels.map((l, i) => (
+    <li class={`step ${i + 1 < active ? 'step-primary' : i + 1 === active ? 'step-primary' : ''}`} data-content={String(i + 1)} aria-current={i + 1 === active ? 'step' : undefined}>
+      {l}
+    </li>
+  ))}
+</ul>

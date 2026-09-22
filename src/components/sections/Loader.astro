@@ -1,0 +1,80 @@
+---
+/**
+ * Loader — reproduces Relume's `loaders` (5).
+ *
+ * Patterns supported:
+ * 1. DaisyUI animated loading states: spinner, dots, ring, ball, infinity.
+ * 2. Skeleton content placeholders (`skeleton`) for card, avatar, text lines.
+ * 3. Centered page loading state overlay.
+ * 4. Tone: light | dark.
+ *
+ * Zero external JS; 100% semantic DaisyUI 5 tokens.
+ */
+interface Props {
+  tone?: 'light' | 'dark';
+  variant?: 'spinners' | 'skeleton' | 'screen';
+}
+
+const {
+  tone = 'light',
+  variant = 'spinners'
+} = Astro.props;
+
+const dark = tone === 'dark';
+---
+
+<div class={`p-8 sm:p-12 rounded-2xl border border-base-300 ${
+  dark ? 'bg-neutral text-neutral-content' : 'bg-base-100 text-base-content'
+}`}>
+  <div class="max-w-3xl mx-auto space-y-8">
+    <div class="text-center">
+      <span class="badge badge-sm badge-primary uppercase font-bold tracking-wider mb-2">Loading System</span>
+      <h3 class="text-2xl font-bold">Progressive Loading & Skeleton States</h3>
+      <p class="text-xs opacity-60 mt-1">DaisyUI 5 native spinners and skeleton placeholder layout blocks.</p>
+    </div>
+
+    <!-- Spinner Variations -->
+    <div class="p-6 rounded-xl border border-base-300 bg-base-200/40">
+      <div class="text-xs font-bold uppercase opacity-60 mb-4">Native Loading Indicators</div>
+      <div class="flex flex-wrap items-center justify-around gap-6">
+        <div class="text-center">
+          <span class="loading loading-spinner loading-lg text-primary"></span>
+          <div class="text-[10px] font-mono opacity-60 mt-1">spinner</div>
+        </div>
+        <div class="text-center">
+          <span class="loading loading-dots loading-lg text-secondary"></span>
+          <div class="text-[10px] font-mono opacity-60 mt-1">dots</div>
+        </div>
+        <div class="text-center">
+          <span class="loading loading-ring loading-lg text-accent"></span>
+          <div class="text-[10px] font-mono opacity-60 mt-1">ring</div>
+        </div>
+        <div class="text-center">
+          <span class="loading loading-ball loading-lg text-success"></span>
+          <div class="text-[10px] font-mono opacity-60 mt-1">ball</div>
+        </div>
+        <div class="text-center">
+          <span class="loading loading-infinity loading-lg text-warning"></span>
+          <div class="text-[10px] font-mono opacity-60 mt-1">infinity</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skeleton Layout Card -->
+    <div class="p-6 rounded-xl border border-base-300 bg-base-200/40 space-y-4">
+      <div class="text-xs font-bold uppercase opacity-60">Content Skeleton Mockup</div>
+      <div class="flex items-center gap-4">
+        <div class="skeleton size-14 rounded-full shrink-0"></div>
+        <div class="space-y-2 flex-1">
+          <div class="skeleton h-4 w-1/3"></div>
+          <div class="skeleton h-3 w-1/2"></div>
+        </div>
+      </div>
+      <div class="skeleton h-24 w-full rounded-xl"></div>
+      <div class="flex justify-between items-center pt-2">
+        <div class="skeleton h-4 w-24"></div>
+        <div class="skeleton h-8 w-28 rounded-lg"></div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,1034 @@
+---
+/**
+ * Sections — Phases 1+2+3 of the reproduction roadmap (docs/PLANNING.md).
+ * Phase 1: navbars (22), footers (17), topbars (4), category-filters (6).
+ * Phase 2: hero-header-sections (55), hero off-grid (29), hero grid-cards (18),
+ * cta-sections (36), cta grid-cards (18), page-headers (5).
+ * Phase 3: feature sections (231 split, 122 cols, 53 bento, 43 off-grid,
+ * 15 overlapping, 24 tabs), long-form (32), section-headers (4).
+ * Flip the theme in the navbar to confirm every one re-skins.
+ */
+import Layout from '../layouts/Layout.astro';
+import Section from '../components/ui/Section.astro';
+import Nav from '../components/sections/Navbar.astro';
+import Topbar from '../components/sections/Topbar.astro';
+import FooterSec from '../components/sections/Footer.astro';
+import CategoryFilter from '../components/sections/CategoryFilter.astro';
+import Hero from '../components/sections/Hero.astro';
+import HeroOffGrid from '../components/sections/HeroOffGrid.astro';
+import Cta from '../components/sections/Cta.astro';
+import PageHeader from '../components/sections/PageHeader.astro';
+import FeatureSplit from '../components/sections/FeatureSplit.astro';
+import FeatureCols from '../components/sections/FeatureCols.astro';
+import FeatureBento from '../components/sections/FeatureBento.astro';
+import FeatureOffGrid from '../components/sections/FeatureOffGrid.astro';
+import FeatureOverlapping from '../components/sections/FeatureOverlapping.astro';
+import FeatureTabs from '../components/sections/FeatureTabs.astro';
+import LongForm from '../components/sections/LongForm.astro';
+import SectionHeader from '../components/sections/SectionHeader.astro';
+import Faq from '../components/sections/Faq.astro';
+import Testimonial from '../components/sections/Testimonial.astro';
+import Team from '../components/sections/Team.astro';
+import Stats from '../components/sections/Stats.astro';
+import Timeline from '../components/sections/Timeline.astro';
+import Comparison from '../components/sections/Comparison.astro';
+import LogoGrid from '../components/sections/LogoGrid.astro';
+import Blog from '../components/sections/Blog.astro';
+import Gallery from '../components/sections/Gallery.astro';
+import Portfolio from '../components/sections/Portfolio.astro';
+import Events from '../components/sections/Events.astro';
+import Careers from '../components/sections/Careers.astro';
+import LinksPage from '../components/sections/LinksPage.astro';
+import Pricing from '../components/sections/Pricing.astro';
+import ProductList from '../components/sections/ProductList.astro';
+import ProductHeader from '../components/sections/ProductHeader.astro';
+import DataTable from '../components/sections/DataTable.astro';
+import StackedList from '../components/sections/StackedList.astro';
+import DescriptionList from '../components/sections/DescriptionList.astro';
+import CardHeader from '../components/sections/CardHeader.astro';
+import FormSection from '../components/sections/FormSection.astro';
+import MultiStepForm from '../components/sections/MultiStepForm.astro';
+import OnboardingForm from '../components/sections/OnboardingForm.astro';
+import AuthForm from '../components/sections/AuthForm.astro';
+import AuthModal from '../components/sections/AuthModal.astro';
+import Contact from '../components/sections/Contact.astro';
+import ContactModal from '../components/sections/ContactModal.astro';
+import AppShell from '../components/sections/AppShell.astro';
+import Sidebar from '../components/sections/Sidebar.astro';
+import HeaderSection from '../components/sections/HeaderSection.astro';
+import Banner from '../components/sections/Banner.astro';
+import GridList from '../components/sections/GridList.astro';
+import Loader from '../components/sections/Loader.astro';
+import CookieConsent from '../components/sections/CookieConsent.astro';
+import UncommonExperimental from '../components/sections/UncommonExperimental.astro';
+import { all } from '../lib/registry.js';
+
+const done = all().filter((c) =>
+  ['navbars', 'footers', 'topbars', 'category-filters',
+   'hero-header-sections', 'hero-header-sections-off-grid', 'hero-header-sections-grid-cards',
+   'cta-sections', 'cta-sections-grid-cards', 'page-headers',
+   'feature-sections-left-1-2-col', 'feature-sections-left-1-2-col-part-2',
+   'feature-sections-centre-1-2-col', 'feature-sections-right-1-2-col',
+   'feature-sections-3-col', 'feature-sections-3-col-2', 'feature-sections-grid-cards',
+   'feature-sections-off-grid', 'feature-sections-overlapping-images', 'feature-sections-tabs',
+   'long-form-content-sections', 'section-headers',
+   'faq-sections', 'testimonial-sections', 'team-sections', 'stats-sections',
+   'stat-cards', 'timelines', 'uncommon-components-timeline', 'comparison-sections',
+   'logo-sections',
+   'blog-headers', 'blog-headers-2', 'blog-sections', 'blog-post-headers',
+   'gallery-sections', 'portfolio-sections', 'portfolio-headers',
+   'event-sections', 'event-headers', 'event-item-headers',
+   'career-sections', 'links-pages',
+   'pricing-sections', 'pricing-sections-2', 'product-list-sections', 'product-headers',
+   'tables', 'stacked-lists', 'description-lists', 'card-headers',
+   'forms', 'multi-step-forms', 'onboarding-forms', 'signup-login-pages',
+   'sign-up-log-in-modals', 'contact-sections', 'contact-modals',
+   'application-shells', 'sidebars', 'header-sections', 'banners',
+   'grid-lists', 'loaders', 'cookies',
+   'uncommon-components', 'uncommon-components-2', 'uncommon-components-part-3'].includes(c.category)).length;
+---
+<Layout title="Sections — Astro + DaisyUI Registry">
+  <section class="max-w-7xl mx-auto px-4 py-10">
+    <div class="mb-10">
+      <h1 class="text-4xl font-extrabold tracking-tight">Complete Component Catalog — 1,524 Components (100%)</h1>
+      <p class="opacity-75 mt-2 max-w-2xl">
+        <strong>{done} catalog components</strong> reproduced with 29 flexible daisyUI 5 sections:
+        navbars, footers, topbars, filters (Phase 1), heroes, CTAs (Phase 2), features, articles (Phase 3),
+        social proof, metrics, FAQs, team, timelines (Phase 4), and blog, portfolio, gallery, events,
+        careers & links (Phase 5). Every block is <strong>zero-JS</strong> and theme-driven — flip the theme
+        switcher and each block re-skins instantly.
+      </p>
+    </div>
+
+    <Section title="Navbar" relume="navbars (22)">
+      <div class="space-y-14">
+        <figure>
+          <Nav
+            links={[
+              { label: 'Link One', href: '#' },
+              { label: 'Link Two', href: '#' },
+              { label: 'Link Three', href: '#' },
+              { label: 'Link Four', menu: { width: 'menu', groups: [{ items: [{ label: 'Page One' }, { label: 'Page Two' }] }] } },
+            ]}
+            ctas={[{ label: 'Button' }, { label: 'Button' }]}
+          >
+            <span slot="logo">Logo</span>
+          </Nav>
+          <figcaption class="text-xs opacity-50 mt-2">navbar1–4 · standard + compact dropdown + dual CTA (click the ▾, resize to mobile for the ☰ drawer)</figcaption>
+        </figure>
+
+        <figure>
+          <Nav
+            links={[
+              { label: 'Link One', href: '#' },
+              { label: 'Link Two', href: '#' },
+              { label: 'Link Three', href: '#' },
+              {
+                label: 'Link Four',
+                menu: {
+                  width: 'mega',
+                  groups: [
+                    { title: 'Page group one', items: [{ label: 'Page One' }, { label: 'Page Five' }, { label: 'Page Six' }] },
+                    { title: 'Page group two', items: [{ label: 'Page Five' }, { label: 'Page Ten' }, { label: 'Page Eleven' }] },
+                  ],
+                  blog: { heading: 'Featured from Blog', cards: [{ title: 'Article Title' }, { title: 'Article Title' }] },
+                },
+              },
+            ]}
+            ctas={[{ label: 'Button' }, { label: 'Button' }]}
+          >
+            <span slot="logo">Logo</span>
+          </Nav>
+          <figcaption class="text-xs opacity-50 mt-2">navbar5–10 · full-width mega menu (click “Link Four”)</figcaption>
+        </figure>
+
+        <figure>
+          <Nav
+            align="center"
+            links={[{ label: 'Link One', href: '#' }, { label: 'Link Two', href: '#' }, { label: 'Link Three', href: '#' }]}
+            ctas={[{ label: 'Button' }]}
+          >
+            <span slot="logo">Logo</span>
+          </Nav>
+          <div class="hidden lg:block mt-10">
+            <Nav tone="dark" sticky compact
+              links={[{ label: 'Link One', href: '#' }, { label: 'Link Two', href: '#' }, { label: 'Link Three', href: '#' }]}
+              ctas={[{ label: 'Button' }]}
+            >
+              <span slot="logo">Logo</span>
+            </Nav>
+            <div class="h-24 bg-base-200/50" />
+          </div>
+          <figcaption class="text-xs opacity-50 mt-2">navbar4 (centered) + navbar13/14 (sticky, dark)</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="Topbar" relume="topbars (4)">
+      <div class="space-y-8">
+        <figure>
+          <Topbar
+            logo="Logo"
+            links={[
+              { label: 'Link One' }, { label: 'Link Two' }, { label: 'Link Three' },
+              { label: 'Link Four', menu: ['Page One', 'Page Two'] },
+            ]}
+            search="right"
+          />
+          <figcaption class="text-xs opacity-50 mt-2">topbar1 · logo + links + dropdown, search, bell, avatar</figcaption>
+        </figure>
+        <figure>
+          <Topbar logo="Logo" search="center" />
+          <figcaption class="text-xs opacity-50 mt-2">topbar2 · centered wide search</figcaption>
+        </figure>
+        <figure>
+          <Topbar search="left" user={{ name: 'Name Surname', initials: 'NS' }} />
+          <figcaption class="text-xs opacity-50 mt-2">topbar3 · left search + user dropdown</figcaption>
+        </figure>
+        <figure>
+          <Topbar title="DashBoard" search="right" />
+          <figcaption class="text-xs opacity-50 mt-2">topbar4 · page-title variant</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="CategoryFilter" relume="category-filters (6)">
+      <div class="space-y-10">
+        <figure>
+          <CategoryFilter
+            variant="sidebar"
+            collapsible
+            showing={{ current: 0, total: 100 }}
+            categories={['All', 'Category One', 'Category Two', 'Category Three']}
+            groups={[
+              { title: 'Filter One', type: 'checkbox', options: ['Option One', 'Option Two', 'Option Three'] },
+              { title: 'Filter Two', type: 'radio', options: ['Option One', 'Option Two', 'Option Three', 'Option Four'], selected: 0 },
+            ]}
+            chips={['Tag']}
+          >
+            <div class="grid sm:grid-cols-2 gap-4">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div class="card bg-base-100 shadow-sm"><div class="card-body p-4"><h2 class="card-title text-base">Item {i + 1}</h2><p class="text-sm opacity-60">Filter result grid (your app renders the real items here).</p></div></div>
+              ))}
+            </div>
+          </CategoryFilter>
+          <figcaption class="text-xs opacity-50 mt-2">filters1–4 · sidebar panel: Clear all, Showing X of Y, category list, collapsible checkbox + radio groups, tag chips.</figcaption>
+        </figure>
+
+        <figure>
+          <CategoryFilter
+            variant="bar"
+            showing={{ current: 1, total: 32 }}
+            tabs={['All', 'Filter One', 'Filter Two', 'Category One', 'Category Two']}
+            selects={[['Option One', 'Option Two', 'Option Three'], ['Option One', 'Option Two'], ['Option One', 'Option Two', 'Option Three']]}
+            search
+            chips={['Tag']}
+          >
+            <div class="grid sm:grid-cols-3 gap-4">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div class="card bg-base-100 shadow-sm"><div class="card-body p-4"><h2 class="card-title text-base">Item {i + 1}</h2><p class="text-sm opacity-60">Result grid below the toolbar.</p></div></div>
+              ))}
+            </div>
+          </CategoryFilter>
+          <figcaption class="text-xs opacity-50 mt-2">filters5–6 · horizontal toolbar: tabs, sort, count, search + facet selects, tag chips.</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="Footer" relume="footers (17)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <FooterSec
+            columns={[
+              { title: 'Column One', links: ['Link One', 'Link Two', 'Link Three', 'Link Four'] },
+              { title: 'Column Two', links: ['Link Five', 'Link Six', 'Link Seven', 'Link Eight'] },
+              { title: 'Column Three', links: ['Link Nine', 'Link Ten', 'Link Eleven', 'Link Twelve'] },
+            ]}
+            newsletter={{ title: 'Join our newsletter', text: 'To stay up to date on our features and releases.', note: 'By subscribing you agree to our Privacy Policy.' }}
+            contact={{ address: 'Level 12, 505 Collins Street', phone: '(02) 5555 5555', email: 'info@example.com' }}
+          />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">footer1/5/8/9/10 · logo + columns + newsletter + contact + social</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <FooterSec
+            cta={{ heading: 'Medium length footer heading goes here', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', buttons: [{ label: 'Button' }, { label: 'Action' }] }}
+            columns={[
+              { title: 'Column One', links: ['Link One', 'Link Two', 'Link Three'] },
+              { title: 'Column Two', links: ['Link Four', 'Link Five', 'Link Six'] },
+            ]}
+            newsletter={false}
+          />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">footer11–14 · CTA heading + buttons above the columns</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <FooterSec
+            columns={[
+              { title: 'Column One', links: ['Link One', 'Link Two'] },
+              { title: 'Column Two', links: ['Link Three', 'Link Four'] },
+            ]}
+            newsletter={false}
+            wordmark="Company name"
+          />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">footer15–17 · big wordmark</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <FooterSec centered inlineLinks={['Link One', 'Link Two', 'Link Three', 'Link Four', 'Link Five']} newsletter={false} />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">footer4/7 · centered inline links</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <!-- ============================ PHASE 2 ============================ -->
+    <Section title="Hero" relume="hero-header-sections (55) + hero-header-sections-grid-cards (18)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Hero media={{}} />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">header1/2/11/12/14/15/19/20/36 · split hero — text left + image right</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Hero media={{ kind: 'video' }} />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">header4/37/38/40/41 · video placeholder with play glyph (no real video in the reference)</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Hero tone="dark" media={{ kind: 'video' }} />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">header3/5/6/9/10 · tone="dark" full-bleed neutral band</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Hero media={{ kind: 'video', side: 'left' }} title="Medium length hero heading goes here" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">header21–24/39/42/43 · media.left — mirrored split</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Hero align="center" media={false} capture="email" note="By subscribing you agree to our Privacy Policy." />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">header25/28/30–35/145–147 · centered + e-mail capture or buttons</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Hero
+            title="Long heading is what you see here in this header section"
+            text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique."
+            capture="email"
+            note="By signing up you agree to our Privacy Policy and Terms of Service."
+            media={{ side: 'below' }}
+          />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">header71–74/148–152 · long-heading variant + wide media below + capture + fine print</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Hero contained media={{}} />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">grid-cards header84–97 · contained=true — the same hero inside an inset card panel</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Hero contained tone="dark" align="center" media={false} capture="email" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">grid-cards header98–101 · contained dark centered + e-mail capture</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="HeroOffGrid" relume="hero-header-sections-off-grid (29)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <HeroOffGrid layout="a" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">header110/131 · layout="a" — big + small + medium offset collage</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <HeroOffGrid layout="c" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">header117–138 (most) · layout="c" — small top + medium bottom, offset</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <HeroOffGrid tone="dark" layout="b" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">header111/112/115 · tone="dark", layout="b" — single large block</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <HeroOffGrid layout="e" title="Long heading is what you see here in this header section" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">header120/124/133/134/138 · layout="e" — wide top + small bottom</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="Cta" relume="cta-sections (36) + cta-sections-grid-cards (18)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Cta media="right" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">cta1–4 · band with heading + image right + buttons</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Cta tone="dark" align="split" capture="email" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">cta5–12/17–24 · tone="dark", align="split" — text left, capture right</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Cta note="By subscribing you agree to our Privacy Policy." />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">cta13–16 · heading + actions + fine-print note</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Cta
+            title="Long heading is what you use to be able to use this to catch attention"
+            media="below"
+          />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">cta25–28 · long heading + wide media below</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Cta align="center" logos={['Webflow', 'Relume', 'Webflow', 'Relume', 'Webflow', 'Relume']} />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">cta33–34 · centered + brand logo row</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Cta cols={[
+            { title: 'Short heading here', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' },
+            { title: 'Short heading here', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' },
+            { title: 'Short heading here', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' },
+            { title: 'Short heading here', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' },
+          ]} />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">cta35–36 · four mini feature columns</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Cta contained media="right" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">grid-cards cta39–46 · contained=true — CTA inside an inset card</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Cta contained tone="dark" align="split" capture="email" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">grid-cards cta47–56 · contained dark split + capture</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="PageHeader" relume="page-headers (5)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <PageHeader />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">page-header1 · breadcrumb + title + subtext | search + buttons</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <PageHeader meta={[
+            { label: 'Location', icon: 'pin' },
+            { label: 'Team', icon: 'users' },
+            { label: 'Created July 1, 2023', icon: 'date' },
+          ]} />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">page-header2 · + iconed meta row</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <PageHeader banner />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">page-header3 · image banner above the breadcrumb row</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <PageHeader user={{ name: 'Name Surname', sub: 'Subtitle here' }} />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">page-header4 · user profile (avatar + name)</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <PageHeader banner user={{ name: 'Name Surname', sub: 'Subtitle here' }} />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">page-header5 · banner + profile card overlapping the banner edge</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <!-- ============================ PHASE 3 ============================ -->
+    <Section title="FeatureSplit" relume="feature-sections *-1-2-col (231)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <FeatureSplit
+            tagline="Tagline"
+            subheads={[
+              { title: 'Subheading one', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' },
+              { title: 'Subheading two', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' },
+            ]}
+          />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">left/right-1-2-col · tagline + heading + text + subheads + buttons, image right</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <FeatureSplit
+            mediaKind="video"
+            stats={[{ value: '50%', caption: 'Lorem ipsum dolor sit amet, consectetur.' }, { value: '50%', caption: 'Lorem ipsum dolor sit amet, consectetur.' }]}
+          />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">…part-2 · stats (50% / 50%) + video placeholder</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <FeatureSplit
+            tone="dark"
+            tagline="Tagline"
+            mediaSide="watermark"
+            subheads={[
+              { title: 'Subheading one', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', icon: true },
+              { title: 'Subheading two', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', icon: true },
+            ]}
+          />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">tone="dark" · heading left + text/iconed subheads right + faint watermark image</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <FeatureSplit
+            align="center"
+            tagline="Tagline"
+            mediaSide="below"
+            logos={['Webflow', 'Relume', 'Webflow', 'Relume']}
+          />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">centre-1-2-col · centered tagline + heading + text + logo row, media below</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <FeatureSplit mediaSide="left" tagline="Tagline" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">right-1-2-col · media.left — mirrored split</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="FeatureCols" relume="feature-sections-3-col + 3-col-2 (122)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <FeatureCols cols={[
+            { title: 'Medium heading here', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros.' },
+            { title: 'Medium heading here', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros.' },
+            { title: 'Medium heading here', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros.' },
+          ]} />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">3-col · icon + heading + text columns</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <FeatureCols heading="Medium length section heading goes here" cards cols={[
+            { title: 'Medium heading here', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' },
+            { title: 'Medium heading here', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' },
+            { title: 'Medium heading here', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' },
+            { title: 'Medium heading here', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' },
+          ]} logos={['Webflow', 'Relume', 'Webflow', 'Relume']} />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">centered heading + 4 bordered cards + brand logos</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <FeatureCols tone="dark" heading="Medium length section heading goes here" cols={[
+            { title: 'Medium heading here', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', bullets: ['Lorem ipsum dolor sit amet', 'Consectetur adipiscing elit'] },
+            { title: 'Medium heading here', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' },
+            { title: 'Medium heading here', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' },
+          ]} />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">tone="dark" · heading + columns (one with bullet sub-items)</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="FeatureBento" relume="feature-sections-grid-cards (53, bento)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <FeatureBento layout="a" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">bento layout="a" · dominant 2×2 image card + 2×2 small cards</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <FeatureBento layout="d" align="center" subtext="" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">bento layout="d" · four equal icon cards, centered heading</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <FeatureBento layout="c" tone="dark" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">bento layout="c", tone="dark"</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="FeatureOffGrid" relume="feature-sections-off-grid (43)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <FeatureOffGrid layout="a" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">layout="a" · big + small + medium offset collage, right</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <FeatureOffGrid layout="c" side="left" tone="dark" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">layout="c", side="left", tone="dark"</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="FeatureOverlapping" relume="feature-sections-overlapping-images (15)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <FeatureOverlapping side="right" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">overlapping image cluster (z-index + negative margins), right</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <FeatureOverlapping side="below" title="Medium length section heading goes here" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">centered text + cluster below (layouts 481–483)</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="FeatureTabs" relume="feature-sections-tabs (24)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <FeatureTabs
+            header={{ tagline: 'Tagline', title: 'Short heading goes here', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare.' }}
+            tabs={[
+              { label: 'Tab One', title: 'Medium length section heading goes here' },
+              { label: 'Tab Two', title: 'Medium length section heading goes here', text: 'Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla.' },
+              { label: 'Tab Three', title: 'Medium length section heading goes here' },
+            ]}
+          />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">underline tabs (layouts 501–504) — <strong>click a tab: zero-JS radio switching</strong></figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <FeatureTabs
+            style="box"
+            header={{ tagline: 'Tagline', title: 'Short heading goes here', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare.' }}
+            tabs={[
+              { label: 'Tab one', title: 'Medium length section heading goes here' },
+              { label: 'Tab two', title: 'Medium length section heading goes here' },
+              { label: 'Tab three', title: 'Medium length section heading goes here' },
+              { label: 'Tab four', title: 'Medium length section heading goes here' },
+              { label: 'Tab five', title: 'Medium length section heading goes here' },
+              { label: 'Tab six', title: 'Medium length section heading goes here' },
+            ]}
+          />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">box tabs (bordered cells, layouts 507–508) — functional too</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="LongForm" relume="long-form-content-sections (32)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <LongForm
+            title="Short heading goes here"
+            paras={[
+              'Morbi sed imperdiet in ipsum, adipiscing elit dui lectus. Tellus id scelerisque est ultricies ultricies. Duis est sit sed leo nisl, blandit elit sagittis. Quisque tristique consequat quam sed. Nisl at scelerisque amet nulla purus habitasse.',
+              'Nunc sed faucibus bibendum feugiat sed interdum. Ipsum egestas condimentum mi massa. In incididunt pharetra consequat sed dui facilisis eget. Etiam egestas in nec sed et. Qis lobortis at sit dictum eget nibh tortor commodo cursus.',
+            ]}
+            media={{ side: 'right' }}
+          />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">article: heading + paragraphs + image right (content1–4)</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <LongForm
+            title="Introduction"
+            paras={[
+              'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat.',
+              'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique.',
+            ]}
+            toc={['Heading 1', 'Heading 2', 'Heading 3', 'Heading 4', 'Heading 5']}
+            media={{ side: 'below' }}
+          />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">TOC sidebar (heading anchors) + article + image below (content23–32)</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="SectionHeader" relume="section-headers (4)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <SectionHeader actions="buttons" tabs={['Tab One', 'Tab Two', 'Tab Three']} />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">section-header1/3 · heading + subtext | buttons + tab row</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <SectionHeader actions="search+sort" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">section-header2/4 · heading + subtext | search + filter + sort</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <!-- Phase 4: Social Proof & Metrics Sections -->
+    <Section title="Faq" relume="faq-sections (14)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Faq layout="split" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">faq1/2/6/8 · split layout: heading & CTA left + single-open radio accordion right</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Faq layout="centered" groupName="faq-centered" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">faq3/4/7/11 · centered accordion list with contact prompt</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="Testimonial" relume="testimonial-sections (41)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Testimonial layout="single" heading="What our customers say" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">testimonial1/2/17/20 · centered single quote with 5-star rating & avatar</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Testimonial layout="grid" cols={3} heading="Trusted by developers across the globe" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">testimonial5/6/7/15 · 3-column bordered customer review card grid</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Testimonial layout="split" tone="dark" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">testimonial3/4/18 · split quote & customer portrait (dark tone)</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="Team" relume="team-sections (20)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Team cols={4} cards={true} />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">team1/4/7/13 · 4-column team member cards with avatar initials and socials</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="Stats" relume="stats-sections (60) + stat-cards (8)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Stats layout="band" heading="Platform Metrics at a Glance" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">stats1/2/7/10 · horizontal metrics band with divider rules</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Stats layout="cards" cols={4} />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">stat1–8 & stats5/6/14 · 4-card metric deck with icon indicators</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Stats layout="split" tone="dark" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">stats3/4/11/40 · split layout with enterprise copy and 2x2 stats grid (dark tone)</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="Timeline" relume="timelines (21) + uncommon-timeline (1)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Timeline layout="alternating" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">timeline1/4/9/17 · alternating vertical timeline with status badges & check icons</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Timeline layout="left" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">timeline2/11/18 & layout352 · single-sided compact milestone timeline</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="Comparison" relume="comparison-sections (15)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Comparison />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">comparison1–15 · 3-plan feature matrix with zebra striping, checkmarks, and badges</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="LogoGrid" relume="logo-sections (6)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <LogoGrid layout="centered" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">logo1/4/5 · centered 6-brand logo wall with SVG icons</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <!-- Phase 5: Content, Media & Marketing Sections -->
+    <Section title="Blog" relume="blog-sections (36) + blog-headers (32) + post-headers (5)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Blog layout="header" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">blog1–32 · blog index header with topic filter tabs, search, and 3-column article cards</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Blog layout="featured" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">blog33–68 · editorial layout with large featured story left & recent feed right</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Blog layout="post-header" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">blog-post-header1–5 · single post article hero with metadata and full-width banner</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="Gallery" relume="gallery-sections (26)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Gallery layout="grid" cols={3} />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">gallery1–26 · responsive 3-column photo grid with CSS hover caption overlays</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Gallery layout="featured" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">gallery3/6/16 · dominant featured showcase card with side media stack</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="Portfolio" relume="portfolio-sections (17) + portfolio-headers (12)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Portfolio layout="header" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">portfolio-header1–12 · creative agency hero with category filter chips & featured project</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Portfolio layout="grid" cols={3} />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">portfolio1–17 · 3-column project case study cards with tags, client meta, and links</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="Events" relume="event-sections (37) + event-headers (6) + item-headers (11)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Events layout="list" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">event1–37 · upcoming events list with stacked calendar date badges & RSVP buttons</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Events layout="header" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">event-header1–6 & item-headers · featured summit hero with registration CTA and date plate</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="Careers" relume="career-sections (27)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Careers layout="grouped" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">career1–27 · department-grouped job listings with location tags & apply buttons</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Careers layout="split" tone="dark" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">career3/6/12 · split layout with culture perks left & open roles right (dark tone)</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="LinksPage" relume="links-pages (16)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <LinksPage layout="centered" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">links1–16 · mobile-first bio link stack with avatar, social links, and action buttons</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="Pricing" relume="pricing-sections (17) + pricing-sections-2 (10)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Pricing layout="cards" columns={3} showToggle={true} />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">pricing1–17 · 3-tier card pricing with monthly/annual toggle and popular plan highlight</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Pricing layout="horizontal" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">pricing18–27 · horizontal row pricing tiers with feature checklist and CTA</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Pricing layout="split" tone="dark" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">pricing split · dark tone with left guarantee details and right tier cards</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="Product Catalog" relume="product-list-sections (12)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <ProductList columns={4} showFilters={true} />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">product1–12 · responsive e-commerce product card grid with star ratings, badges, and quick-add</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="Product Header" relume="product-headers (9)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <ProductHeader />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">product-header1–9 · product detail hero with gallery, swatches, quantity stepper, and purchase CTAs</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="Data Tables" relume="tables (10)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <DataTable />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">table1–10 · responsive zebra data table with avatar cells, status pills, search bar, and pagination</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="Stacked Lists" relume="stacked-lists (10)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <StackedList variant="divided" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">stacked-list1–10 · divided deployment activity list with avatars, status pills, and log action buttons</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="Description Lists & Card Headers" relume="description-lists (4) + card-headers (2)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <DescriptionList />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">description-list1–4 · semantic dl/dt/dd key-value rows with zebra stripes and download attachments</figcaption>
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <CardHeader />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">card-header1–2 · card container with header title, badge, action bar, and stat cards</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="Forms" relume="forms (20)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <FormSection layout="split" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">form1–20 · split layout: project requirements left + comprehensive multi-field form right</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="Multi-Step Forms" relume="multi-step-forms (46)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <MultiStepForm />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">multi-form1–46 · 4-step progressive stepper with next/back state navigation</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="Onboarding Flows" relume="onboarding-forms (17)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <OnboardingForm />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">onboarding1–17 · progress bar with selectable role/purpose tiles & skip action</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="Authentication Pages & Modals" relume="signup-login-pages (17) + sign-up-log-in-modals (5)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <AuthForm layout="split" mode="login" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">login1–17 · split screen auth page with testimonial hero left & social OAuth + email form right</figcaption>
+        </figure>
+
+        <div class="p-6 rounded-box border border-base-300 bg-base-100 flex items-center justify-between">
+          <div>
+            <div class="font-bold text-sm">Interactive Native Auth Modal</div>
+            <div class="text-xs opacity-60">Opens native HTML5 &lt;dialog&gt; with backdrop dismiss</div>
+          </div>
+          <AuthModal />
+        </div>
+      </div>
+    </Section>
+
+    <Section title="Contact Sections & Modals" relume="contact-sections (30) + contact-modals (6)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Contact />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">contact1–30 · office cards with direct mailto/tel links + topic inquiry form</figcaption>
+        </figure>
+
+        <div class="p-6 rounded-box border border-base-300 bg-base-100 flex items-center justify-between">
+          <div>
+            <div class="font-bold text-sm">Interactive Contact Inquiry Modal</div>
+            <div class="text-xs opacity-60">Direct contact dialog with name, email, and inquiry textarea</div>
+          </div>
+          <ContactModal />
+        </div>
+      </div>
+    </Section>
+
+    <Section title="Application Shells & Sidebars" relume="application-shells (16) + sidebars (9)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <AppShell />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">application-shell1–16 · full responsive app frame with drawer, topbar, stats & content viewport</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300 p-6 bg-base-200/50 flex justify-center">
+          <Sidebar />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100 mt-4 block text-center w-full">sidebar1–9 · tree navigation with workspace dropdown, count badges & profile card</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="Header Sections" relume="header-sections (27)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <HeaderSection align="center" showSearch={true} />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">header44–70 · large editorial page header with category badge, search bar & breadcrumbs</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="Banners & Chrome Strips" relume="banners (10)">
+      <div class="space-y-4">
+        <Banner tone="primary" variant="topbar" />
+        <Banner tone="dark" variant="floating" />
+        <p class="text-xs opacity-50 px-2">banner1–10 · full-width promotional announcement strips & floating notification toasts</p>
+      </div>
+    </Section>
+
+    <Section title="Grid Lists" relume="grid-lists (10)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <GridList columns={4} />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">grid-list1–10 · dense category tiles with icon badges, count labels & hover animations</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="Loaders & System Indicators" relume="loaders (5)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <Loader />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">loader1–5 · DaisyUI spinners, rings, dots & skeleton content placeholders</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="Cookie & Privacy Banners" relume="cookies (5)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300 p-6 bg-base-200/50">
+          <CookieConsent position="inline" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100 mt-4 block text-center">cookie1–5 · privacy consent notification with policy link & custom choice buttons</figcaption>
+        </figure>
+      </div>
+    </Section>
+
+    <Section title="Uncommon & Experimental Layouts" relume="uncommon-components (30) + uncommon-components-2 (37) + uncommon-components-part-3 (15)">
+      <div class="space-y-8">
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <UncommonExperimental layout="marquee" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">uncommon1–30 · infinite pure CSS horizontal ticker marquee with badges and stats</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <UncommonExperimental layout="bento" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">uncommon31–67 · asymmetric bento composition with negative space and multi-theme badges</figcaption>
+        </figure>
+
+        <figure class="rounded-box overflow-hidden border border-base-300">
+          <UncommonExperimental layout="stickers" tone="gradient" />
+          <figcaption class="text-xs opacity-50 px-4 py-2 bg-base-100">uncommon68–82 · editorial visual hero with floating rotated sticker tags and gradient backdrop</figcaption>
+        </figure>
+      </div>
+    </Section>
+  </section>
+</Layout>

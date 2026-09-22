@@ -1,0 +1,225 @@
+---
+/**
+ * ProductList — reproduces Relume's `product-list-sections` (12).
+ *
+ * Patterns supported:
+ * 1. 2, 3, or 4 column responsive product cards grid.
+ * 2. Product image with aspect ratio control, badge overlays (New, Sale, -20%).
+ * 3. Star ratings (`rating rating-xs`) with review count.
+ * 4. Price & original slashed price.
+ * 5. Category filter pills and sort dropdown bar.
+ * 6. Quick Add to Cart action button.
+ * 7. Tone: light | dark.
+ *
+ * Zero external JS; 100% semantic DaisyUI 5 tokens.
+ */
+interface Product {
+  id: string | number;
+  name: string;
+  category?: string;
+  price: string;
+  originalPrice?: string;
+  rating?: number;
+  reviewCount?: number;
+  image?: string;
+  badge?: string;
+  badgeColor?: 'primary' | 'secondary' | 'accent' | 'success' | 'warning' | 'error';
+}
+
+interface Props {
+  tone?: 'light' | 'dark';
+  columns?: 2 | 3 | 4;
+  tagline?: string;
+  heading?: string;
+  subtext?: string;
+  showFilters?: boolean;
+  categories?: string[];
+  products?: Product[];
+}
+
+const {
+  tone = 'light',
+  columns = 4,
+  tagline = "New Arrivals",
+  heading = "Featured Collections",
+  subtext = "Handcrafted UI templates, themes, and design assets built for modern developers.",
+  showFilters = true,
+  categories = ["All", "Templates", "Kits", "Icons", "Themes"],
+  products = [
+    {
+      id: 1,
+      name: "Nexus SaaS Astro Template",
+      category: "Templates",
+      price: "$49.00",
+      originalPrice: "$79.00",
+      rating: 5,
+      reviewCount: 48,
+      image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80",
+      badge: "Popular",
+      badgeColor: "primary"
+    },
+    {
+      id: 2,
+      name: "Pulse Marketing Landing",
+      category: "Templates",
+      price: "$39.00",
+      rating: 4,
+      reviewCount: 32,
+      image: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=600&q=80",
+      badge: "New",
+      badgeColor: "accent"
+    },
+    {
+      id: 3,
+      name: "Hyperion Icon Pack (800+)",
+      category: "Icons",
+      price: "$29.00",
+      originalPrice: "$45.00",
+      rating: 5,
+      reviewCount: 112,
+      image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=80",
+      badge: "-35%",
+      badgeColor: "secondary"
+    },
+    {
+      id: 4,
+      name: "Prism DaisyUI Theme Engine",
+      category: "Themes",
+      price: "$59.00",
+      rating: 5,
+      reviewCount: 89,
+      image: "https://images.unsplash.com/photo-1522542550221-31fd19575a2d?auto=format&fit=crop&w=600&q=80",
+      badge: "Best Seller",
+      badgeColor: "primary"
+    }
+  ]
+} = Astro.props;
+
+const dark = tone === 'dark';
+---
+
+<section class={dark ? 'bg-neutral text-neutral-content' : 'bg-base-100'}>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
+      <div>
+        {tagline && (
+          <span class="badge badge-sm badge-primary uppercase font-bold tracking-wider mb-3">
+            {tagline}
+          </span>
+        )}
+        <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">
+          {heading}
+        </h2>
+        {subtext && (
+          <p class={`mt-2 text-base max-w-2xl ${dark ? 'text-neutral-content/70' : 'text-base-content/70'}`}>
+            {subtext}
+          </p>
+        )}
+      </div>
+
+      <!-- View all link -->
+      <a href="#shop-all" class="link link-primary font-semibold text-sm flex items-center gap-1.5 self-start md:self-auto">
+        View all products
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4">
+          <path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd" />
+        </svg>
+      </a>
+    </div>
+
+    <!-- Category Filter Bar -->
+    {showFilters && categories.length > 0 && (
+      <div class="flex items-center gap-2 overflow-x-auto pb-4 mb-8 border-b border-base-300">
+        {categories.map((cat, idx) => (
+          <button class={`btn btn-sm ${idx === 0 ? 'btn-neutral' : 'btn-ghost'}`}>
+            {cat}
+          </button>
+        ))}
+      </div>
+    )}
+
+    <!-- Product Grid -->
+    <div class={`grid gap-6 sm:gap-8 ${
+      columns === 2 ? 'grid-cols-1 sm:grid-cols-2' :
+      columns === 3 ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' :
+      'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'
+    }`}>
+      {products.map((prod) => (
+        <div class={`card group overflow-hidden border transition-all duration-200 hover:shadow-xl ${
+          dark ? 'bg-neutral-content/5 border-neutral-content/10' : 'bg-base-100 border-base-300'
+        }`}>
+          <!-- Image with Overlay Badge -->
+          <figure class="relative aspect-square overflow-hidden bg-base-200">
+            <img
+              src={prod.image ?? "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=600&q=80"}
+              alt={prod.name}
+              class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              loading="lazy"
+            />
+            {prod.badge && (
+              <span class={`absolute top-3 left-3 badge badge-sm font-bold ${
+                prod.badgeColor === 'accent' ? 'badge-accent' :
+                prod.badgeColor === 'secondary' ? 'badge-secondary' :
+                prod.badgeColor === 'warning' ? 'badge-warning' :
+                prod.badgeColor === 'error' ? 'badge-error' :
+                'badge-primary'
+              }`}>
+                {prod.badge}
+              </span>
+            )}
+          </figure>
+
+          <!-- Card Body -->
+          <div class="card-body p-4 sm:p-5 flex flex-col justify-between">
+            <div>
+              {prod.category && (
+                <span class="text-xs uppercase tracking-wider font-semibold opacity-60">
+                  {prod.category}
+                </span>
+              )}
+              <h3 class="font-bold text-base mt-1 line-clamp-1 group-hover:text-primary transition-colors">
+                {prod.name}
+              </h3>
+
+              <!-- Rating -->
+              {prod.rating !== undefined && (
+                <div class="flex items-center gap-1.5 mt-2">
+                  <div class="rating rating-xs">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <input
+                        type="radio"
+                        name={`rating-${prod.id}`}
+                        class="mask mask-star-2 bg-warning cursor-default"
+                        checked={star === prod.rating}
+                        disabled
+                      />
+                    ))}
+                  </div>
+                  {prod.reviewCount && (
+                    <span class="text-xs opacity-60">({prod.reviewCount})</span>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <!-- Pricing & Action -->
+            <div class="mt-4 pt-3 border-t border-base-300 flex items-center justify-between">
+              <div class="flex items-baseline gap-2">
+                <span class="text-lg font-black">{prod.price}</span>
+                {prod.originalPrice && (
+                  <span class="text-xs line-through opacity-50">{prod.originalPrice}</span>
+                )}
+              </div>
+
+              <button class="btn btn-sm btn-primary btn-square" aria-label="Add to cart">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4">
+                  <path d="M1 1.75A.75.75 0 011.75 1h1.628a1.75 1.75 0 011.734 1.51L5.342 4H16.25a1.75 1.75 0 011.706 2.164l-1.5 6A1.75 1.75 0 0114.75 13.5H7.132a1.75 1.75 0 01-1.734-1.51L4.22 3.125a.25.25 0 00-.248-.215H1.75A.75.75 0 011 1.75zM6 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm9 0a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

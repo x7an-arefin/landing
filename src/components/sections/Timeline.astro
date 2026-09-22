@@ -1,0 +1,124 @@
+---
+/**
+ * Timeline — reproduces Relume's `timelines` (21) and `uncommon-components-timeline` (1).
+ *
+ * Patterns supported:
+ * 1. layout="alternating" — classic alternating left/right timeline.
+ * 2. layout="left" — single-sided timeline (dates/icons on left, content on right).
+ * 3. tone="light" | "dark".
+ *
+ * Built with daisyUI `timeline`, `timeline-item`, `timeline-start`, `timeline-middle`, `timeline-end`.
+ * Zero JS; pure semantic colors.
+ */
+interface TimelineEvent {
+  date: string;
+  title: string;
+  description: string;
+  tag?: string;
+}
+
+interface Props {
+  layout?: 'alternating' | 'left';
+  tone?: 'light' | 'dark';
+  tagline?: string;
+  heading?: string;
+  subtext?: string;
+  items?: TimelineEvent[];
+}
+
+const {
+  layout = 'alternating',
+  tone = 'light',
+  tagline = "Roadmap",
+  heading = "Our Journey & Milestones",
+  subtext = "Key moments and continuous architectural evolution across our platform history.",
+  items = [
+    {
+      date: "Q1 2026",
+      title: "Design System Architecture",
+      description: "Established core token specifications, semantic color mapping, and Astro primitives with DaisyUI 5 integration.",
+      tag: "Completed"
+    },
+    {
+      date: "Q2 2026",
+      title: "Full Catalog Extraction",
+      description: "Crawled all 32 Relume catalog pages, mapped 1,524 components, and downloaded 800px reference images.",
+      tag: "Completed"
+    },
+    {
+      date: "Q3 2026",
+      title: "Pure Astro Section Registry",
+      description: "Reproduced foundational sections with zero-JS and instant 35-theme switching support.",
+      tag: "Active"
+    },
+    {
+      date: "Q4 2026",
+      title: "Interactive Components & Shells",
+      description: "Rolling out application shells, full multi-step form state machines, and advanced experimental layouts.",
+      tag: "Upcoming"
+    }
+  ],
+} = Astro.props;
+
+const dark = tone === 'dark';
+const CHECK_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" /></svg>';
+---
+
+<section class={dark ? 'bg-neutral text-neutral-content' : 'bg-base-100'}>
+  <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+    <div class="text-center mb-14">
+      {tagline && <p class="text-xs font-bold uppercase tracking-wider text-primary mb-2">{tagline}</p>}
+      <h2 class="text-3xl font-extrabold tracking-tight sm:text-4xl">{heading}</h2>
+      {subtext && <p class="mt-3 text-sm opacity-70 max-w-2xl mx-auto">{subtext}</p>}
+    </div>
+
+    {layout === 'alternating' ? (
+      <ul class="timeline timeline-snap-icon max-md:timeline-compact timeline-vertical max-w-4xl mx-auto">
+        {items.map((event, idx) => {
+          const isEven = idx % 2 === 0;
+          return (
+            <li>
+              {idx > 0 && <hr class={idx <= 2 ? 'bg-primary' : ''} />}
+              <div class={`timeline-middle ${idx <= 2 ? 'text-primary' : 'opacity-40'}`}>
+                <span set:html={CHECK_ICON} />
+              </div>
+              <div class={`${isEven ? 'timeline-start md:text-end' : 'timeline-end'} mb-10`}>
+                <div class="flex items-center gap-2 mb-1 flex-wrap justify-start md:justify-inherit">
+                  <time class="font-mono text-xs opacity-60 font-semibold">{event.date}</time>
+                  {event.tag && (
+                    <span class={`badge badge-xs font-semibold ${
+                      event.tag === 'Completed' ? 'badge-primary' : event.tag === 'Active' ? 'badge-secondary' : 'badge-ghost'
+                    }`}>{event.tag}</span>
+                  )}
+                </div>
+                <div class="text-lg font-bold">{event.title}</div>
+                <p class="text-sm opacity-70 mt-1 leading-relaxed">{event.description}</p>
+              </div>
+              {idx < items.length - 1 && <hr class={idx < 2 ? 'bg-primary' : ''} />}
+            </li>
+          );
+        })}
+      </ul>
+    ) : (
+      <ul class="timeline timeline-vertical timeline-compact max-w-2xl mx-auto">
+        {items.map((event, idx) => (
+          <li>
+            {idx > 0 && <hr class={idx <= 2 ? 'bg-primary' : ''} />}
+            <div class={`timeline-middle ${idx <= 2 ? 'text-primary' : 'opacity-40'}`}>
+              <span set:html={CHECK_ICON} />
+            </div>
+            <div class="timeline-end mb-10 pl-4">
+              <div class="flex items-center gap-2 mb-1">
+                <time class="font-mono text-xs opacity-60 font-semibold">{event.date}</time>
+                {event.tag && <span class="badge badge-primary badge-xs font-semibold">{event.tag}</span>}
+              </div>
+              <div class="text-base font-bold">{event.title}</div>
+              <p class="text-xs opacity-70 mt-1 leading-relaxed">{event.description}</p>
+            </div>
+            {idx < items.length - 1 && <hr class={idx < 2 ? 'bg-primary' : ''} />}
+          </li>
+        ))}
+      </ul>
+    )}
+  </div>
+</section>

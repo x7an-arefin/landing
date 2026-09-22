@@ -1,0 +1,45 @@
+---
+/**
+ * Field — daisyUI 5 labeled input (llms.txt → Label): the `input` class goes on
+ * the PARENT <label>, with the text in <span class="label">.
+ * @param {'input'|'textarea'|'select'} [kind]
+ */
+const {
+  label,
+  kind = 'input',
+  type = 'text',
+  name,
+  value = '',
+  placeholder,
+  hint,
+  options = [],
+  required = false,
+} = Astro.props;
+---
+{kind === 'input' && (
+  <label class="input input-bordered flex-row-reverse gap-3 w-full">
+    <input
+      type={type}
+      name={name}
+      value={value}
+      placeholder={placeholder}
+      required={required || undefined}
+    />
+    <span class="label">{label}</span>
+  </label>
+)}
+{kind === 'textarea' && (
+  <div class="w-full">
+    <label class="label-text text-sm font-medium">{label}</label>
+    <textarea class="textarea textarea-bordered w-full" name={name} placeholder={placeholder} rows={3} required={required || undefined}></textarea>
+  </div>
+)}
+{kind === 'select' && (
+  <div class="w-full">
+    <label class="label-text text-sm font-medium">{label}</label>
+    <select class="select select-bordered w-full" name={name} required={required || undefined}>
+      {options.map((o) => <option value={o.value}>{o.label}</option>)}
+    </select>
+  </div>
+)}
+{hint && <p class="label-text text-sm opacity-60">{hint}</p>}

@@ -1,0 +1,111 @@
+---
+/**
+ * GridList — reproduces Relume's `grid-lists` (10).
+ *
+ * Patterns supported:
+ * 1. Compact multi-column tile grid (2, 3, 4, or 6 columns).
+ * 2. Visual category icon or thumbnail badge.
+ * 3. Item title, short summary, and count badge.
+ * 4. Interactive hover scale and border highlight.
+ * 5. Tone: light | dark.
+ *
+ * Zero external JS; 100% semantic DaisyUI 5 tokens.
+ */
+interface GridItem {
+  icon: string;
+  title: string;
+  count?: string | number;
+  description?: string;
+  href?: string;
+}
+
+interface Props {
+  tone?: 'light' | 'dark';
+  columns?: 2 | 3 | 4 | 6;
+  tagline?: string;
+  heading?: string;
+  subtext?: string;
+  items?: GridItem[];
+}
+
+const {
+  tone = 'light',
+  columns = 4,
+  tagline = "Directory Index",
+  heading = "Explore Component Categories",
+  subtext = "Quick navigation across our 68 curated component modules and sections.",
+  items = [
+    { icon: "🧭", title: "Navbars & Menus", count: "22 items", description: "Responsive headers, megamenus & drawers" },
+    { icon: "⚡", title: "Hero Sections", count: "102 items", description: "Split, off-grid, video & grid cards" },
+    { icon: "📦", title: "Features & Bento", count: "524 items", description: "Grid cards, tabs, split & columns" },
+    { icon: "⭐", title: "Social Proof", count: "186 items", description: "Testimonials, stats, logos & reviews" },
+    { icon: "💳", title: "Pricing & Billing", count: "27 items", description: "Tier cards, toggles & comparison" },
+    { icon: "🛒", title: "Commerce & Lists", count: "47 items", description: "Product catalog, tables & lists" },
+    { icon: "📝", title: "Forms & Auth", count: "141 items", description: "Steppers, onboarding, modals & login" },
+    { icon: "🖥️", title: "App Shells & UI", count: "82 items", description: "Sidebars, banners, loaders & cookies" }
+  ]
+} = Astro.props;
+
+const dark = tone === 'dark';
+---
+
+<section class={dark ? 'bg-neutral text-neutral-content' : 'bg-base-100'}>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
+      <div>
+        {tagline && (
+          <span class="badge badge-sm badge-primary uppercase font-bold tracking-wider mb-2">
+            {tagline}
+          </span>
+        )}
+        <h2 class="text-3xl font-extrabold tracking-tight">{heading}</h2>
+        {subtext && (
+          <p class={`mt-1 text-sm max-w-xl ${dark ? 'text-neutral-content/70' : 'text-base-content/70'}`}>
+            {subtext}
+          </p>
+        )}
+      </div>
+
+      <a href="#view-all" class="link link-primary text-sm font-bold flex items-center gap-1">
+        Browse all 68 categories →
+      </a>
+    </div>
+
+    <!-- Grid List Tiles -->
+    <div class={`grid gap-4 sm:gap-6 ${
+      columns === 2 ? 'grid-cols-1 sm:grid-cols-2' :
+      columns === 3 ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' :
+      columns === 6 ? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-6' :
+      'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'
+    }`}>
+      {items.map((it) => (
+        <a
+          href={it.href ?? "#category"}
+          class={`card border rounded-2xl p-5 group hover:border-primary hover:shadow-lg transition-all duration-200 ${
+            dark ? 'bg-neutral-content/5 border-neutral-content/10' : 'bg-base-100 border-base-300'
+          }`}
+        >
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-3xl p-2 rounded-xl bg-base-200 group-hover:scale-110 transition-transform">
+              {it.icon}
+            </span>
+            {it.count && (
+              <span class="badge badge-sm badge-ghost font-bold text-xs">
+                {it.count}
+              </span>
+            )}
+          </div>
+          <h3 class="font-bold text-base group-hover:text-primary transition-colors">
+            {it.title}
+          </h3>
+          {it.description && (
+            <p class={`text-xs mt-1 line-clamp-2 ${dark ? 'text-neutral-content/60' : 'text-base-content/60'}`}>
+              {it.description}
+            </p>
+          )}
+        </a>
+      ))}
+    </div>
+  </div>
+</section>

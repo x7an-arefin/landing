@@ -1,0 +1,35 @@
+---
+/**
+ * Button — daisyUI 5 `btn` in every flavor (see llms.txt → Button).
+ * Convention: one component file per daisyUI primitive; props map 1:1 to classes.
+ * @param {string} [variant]  '' | primary | secondary | accent | neutral | info | success | warning | error
+ * @param {string} [style]    '' | outline | dash | soft | ghost | link
+ * @param {string} [size]     xs | sm | md | lg | xl
+ */
+const {
+  variant = 'primary',
+  style = '',
+  size = '',
+  block = false,
+  square = false,
+  circle = false,
+  disabled = false,
+  href,
+  type = 'button',
+} = Astro.props;
+
+const cls = [
+  'btn',
+  variant && `btn-${variant}`,
+  style && `btn-${style}`,
+  size && `btn-${size}`,
+  block && 'btn-block',
+  square && 'btn-square',
+  circle && 'btn-circle',
+].filter(Boolean).join(' ');
+---
+{
+  href
+    ? <a class={cls} href={href} aria-disabled={disabled || undefined} tabindex={disabled ? -1 : undefined} role="button"><slot /></a>
+    : <button class={cls} type={type} disabled={disabled || undefined}><slot /></button>
+}

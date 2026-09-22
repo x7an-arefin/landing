@@ -1,0 +1,64 @@
+---
+/**
+ * FeatureOverlapping — reproduces Relume's `feature-sections-overlapping-images`
+ * (15).
+ *
+ * Verified from contact sheets + live previews 2026-09-22 (all static).
+ * Anatomy: a text block (tagline + heading + text + buttons) beside a
+ * cluster of 2–3 image blocks that OVERLAP each other (z-index + negative
+ * margins — the daisyUI "image overlaps" gap pattern). Text left/right/center;
+ * some variants (layouts 481–483) put the cluster below the centered text.
+ * Light or dark tone.
+ *
+ * Zero JS; semantic colors only.
+ */
+interface Props {
+  tone?: 'light' | 'dark';
+  side?: 'right' | 'left' | 'center' | 'below';
+  tagline?: string;
+  title?: string;
+  text?: string;
+}
+const {
+  tone = 'light',
+  side = 'right',
+  tagline = 'Tagline',
+  title = 'Medium length section heading goes here',
+  text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla.',
+} = Astro.props;
+
+const dark = tone === 'dark';
+const mediaBg = dark ? 'bg-neutral-content/10' : 'bg-base-300';
+const PHOTO = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-8 opacity-30"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /></svg>';
+---
+<section class={dark ? 'bg-neutral text-neutral-content' : 'bg-base-100'}>
+  <div class="mx-auto max-w-7xl px-4 py-16">
+    <div class={`grid items-center gap-12 ${side === 'right' || side === 'left' ? 'lg:grid-cols-2' : ''} ${side === 'center' ? 'justify-items-center text-center' : ''}`}>
+      <div class={side === 'left' ? 'order-2' : ''}>
+        <p class="text-xs font-bold tracking-wide">{tagline}</p>
+        <h2 class="mt-2 text-3xl md:text-4xl font-extrabold tracking-tight max-w-xl">{title}</h2>
+        <p class="mt-4 opacity-70 text-sm max-w-lg">{text}</p>
+        <div class={`mt-8 flex items-center gap-2 ${side === 'center' ? 'justify-center' : ''}`}>
+          <button class={`btn ${dark ? 'btn-neutral bg-base-100 text-base-content' : 'btn-neutral'}`}>Button</button>
+          <button class="btn btn-ghost gap-1">Button <span>›</span></button>
+        </div>
+      </div>
+
+      {side !== 'below' && (
+        <div class={`relative h-80 lg:h-96 ${side === 'left' ? 'order-1' : ''}`}>
+          <div class={`absolute top-4 left-4 size-56 ${mediaBg} flex items-center justify-center`}><span set:html={PHOTO} /></div>
+          <div class={`absolute top-24 left-40 size-64 z-10 ${mediaBg} flex items-center justify-center`}><span set:html={PHOTO} /></div>
+          <div class={`absolute bottom-2 left-20 size-40 z-20 ${mediaBg} flex items-center justify-center`} />
+        </div>
+      )}
+    </div>
+
+    {side === 'below' && (
+      <div class="relative mx-auto mt-12 h-72 w-full max-w-4xl">
+        <div class={`absolute top-0 left-8 size-52 ${mediaBg} flex items-center justify-center`}><span set:html={PHOTO} /></div>
+        <div class={`absolute top-16 left-1/3 size-64 z-10 ${mediaBg} flex items-center justify-center`}><span set:html={PHOTO} /></div>
+        <div class={`absolute bottom-0 right-10 size-48 z-20 ${mediaBg} flex items-center justify-center`}><span set:html={PHOTO} /></div>
+      </div>
+    )}
+  </div>
+</section>

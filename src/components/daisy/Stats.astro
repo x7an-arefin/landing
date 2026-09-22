@@ -1,0 +1,18 @@
+---
+/**
+ * Stats — daisyUI 5 `stats` (llms.txt → Stat). Mirrors Relume's stats-sections (60)
+ * and stat-cards (8).
+ * @param {{title:string, value:string, desc?:string, figure?:string}[]} [items]
+ */
+const { items = [] } = Astro.props;
+---
+<div class="stats bg-base-100 shadow-sm w-full">
+  {items.map((it) => (
+    <div class="stat">
+      {it.figure && <div class="stat-figure text-primary">{it.figure}</div>}
+      <div class="stat-title">{it.title}</div>
+      <div class="stat-value text-primary">{it.value}</div>
+      {it.desc && <div class="stat-desc">{it.desc}</div>}
+    </div>
+  ))}
+</div>

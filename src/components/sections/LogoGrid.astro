@@ -1,0 +1,68 @@
+---
+/**
+ * LogoGrid — reproduces Relume's `logo-sections` (6).
+ *
+ * Patterns supported:
+ * 1. Centered headline + responsive 6-logo grid.
+ * 2. Split layout (headline left, logos right).
+ * 3. Tone: light | dark.
+ *
+ * Zero JS; semantic DaisyUI tokens.
+ */
+interface Props {
+  tone?: 'light' | 'dark';
+  layout?: 'centered' | 'split';
+  heading?: string;
+  logos?: string[];
+}
+
+const {
+  tone = 'light',
+  layout = 'centered',
+  heading = "Trusted by pioneering engineering & product teams worldwide",
+  logos = [
+    "ACME Corp", "Quantum Labs", "Hyperion", "Apex Dynamics", "Vanguard", "Starlight"
+  ],
+} = Astro.props;
+
+const dark = tone === 'dark';
+const LOGO_ICON = '<svg xmlns="http://www.w3.org/2000/svg" class="size-6 opacity-60 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" /></svg>';
+---
+
+<section class={dark ? 'bg-neutral text-neutral-content' : 'bg-base-100'}>
+  <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+    {layout === 'centered' ? (
+      <div class="text-center">
+        {heading && (
+          <h3 class="text-sm font-bold uppercase tracking-wider opacity-60 mb-10">
+            {heading}
+          </h3>
+        )}
+        <div class="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-6 items-center justify-items-center">
+          {logos.map((name) => (
+            <div class="flex items-center text-base font-bold tracking-tight opacity-70 hover:opacity-100 transition-opacity">
+              <span set:html={LOGO_ICON} />
+              <span>{name}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    ) : (
+      <div class="grid gap-8 lg:grid-cols-12 items-center">
+        <div class="lg:col-span-4">
+          <h3 class="text-lg font-bold sm:text-xl leading-snug">
+            {heading}
+          </h3>
+        </div>
+        <div class="lg:col-span-8 grid grid-cols-2 sm:grid-cols-3 gap-6 items-center justify-items-center">
+          {logos.map((name) => (
+            <div class="flex items-center text-sm font-bold tracking-tight opacity-70 hover:opacity-100 transition-opacity">
+              <span set:html={LOGO_ICON} />
+              <span>{name}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+</section>

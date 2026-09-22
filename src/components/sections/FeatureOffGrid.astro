@@ -1,0 +1,90 @@
+---
+/**
+ * FeatureOffGrid — reproduces Relume's `feature-sections-off-grid` (43,
+ * all flagged `off-grid`).
+ *
+ * Verified from contact sheets 2026-09-22 (all static). Same signature as
+ * the hero off-grid: a text block (tagline + heading + text + buttons)
+ * beside an asymmetric collage of 2–4 offset placeholder blocks.
+ * `layout` presets a–f (a = big+small+medium, b = single large,
+ * c = small-top+medium-bottom, d = single medium, e = wide-top+small-bottom,
+ * f = four blocks); `side` left/right/center; light or dark tone.
+ *
+ * Zero JS; semantic colors only.
+ */
+interface Props {
+  tone?: 'light' | 'dark';
+  side?: 'right' | 'left' | 'center';
+  layout?: 'a' | 'b' | 'c' | 'd' | 'e' | 'f';
+  tagline?: string;
+  title?: string;
+  text?: string;
+}
+const {
+  tone = 'light',
+  side = 'right',
+  layout = 'c',
+  tagline = 'Tagline',
+  title = 'Medium length section heading goes here',
+  text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla.',
+} = Astro.props;
+
+const dark = tone === 'dark';
+const centered = side === 'center';
+const block = dark ? 'bg-neutral-content/10' : 'bg-base-300';
+const PHOTO = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-8 opacity-30"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /></svg>';
+
+const PRESETS: Record<string, { cls: string; icon?: boolean }[]> = {
+  a: [
+    { cls: 'col-1 row-1 row-span-2 aspect-square', icon: true },
+    { cls: 'col-2 row-1 aspect-[4/3] mt-8' },
+    { cls: 'col-2 row-2 aspect-[3/2] -mt-2' },
+  ],
+  b: [
+    { cls: 'col-1 col-span-2 row-1 row-span-2 aspect-[4/3] max-w-md mx-auto', icon: true },
+  ],
+  c: [
+    { cls: 'col-1 row-1 aspect-[3/2] -mt-6' },
+    { cls: 'col-2 row-2 aspect-[4/3] mt-10', icon: true },
+  ],
+  d: [
+    { cls: 'col-1 col-span-2 row-1 aspect-[4/3] max-w-sm self-center', icon: true },
+  ],
+  e: [
+    { cls: 'col-1 col-span-2 row-1 aspect-[16/6] -mt-4' },
+    { cls: 'col-2 row-2 aspect-square mt-6', icon: true },
+  ],
+  f: [
+    { cls: 'col-1 row-1 aspect-[3/2]', icon: true },
+    { cls: 'col-2 row-1 aspect-square mt-6' },
+    { cls: 'col-1 row-2 aspect-[4/3] -mt-2' },
+    { cls: 'col-2 row-2 aspect-square mt-8' },
+  ],
+};
+const blocks = PRESETS[layout] ?? PRESETS.c;
+---
+<section class={dark ? 'bg-neutral text-neutral-content' : 'bg-base-100'}>
+  <div class="mx-auto max-w-7xl px-4 py-16">
+    <div class={`grid items-center gap-12 ${centered ? 'justify-items-center' : 'lg:grid-cols-2'}`}>
+      <div class={centered ? 'text-center max-w-2xl' : side === 'left' ? 'order-2' : ''}>
+        <p class="text-xs font-bold tracking-wide">{tagline}</p>
+        <h2 class="mt-2 text-3xl md:text-4xl font-extrabold tracking-tight max-w-xl mx-auto">{title}</h2>
+        <p class={`mt-4 opacity-70 text-sm max-w-lg ${centered ? 'mx-auto' : ''}`}>{text}</p>
+        <div class={`mt-8 flex items-center gap-2 ${centered ? 'justify-center' : ''}`}>
+          <button class={`btn ${dark ? 'btn-neutral bg-base-100 text-base-content' : 'btn-neutral'}`}>Button</button>
+          <button class="btn btn-ghost gap-1">Button <span>›</span></button>
+        </div>
+      </div>
+
+      {blocks.length > 0 && (
+        <div class={`grid grid-cols-2 gap-6 ${centered ? 'w-full max-w-xl' : side === 'left' ? 'order-1' : ''}`}>
+          {blocks.map((b) => (
+            <div class={`${b.cls} ${block} rounded-box flex items-center justify-center`}>
+              {b.icon ? <span set:html={PHOTO} /> : null}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  </div>
+</section>

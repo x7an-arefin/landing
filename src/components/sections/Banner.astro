@@ -1,0 +1,75 @@
+---
+/**
+ * Banner — reproduces Relume's `banners` (10).
+ *
+ * Patterns supported:
+ * 1. Full-width top promotional announcement bar.
+ * 2. Floating card banner / sticky pill.
+ * 3. Highlight badges ("NEW", "DISCOUNT -20%").
+ * 4. Action button / link and dismiss close button.
+ * 5. Tone: light | dark | primary.
+ *
+ * Zero external JS; 100% semantic DaisyUI 5 tokens.
+ */
+interface Props {
+  tone?: 'light' | 'dark' | 'primary';
+  variant?: 'topbar' | 'floating';
+  badge?: string;
+  message?: string;
+  ctaText?: string;
+  ctaUrl?: string;
+}
+
+const {
+  tone = 'primary',
+  variant = 'topbar',
+  badge = "NEW RELEASE",
+  message = "Astro 5 & DaisyUI 5 Full Registry template is now available for download!",
+  ctaText = "Explore Components →",
+  ctaUrl = "#explore"
+} = Astro.props;
+
+const uniqueId = `banner-${Math.random().toString(36).substring(2, 8)}`;
+---
+
+<div id={uniqueId} class={`transition-all duration-200 ${
+  variant === 'topbar'
+    ? (tone === 'primary' ? 'bg-primary text-primary-content' : tone === 'dark' ? 'bg-neutral text-neutral-content' : 'bg-base-200 text-base-content') + ' py-3 px-4 border-b border-base-300'
+    : 'max-w-xl mx-auto my-4 p-4 rounded-2xl border border-base-300 shadow-xl bg-base-100 text-base-content flex items-center justify-between'
+}`}>
+  <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs sm:text-sm">
+    <div class="flex items-center gap-3 flex-wrap justify-center sm:justify-start">
+      {badge && (
+        <span class={`badge badge-sm font-bold uppercase tracking-wider ${
+          tone === 'primary' ? 'bg-base-100 text-primary border-none' : 'badge-primary'
+        }`}>
+          {badge}
+        </span>
+      )}
+      <span class="font-medium text-center sm:text-left">{message}</span>
+    </div>
+
+    <div class="flex items-center gap-4 shrink-0">
+      {ctaText && (
+        <a
+          href={ctaUrl}
+          class={`font-bold underline underline-offset-4 hover:opacity-80 transition-opacity ${
+            tone === 'primary' ? 'text-primary-content' : 'text-primary'
+          }`}
+        >
+          {ctaText}
+        </a>
+      )}
+
+      <!-- Dismiss Button -->
+      <button
+        type="button"
+        class="btn btn-ghost btn-xs btn-circle opacity-75 hover:opacity-100"
+        aria-label="Dismiss banner"
+        onclick={`document.getElementById('${uniqueId}').remove()`}
+      >
+        ✕
+      </button>
+    </div>
+  </div>
+</div>

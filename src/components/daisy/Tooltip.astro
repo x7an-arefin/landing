@@ -1,0 +1,11 @@
+---
+/**
+ * Tooltip — daisyUI 5 `tooltip` (llms.txt → Tooltip): the message lives in the
+ * `data-tip` attribute on the wrapper; the wrapper has exactly one child.
+ */
+const { content, placement = 'tooltip-top', color = '' } = Astro.props;
+const cls = ['tooltip', placement, color && `tooltip-${color}`].filter(Boolean).join(' ');
+---
+<div class={cls} data-tip={content}>
+  <slot />
+</div>

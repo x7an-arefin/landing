@@ -1,0 +1,100 @@
+---
+/**
+ * Per-component spec page (1524 pages, all generated at build time).
+ * What it shows: reference screenshot, predicted behavior (from image analysis),
+ * implementation status, and links to the live Relume preview + source image.
+ */
+import Layout from '../../layouts/Layout.astro';
+import Badge from '../../components/daisy/Badge.astro';
+import { all, slug, status, implInfo } from '../../lib/registry.js';
+
+export function getStaticPaths() {
+  return all().map((c) => ({ params: { slug: slug(c) }, props: { c } }));
+}
+
+const { c } = Astro.props;
+const s = status(c);
+const impl = implInfo(c);
+---
+<Layout title={`${c.name} — Registry`}>
+  <article class="max-w-5xl mx-auto px-4 py-10">
+    <div class="breadcrumbs mb-6">
+      <ul>
+        <li><a href="/">Components</a></li>
+        <li><a href="#/" class="opacity-60">{c.category}</a></li>
+        <li aria-current="page">{c.name}</li>
+      </ul>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-3 mb-2">
+      <h1 class="text-3xl font-extrabold tracking-tight">{c.name}</h1>
+      <span class={`badge ${s === 'done' ? 'badge-success' : s === 'wip' ? 'badge-warning' : 'badge-ghost'}`}>{s}</span>
+      {c.flags.map((f) => <Badge variant="info" style="soft" size="sm">{f}</Badge>)}
+    </div>
+    <p class="text-sm opacity-60 mb-6">
+      category: <code>{c.category}</code> · relume id: <code>{c.cid}</code>
+      {c.description ? ` · ${c.description}` : ''}
+    </p>
+
+    <div class="grid lg:grid-cols-2 gap-8">
+      <figure class="rounded-box overflow-hidden shadow-md">
+        {c.image
+          ? <img src={c.image} alt={`${c.name} reference screenshot`} class="reference-shot w-full" />
+          : <div class="aspect-video bg-base-200 flex items-center justify-center">no image</div>}
+        <figcaption class="text-xs opacity-60 p-2">
+          Reference screenshot (light-mode capture, 800px).
+          {c.image && <> Local file: <code>{c.image}</code></>}
+        </figcaption>
+      </figure>
+
+      <div class="space-y-6">
+        <section class="rounded-box bg-base-100 shadow-sm p-6">
+          <h2 class="font-bold text-lg mb-2">Predicted behavior</h2>
+          <p class="text-sm opacity-80">{c.predictedBehavior}</p>
+          <p class="text-xs opacity-50 mt-3">
+            Predicted from the reference screenshot + category pattern. Verify against the
+            live preview before implementing.
+          </p>
+        </section>
+
+        <section class="rounded-box bg-base-100 shadow-sm p-6 border border-base-300">
+          <h2 class="font-bold text-lg mb-2">Implementation & Code Usage</h2>
+          {impl ? (
+            <div>
+              <p class="text-sm mb-3">
+                <span class="badge badge-success badge-sm mr-2 font-bold">100% Implemented</span>
+                <code>{impl.component}</code> — {impl.notes}
+              </p>
+              
+              <div class="mt-4">
+                <span class="text-xs uppercase font-bold tracking-wider opacity-60 block mb-2">Astro Import Snippet</span>
+                <div class="mockup-code text-xs bg-neutral text-neutral-content">
+                  <pre data-prefix=">"><code>import {impl.component.split('/').pop().replace('.astro', '')} from '../components/{impl.component}';</code></pre>
+                  <pre data-prefix="2"><code>&lt;{impl.component.split('/').pop().replace('.astro', '')} /&gt;</code></pre>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <p class="text-sm opacity-70">
+              Not implemented yet.
+            </p>
+          )}
+        </section>
+
+        <div class="flex flex-wrap gap-3">
+          <a href="/sections" class="btn btn-primary">
+            View in Sections Showcase →
+          </a>
+          {c.relumePreview && (
+            <a href={c.relumePreview} target="_blank" rel="noopener" class="btn btn-outline">
+              Open live Relume preview ↗
+            </a>
+          )}
+          <a href="https://www.relume.ai/react/components" target="_blank" rel="noopener" class="btn btn-ghost">
+            Source catalog
+          </a>
+        </div>
+      </div>
+    </div>
+  </article>
+</Layout>

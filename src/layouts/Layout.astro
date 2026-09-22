@@ -1,0 +1,91 @@
+---
+import Navbar from '../components/daisy/Navbar.astro';
+import Footer from '../components/daisy/Footer.astro';
+import ThemeSwitcher from '../components/daisy/ThemeSwitcher.astro';
+import '../styles/global.css';
+
+// .astro pages pass title/description directly; .md pages pass frontmatter
+// under `content`/`frontmatter` (Astro markdown integration contract).
+interface Props {
+  title?: string; description?: string;
+  content?: { title?: string; description?: string; file?: string };
+  frontmatter?: { title?: string; description?: string; file?: string };
+}
+const fallback = 'Component registry template — pure Astro, raw JavaScript, DaisyUI.';
+const title = Astro.props.title || Astro.props.content?.title || Astro.props.frontmatter?.title || '';
+const description = Astro.props.description || Astro.props.content?.description || Astro.props.frontmatter?.description || fallback;
+// Markdown pages (e.g. /planning) get a readable-width container; UI pages
+// manage their own widths.
+const isDoc = String(Astro.props.content?.file || Astro.props.frontmatter?.file || '').endsWith('.md');
+const wrapCls = isDoc ? 'doc-wrap max-w-4xl mx-auto px-4 py-10' : '';
+
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+
+const NAV = [
+  { label: 'Components', href: '/', active: currentPath === '/' },
+  { label: 'Sections Showcase', href: '/sections', active: currentPath === '/sections' },
+  { label: 'Primitives Demo', href: '/demo', active: currentPath === '/demo' },
+  { label: 'Architecture & Map', href: '/planning', active: currentPath === '/planning' },
+];
+---
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <!-- Restore saved theme before first paint (no flash of wrong theme). -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('registry-theme');
+          if (t) document.documentElement.dataset.theme = t;
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body class="min-h-screen flex flex-col bg-base-100">
+    <Navbar links={NAV}>
+      <Fragment slot="actions">
+        <ThemeSwitcher />
+        <a href="https://daisyui.com" target="_blank" rel="noopener" class="btn btn-primary btn-sm hidden sm:inline-block">daisyUI 5 ↗</a>
+      </Fragment>
+    </Navbar>
+    <main class="flex-1">
+      <!-- doc-wrap (typography + link styles) is for markdown pages only;
+           UI pages manage their own widths and link styles. -->
+      <div class={wrapCls || undefined}>
+        <slot />
+      </div>
+    </main>
+    <Footer
+      cols={[
+        {
+          title: 'Registry',
+          links: [
+            { label: '1,524 Components', href: '/' },
+            { label: 'Live Sections Showcase', href: '/sections' },
+            { label: 'Primitives Demo', href: '/demo' },
+            { label: 'Architecture & Map', href: '/planning' }
+          ]
+        },
+        {
+          title: 'Technology',
+          links: [
+            { label: 'Astro 5.0 (Zero JS)', href: 'https://astro.build' },
+            { label: 'daisyUI 5 (35 Themes)', href: 'https://daisyui.com' },
+            { label: 'Tailwind CSS 4', href: 'https://tailwindcss.com' }
+          ]
+        },
+        {
+          title: 'Catalog Manifest',
+          links: [
+            { label: 'Relume Source (1,524)', href: 'https://www.relume.ai/react/components' },
+            { label: 'Component Map (Markdown)', href: '/planning' }
+          ]
+        },
+      ]}
+    />
+  </body>
+</html>

@@ -1,0 +1,21 @@
+---
+/**
+ * Table — daisyUI 5 `table` (llms.txt → Table: wrap in overflow-x-auto).
+ * Mirrors Relume's tables (10).
+ * @param {string[]} [head]
+ * @param {string[][]} [rows]
+ */
+const { head = [], rows = [] } = Astro.props;
+---
+<div class="overflow-x-auto">
+  <table class="table table-zebra">
+    <thead><tr>{head.map((h) => <th>{h}</th>)}</tr></thead>
+    <tbody>
+      {rows.map((r) => (
+        <tr>
+          {r.map((c, i) => i === 0 ? <th>{c}</th> : <td>{c}</td>)}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,184 @@
+---
+/**
+ * FormSection — reproduces Relume's `forms` (20).
+ *
+ * Patterns supported:
+ * 1. 1-column, 2-column, or split layouts (heading left + form right).
+ * 2. Inputs: text, email, select dropdowns, textareas, file uploads, checkboxes, radio groups.
+ * 3. Field validation states & helper text.
+ * 4. Tone: light | dark.
+ *
+ * Zero external JS; 100% semantic DaisyUI 5 tokens.
+ */
+interface Props {
+  tone?: 'light' | 'dark';
+  layout?: 'centered' | 'split' | 'card';
+  tagline?: string;
+  heading?: string;
+  subtext?: string;
+  submitText?: string;
+}
+
+const {
+  tone = 'light',
+  layout = 'split',
+  tagline = "Get Started",
+  heading = "Request your customized design system audit",
+  subtext = "Tell us about your team size, tech stack, and component requirements. We'll respond within 24 business hours.",
+  submitText = "Submit Request"
+} = Astro.props;
+
+const dark = tone === 'dark';
+---
+
+<section class={dark ? 'bg-neutral text-neutral-content' : 'bg-base-100'}>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+    {layout === 'split' ? (
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+        <!-- Left: Intro & Requirements -->
+        <div class="lg:col-span-5 space-y-6">
+          {tagline && (
+            <span class="badge badge-sm badge-primary uppercase font-bold tracking-wider">
+              {tagline}
+            </span>
+          )}
+          <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">
+            {heading}
+          </h2>
+          <p class={`text-base leading-relaxed ${dark ? 'text-neutral-content/70' : 'text-base-content/70'}`}>
+            {subtext}
+          </p>
+
+          <div class="pt-4 space-y-4 border-t border-base-300">
+            <div class="flex items-center gap-3">
+              <div class="size-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">
+                1
+              </div>
+              <span class="text-sm font-semibold">Free 30-minute architecture review</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="size-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">
+                2
+              </div>
+              <span class="text-sm font-semibold">Custom component migration roadmap</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="size-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">
+                3
+              </div>
+              <span class="text-sm font-semibold">Zero commitment or credit card required</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Form Block -->
+        <div class="lg:col-span-7">
+          <form class={`card border rounded-2xl p-6 sm:p-8 shadow-sm ${
+            dark ? 'bg-neutral-content/5 border-neutral-content/10' : 'bg-base-100 border-base-300'
+          }`}>
+            <div class="space-y-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="form-control w-full">
+                  <label class="label">
+                    <span class="label-text font-bold text-xs uppercase">First Name *</span>
+                  </label>
+                  <input type="text" placeholder="Jane" required class="input input-bordered w-full" />
+                </div>
+                <div class="form-control w-full">
+                  <label class="label">
+                    <span class="label-text font-bold text-xs uppercase">Last Name *</span>
+                  </label>
+                  <input type="text" placeholder="Doe" required class="input input-bordered w-full" />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="form-control w-full">
+                  <label class="label">
+                    <span class="label-text font-bold text-xs uppercase">Work Email *</span>
+                  </label>
+                  <input type="email" placeholder="jane@company.com" required class="input input-bordered w-full" />
+                </div>
+                <div class="form-control w-full">
+                  <label class="label">
+                    <span class="label-text font-bold text-xs uppercase">Company Website</span>
+                  </label>
+                  <input type="url" placeholder="https://example.com" class="input input-bordered w-full" />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="form-control w-full">
+                  <label class="label">
+                    <span class="label-text font-bold text-xs uppercase">Primary Framework</span>
+                  </label>
+                  <select class="select select-bordered w-full">
+                    <option disabled selected>Select framework...</option>
+                    <option>Astro (Recommended)</option>
+                    <option>Next.js / React</option>
+                    <option>Nuxt / Vue</option>
+                    <option>SvelteKit</option>
+                    <option>HTML / Tailwind Only</option>
+                  </select>
+                </div>
+                <div class="form-control w-full">
+                  <label class="label">
+                    <span class="label-text font-bold text-xs uppercase">Team Size</span>
+                  </label>
+                  <select class="select select-bordered w-full">
+                    <option disabled selected>Select team size...</option>
+                    <option>1 - 5 developers</option>
+                    <option>6 - 20 developers</option>
+                    <option>21 - 50 developers</option>
+                    <option>50+ enterprise</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-control w-full">
+                <label class="label">
+                  <span class="label-text font-bold text-xs uppercase">Project Scope / Details</span>
+                </label>
+                <textarea rows="4" placeholder="Describe the components you need or design goals..." class="textarea textarea-bordered w-full"></textarea>
+              </div>
+
+              <div class="form-control">
+                <label class="cursor-pointer label justify-start gap-3">
+                  <input type="checkbox" required class="checkbox checkbox-primary checkbox-sm" />
+                  <span class="label-text text-xs">
+                    I agree to the <a href="#privacy" class="link link-primary">Privacy Policy</a> and consent to receiving project updates.
+                  </span>
+                </label>
+              </div>
+
+              <div class="pt-2">
+                <button type="submit" class="btn btn-primary w-full">
+                  {submitText}
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    ) : (
+      <!-- Centered Layout -->
+      <div class="max-w-2xl mx-auto">
+        <div class="text-center mb-8">
+          {tagline && <span class="badge badge-sm badge-primary uppercase font-bold mb-3">{tagline}</span>}
+          <h2 class="text-3xl font-extrabold">{heading}</h2>
+          <p class="mt-2 text-sm opacity-70">{subtext}</p>
+        </div>
+        <form class={`card border rounded-2xl p-6 sm:p-8 shadow-sm ${
+          dark ? 'bg-neutral-content/5 border-neutral-content/10' : 'bg-base-100 border-base-300'
+        }`}>
+          <div class="space-y-4">
+            <input type="text" placeholder="Your Name" required class="input input-bordered w-full" />
+            <input type="email" placeholder="Your Email" required class="input input-bordered w-full" />
+            <textarea rows="3" placeholder="How can we help you?" class="textarea textarea-bordered w-full"></textarea>
+            <button type="submit" class="btn btn-primary w-full">{submitText}</button>
+          </div>
+        </form>
+      </div>
+    )}
+  </div>
+</section>

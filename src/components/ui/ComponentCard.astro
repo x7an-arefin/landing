@@ -1,0 +1,36 @@
+---
+/**
+ * ComponentCard — one catalog entry in the registry grid.
+ * Reference screenshot (light-mode capture) + name + category + status.
+ */
+import Badge from '../daisy/Badge.astro';
+import { type Component, slug, status } from '../../lib/registry.js';
+
+const { component: c } = Astro.props;
+const s = status(c);
+const badgeProps =
+  s === 'done' ? { variant: 'success' as const }
+  : s === 'wip' ? { variant: 'warning' as const }
+  : { style: 'ghost' as const };
+---
+<a
+  href={`/components/${slug(c)}`}
+  class="card bg-base-100 shadow-sm hover:shadow-lg transition-shadow"
+  data-card
+  data-name={c.name.toLowerCase()}
+  data-category={c.category}
+  data-status={s}
+>
+  <figure class="overflow-hidden">
+    {c.image
+      ? <img src={c.image} alt={c.name} loading="lazy" class="reference-shot w-full" />
+      : <div class="aspect-video bg-base-200 flex items-center justify-center text-sm opacity-50">no image</div>}
+  </figure>
+  <div class="card-body py-3">
+    <div class="flex items-start justify-between gap-2">
+      <h2 class="card-title text-base leading-tight">{c.name}</h2>
+      <Badge size="xs" {...badgeProps}>{s}</Badge>
+    </div>
+    <p class="text-xs opacity-60 truncate">{c.category}</p>
+  </div>
+</a>

@@ -1,0 +1,16 @@
+---
+/** Badge — daisyUI 5 `badge`. */
+const {
+  variant = '', // '' | primary | secondary | accent | neutral | info | success | warning | error
+  style = '',   // '' | outline | dash | soft | ghost
+  size = 'md',  // xs | sm | md | lg | xl
+} = Astro.props;
+
+const cls = [
+  'badge',
+  `badge-${size}`,
+  variant && (style ? `badge-${variant} badge-${style}` : `badge-${variant}`),
+  !variant && style && `badge-${style}`,
+].filter(Boolean).join(' ');
+---
+<span class={cls}><slot /></span>

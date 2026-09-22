@@ -1,0 +1,186 @@
+---
+/**
+ * CategoryFilter — reproduces Relume's `category-filters` category (6 components).
+ *
+ * Two layouts, one component:
+ *  - variant="sidebar" (filters1–4): "Filters" card with Clear all, a
+ *    "Showing X of Y" count, a category link list, and collapsible/inline
+ *    filter groups (checkbox or radio lists, per-group Clear, tag chips,
+ *    optional Apply). Content slot sits to the right.
+ *  - variant="bar" (filters5–6): horizontal toolbar — Filters button, tab
+ *    buttons, Sort-by select, "Showing X of Y", optional search input, a row
+ *    of <select> facets, and tag chips. Content slot sits below.
+ *
+ * These render the *control structure* with daisyUI `menu`/`badge`/`select`/
+ * `input`/`btn`. Actual result filtering is application logic (consumer JS);
+ * the component ships the correct, theme-aware markup. Zero JS.
+ */
+export interface FilterGroup {
+  title: string;
+  type: 'checkbox' | 'radio';
+  options: string[];
+  /** index into options that is pre-selected (radio "All" default, etc.) */
+  selected?: number;
+}
+interface Props {
+  variant?: 'sidebar' | 'bar';
+  title?: string;
+  showing?: { current: number; total: number };
+  categories?: string[];
+  groups?: FilterGroup[];
+  /** sidebar: wrap each group in <details> (filters1–2) vs always open (filters3–4) */
+  collapsible?: boolean;
+  chips?: string[];
+  /** bar: tab labels (filters5) */
+  tabs?: string[];
+  /** bar: facet select option lists (filters5) */
+  selects?: string[][];
+  search?: boolean;
+  sort?: boolean;
+  apply?: boolean;
+  clearAll?: boolean;
+}
+const {
+  variant = 'sidebar',
+  title = 'Filters',
+  showing = { current: 0, total: 100 },
+  categories = ['All', 'Category One', 'Category Two', 'Category Three'],
+  groups = [],
+  collapsible = true,
+  chips = [],
+  tabs = [],
+  selects = [],
+  search = false,
+  sort = true,
+  apply = false,
+  clearAll = true,
+} = Astro.props;
+
+const name = (i: number) => `cf-${variant}-${i}-${Math.random().toString(36).slice(2, 6)}`;
+
+// (frontmatter is TS, not TSX — icons are strings rendered via set:html)
+const CHEVRON = '<svg xmlns="http://www.w3.org/2000/svg" class="size-4 opacity-50 group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>';
+const chip = (label: string) =>
+  `<span class="badge badge-ghost gap-1 py-1">
+    <span>${label}</span>
+    <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
+  </span>`;
+const SORTBY =
+  `<label class="flex items-center gap-2 text-sm opacity-70">
+    Sort by
+    <select class="select select-bordered select-sm w-auto">
+      <option>Featured</option>
+      <option>Newest</option>
+      <option>Oldest</option>
+      <option>Name A–Z</option>
+    </select>
+  </label>`;
+const SEARCHBOX =
+  `<label class="input input-bordered gap-2">
+    <svg xmlns="http://www.w3.org/2000/svg" class="size-4 opacity-40 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>
+    <input type="search" placeholder="Search" class="grow" />
+  </label>`;
+
+---
+{variant === 'sidebar' ? (
+  <div class="grid gap-8 lg:grid-cols-[280px_1fr]">
+    <aside class="card bg-base-100 shadow-sm h-fit">
+      <div class="card-body gap-4 p-6">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-bold">{title}</h2>
+          {clearAll && <button class="link link-hover text-sm">Clear all</button>}
+        </div>
+        <p class="text-xs opacity-50">Showing {showing.current} of {showing.total}</p>
+
+        <ul class="menu menu-vertical p-0 gap-0 border-b border-base-300">
+          {categories.map((c, i) => (
+            <li><a class={i === 0 ? 'font-semibold underline underline-offset-4' : ''}>{c}</a></li>
+          ))}
+        </ul>
+
+        {groups.map((g, i) => {
+          const gid = name(i);
+          const inner = (
+            <Fragment>
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-sm">{g.title}</span>
+                <button class="text-xs opacity-50 hover:opacity-100">Clear</button>
+              </div>
+              <ul class="space-y-2 pt-1">
+                {g.type === 'radio' && (
+                  <li><label class="cursor-pointer flex items-center gap-2 text-sm"><input type="radio" name={gid} class="radio radio-sm radio-primary" checked={g.selected === 0 ? undefined : false} />All</label></li>
+                )}
+                {g.options.map((o, oi) => (
+                  <li key={o}>
+                    <label class="cursor-pointer flex items-center gap-2 text-sm">
+                      <input type={g.type} name={g.type === 'radio' ? gid : undefined} class={g.type === 'radio' ? 'radio radio-sm radio-primary' : 'checkbox checkbox-sm checkbox-primary'} checked={g.selected === oi ? true : undefined} />
+                      {o}
+                    </label>
+                  </li>
+                ))}
+              </ul>
+            </Fragment>
+          );
+          return collapsible ? (
+            <details key={g.title} class="group border-b border-base-300 py-2">
+              <summary class="flex items-center justify-between cursor-pointer font-bold text-sm list-none">
+                {g.title}<span set:html={CHEVRON} />
+              </summary>
+              <div class="pt-2">{inner}</div>
+            </details>
+          ) : (
+            <div key={g.title} class="border-b border-base-300 py-3">{inner}</div>
+          );
+        })}
+
+        {chips.length > 0 && <div class="flex flex-wrap gap-2">{chips.map((c) => <span key={c} set:html={chip(c)} />)}</div>}
+        {apply && <button class="btn btn-primary btn-sm w-full">Apply</button>}
+      </div>
+    </aside>
+
+    <div>
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex flex-wrap gap-2">{chips.length > 0 ? chips.map((c) => <span key={c} set:html={chip(c)} />) : <span />}</div>
+        {sort && <span set:html={SORTBY} />} 
+      </div>
+      <slot />
+    </div>
+  </div>
+) : (
+  <div>
+    <div class="flex flex-wrap items-center gap-3 mb-4">
+      <button class="btn btn-ghost btn-sm gap-1">
+        <svg xmlns="http://www.w3.org/2000/svg" class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" /></svg>
+        {title}
+      </button>
+      {tabs.length > 0 && (
+        <div class="tabs tabs-box">
+          {tabs.map((t, i) => (
+            <Fragment key={t}>
+              <input type="radio" name={`cf-${variant}-tab`} id={`cf-${variant}-tab-${i}`} class="tab" checked={i === 0 ? undefined : false} />
+              <label class="tab text-sm" for={`cf-${variant}-tab-${i}`}>{t}</label>
+            </Fragment>
+          ))}
+        </div>
+      )}
+      <div class="grow" />
+      <span class="text-sm opacity-60">Showing {showing.current} of {showing.total}</span>
+      {sort && <span set:html={SORTBY} />} 
+    </div>
+
+    <div class="flex flex-wrap items-center gap-3">
+      {search && <div class="w-full sm:w-64"><span set:html={SEARCHBOX} /></div>}
+      {selects.map((s, i) => (
+        <select key={i} class="select select-bordered select-sm w-full sm:w-auto">
+          {s.map((o, j) => <option key={o} selected={j === 0 ? undefined : false}>{o}</option>)}
+        </select>
+      ))}
+      <div class="grow" />
+      {chips.map((c) => <span key={c} set:html={chip(c)} />)}
+    </div>
+
+    <div class="mt-6">
+      <slot />
+    </div>
+  </div>
+)}

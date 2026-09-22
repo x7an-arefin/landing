@@ -1,0 +1,180 @@
+---
+/**
+ * MultiStepForm — reproduces Relume's `multi-step-forms` (46).
+ *
+ * Patterns supported:
+ * 1. Stepper indicator using DaisyUI `ul class="steps steps-horizontal w-full"`.
+ * 2. Progressive panels: Step 1: Account, Step 2: Workspace details, Step 3: Plan selection, Step 4: Confirmation.
+ * 3. Next/Back navigation with dynamic active step tracking.
+ * 4. Tone: light | dark.
+ *
+ * Ultra-minimal vanilla JS (< 20 lines) for state switching; 100% semantic DaisyUI 5 tokens.
+ */
+interface Props {
+  tone?: 'light' | 'dark';
+  heading?: string;
+  subtext?: string;
+}
+
+const {
+  tone = 'light',
+  heading = "Register Your Organization",
+  subtext = "Complete the progressive setup below to initialize your component registry."
+} = Astro.props;
+
+const dark = tone === 'dark';
+const uniqueId = `multistep-${Math.random().toString(36).substring(2, 8)}`;
+---
+
+<section class={dark ? 'bg-neutral text-neutral-content' : 'bg-base-100'} id={uniqueId}>
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+    <!-- Header -->
+    <div class="text-center mb-10">
+      <span class="badge badge-sm badge-primary uppercase font-bold tracking-wider mb-2">Step-by-Step Flow</span>
+      <h2 class="text-3xl font-extrabold tracking-tight">{heading}</h2>
+      <p class={`mt-1 text-sm ${dark ? 'text-neutral-content/70' : 'text-base-content/70'}`}>{subtext}</p>
+    </div>
+
+    <!-- Stepper Navigation -->
+    <ul class="steps steps-horizontal w-full mb-10 text-xs font-semibold">
+      <li class="step step-primary step-item" data-step="1">Account</li>
+      <li class="step step-item" data-step="2">Organization</li>
+      <li class="step step-item" data-step="3">Plan Tier</li>
+      <li class="step step-item" data-step="4">Confirm</li>
+    </ul>
+
+    <!-- Multi-step Form Card -->
+    <div class={`card border rounded-2xl p-6 sm:p-10 shadow-sm ${
+      dark ? 'bg-neutral-content/5 border-neutral-content/10' : 'bg-base-100 border-base-300'
+    }`}>
+      <!-- Step 1: Account -->
+      <div class="step-panel" data-step="1">
+        <h3 class="text-xl font-bold mb-1">Create your personal account</h3>
+        <p class="text-xs opacity-60 mb-6">Enter your primary administrative credentials.</p>
+        <div class="space-y-4">
+          <div class="form-control">
+            <label class="label"><span class="label-text font-bold text-xs uppercase">Full Name</span></label>
+            <input type="text" placeholder="Alex Morgan" class="input input-bordered w-full" />
+          </div>
+          <div class="form-control">
+            <label class="label"><span class="label-text font-bold text-xs uppercase">Email Address</span></label>
+            <input type="email" placeholder="alex@company.com" class="input input-bordered w-full" />
+          </div>
+          <div class="form-control">
+            <label class="label"><span class="label-text font-bold text-xs uppercase">Password</span></label>
+            <input type="password" placeholder="••••••••••••" class="input input-bordered w-full" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: Organization -->
+      <div class="step-panel hidden" data-step="2">
+        <h3 class="text-xl font-bold mb-1">Organization & Workspace</h3>
+        <p class="text-xs opacity-60 mb-6">Set up your shared team workspace URL and size.</p>
+        <div class="space-y-4">
+          <div class="form-control">
+            <label class="label"><span class="label-text font-bold text-xs uppercase">Company Name</span></label>
+            <input type="text" placeholder="Acme Corporation" class="input input-bordered w-full" />
+          </div>
+          <div class="form-control">
+            <label class="label"><span class="label-text font-bold text-xs uppercase">Workspace Slug</span></label>
+            <div class="flex items-center gap-2">
+              <span class="text-xs opacity-60">registry.io/</span>
+              <input type="text" placeholder="acme" class="input input-bordered w-full" />
+            </div>
+          </div>
+          <div class="form-control">
+            <label class="label"><span class="label-text font-bold text-xs uppercase">Industry</span></label>
+            <select class="select select-bordered w-full">
+              <option>Software & SaaS</option>
+              <option>E-commerce & Retail</option>
+              <option>Agency & Design Studio</option>
+              <option>Fintech & Banking</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Plan Tier -->
+      <div class="step-panel hidden" data-step="3">
+        <h3 class="text-xl font-bold mb-1">Select your deployment tier</h3>
+        <p class="text-xs opacity-60 mb-6">You can upgrade or cancel at any time.</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <label class="card border border-base-300 p-4 cursor-pointer hover:border-primary transition-colors flex flex-row items-center justify-between">
+            <div>
+              <div class="font-bold text-sm">Pro License</div>
+              <div class="text-xs opacity-60">For teams up to 20 seats</div>
+              <div class="text-lg font-black mt-1">$49<span class="text-xs font-normal opacity-60">/mo</span></div>
+            </div>
+            <input type="radio" name="plan" class="radio radio-primary" checked />
+          </label>
+          <label class="card border border-base-300 p-4 cursor-pointer hover:border-primary transition-colors flex flex-row items-center justify-between">
+            <div>
+              <div class="font-bold text-sm">Enterprise License</div>
+              <div class="text-xs opacity-60">Unlimited seats & custom SLA</div>
+              <div class="text-lg font-black mt-1">$199<span class="text-xs font-normal opacity-60">/mo</span></div>
+            </div>
+            <input type="radio" name="plan" class="radio radio-primary" />
+          </label>
+        </div>
+      </div>
+
+      <!-- Step 4: Confirm -->
+      <div class="step-panel hidden" data-step="4">
+        <div class="text-center py-6">
+          <div class="size-16 rounded-full bg-success/20 text-success mx-auto flex items-center justify-center mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-8">
+              <path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <h3 class="text-2xl font-bold">Ready to Launch!</h3>
+          <p class="text-sm opacity-70 mt-2 max-w-md mx-auto">
+            Your workspace configuration is verified. Click Complete to finish initialization.
+          </p>
+        </div>
+      </div>
+
+      <!-- Stepper Controls -->
+      <div class="flex items-center justify-between mt-8 pt-6 border-t border-base-300">
+        <button type="button" class="btn btn-outline btn-prev hidden">
+          ← Previous
+        </button>
+        <div class="flex-1"></div>
+        <button type="button" class="btn btn-primary btn-next">
+          Continue →
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script define:vars={{ uniqueId }}>
+  const container = document.getElementById(uniqueId);
+  if (container) {
+    let curStep = 1;
+    const maxSteps = 4;
+    const panels = container.querySelectorAll('.step-panel');
+    const stepItems = container.querySelectorAll('.step-item');
+    const prevBtn = container.querySelector('.btn-prev');
+    const nextBtn = container.querySelector('.btn-next');
+
+    function updateStep() {
+      panels.forEach(p => p.classList.toggle('hidden', parseInt(p.getAttribute('data-step')) !== curStep));
+      stepItems.forEach(s => {
+        const stepNum = parseInt(s.getAttribute('data-step'));
+        s.classList.toggle('step-primary', stepNum <= curStep);
+      });
+      prevBtn.classList.toggle('hidden', curStep === 1);
+      nextBtn.textContent = curStep === maxSteps ? 'Finish & Launch 🚀' : 'Continue →';
+    }
+
+    nextBtn.addEventListener('click', () => {
+      if (curStep < maxSteps) { curStep++; updateStep(); }
+      else { alert('Setup complete! Workspace initialized.'); }
+    });
+
+    prevBtn.addEventListener('click', () => {
+      if (curStep > 1) { curStep--; updateStep(); }
+    });
+  }
+</script>

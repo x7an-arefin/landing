@@ -1,0 +1,229 @@
+---
+/**
+ * ProductHeader — reproduces Relume's `product-headers` (9).
+ *
+ * Patterns supported:
+ * 1. Split hero layout: product visual/gallery left + product details right.
+ * 2. Variant selection: color swatches, size selection buttons.
+ * 3. Quantity counter with increment/decrement buttons.
+ * 4. Stock status badge ("In Stock - Ready to Ship").
+ * 5. Star reviews summary with total rating and count.
+ * 6. Primary and secondary action buttons (Add to Bag, Buy Now, Wishlist).
+ * 7. Tone: light | dark.
+ *
+ * Zero external JS; 100% semantic DaisyUI 5 tokens.
+ */
+interface Props {
+  tone?: 'light' | 'dark';
+  title?: string;
+  category?: string;
+  price?: string;
+  originalPrice?: string;
+  rating?: number;
+  reviewCount?: number;
+  description?: string;
+  images?: string[];
+  colors?: { name: string; class: string }[];
+  sizes?: string[];
+  inStock?: boolean;
+}
+
+const {
+  tone = 'light',
+  title = "Ultra-Lightweight Mechanical Keyboard",
+  category = "Workspace & Hardware",
+  price = "$149.00",
+  originalPrice = "$189.00",
+  rating = 5,
+  reviewCount = 124,
+  description = "Engineered with hot-swappable linear switches, aircraft-grade anodized aluminum body, and dynamic per-key RGB backlighting. Optimized for both macOS and Windows productivity workflows.",
+  images = [
+    "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?auto=format&fit=crop&w=800&q=80"
+  ],
+  colors = [
+    { name: "Matte Black", class: "bg-neutral" },
+    { name: "Silver Frost", class: "bg-base-300" },
+    { name: "Cyberpunk Violet", class: "bg-primary" },
+    { name: "Forest Emerald", class: "bg-success" }
+  ],
+  sizes = ["60% Compact", "75% Tenkeyless", "Full 100%"],
+  inStock = true
+} = Astro.props;
+
+const dark = tone === 'dark';
+---
+
+<section class={dark ? 'bg-neutral text-neutral-content' : 'bg-base-100'}>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+      <!-- Left: Image Gallery & Thumbnails -->
+      <div class="lg:col-span-7 space-y-4">
+        <!-- Main Image -->
+        <div class="aspect-[4/3] rounded-2xl overflow-hidden bg-base-200 border border-base-300">
+          <img
+            src={images[0]}
+            alt={title}
+            class="w-full h-full object-cover object-center"
+          />
+        </div>
+
+        <!-- Thumbnail Strip -->
+        {images.length > 1 && (
+          <div class="grid grid-cols-3 gap-4">
+            {images.map((img, idx) => (
+              <div class={`aspect-[4/3] rounded-xl overflow-hidden border-2 cursor-pointer transition-opacity ${
+                idx === 0 ? 'border-primary' : 'border-base-300 opacity-70 hover:opacity-100'
+              }`}>
+                <img src={img} alt={`${title} view ${idx + 1}`} class="w-full h-full object-cover" />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <!-- Right: Product Purchase Details -->
+      <div class="lg:col-span-5 space-y-6">
+        <div>
+          {category && (
+            <span class="text-xs uppercase font-bold tracking-wider text-primary mb-2 block">
+              {category}
+            </span>
+          )}
+          <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">
+            {title}
+          </h1>
+
+          <!-- Reviews & Stock -->
+          <div class="flex flex-wrap items-center gap-4 mt-3">
+            <div class="flex items-center gap-1.5">
+              <div class="rating rating-xs">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <input
+                    type="radio"
+                    class="mask mask-star-2 bg-warning cursor-default"
+                    checked={star === rating}
+                    disabled
+                  />
+                ))}
+              </div>
+              <span class="text-xs font-semibold opacity-70">
+                {rating}.0 ({reviewCount} reviews)
+              </span>
+            </div>
+
+            <span class="text-base-content/20">•</span>
+
+            {inStock ? (
+              <span class="badge badge-sm badge-success font-medium gap-1">
+                <span class="size-1.5 rounded-full bg-success-content inline-block"></span>
+                In Stock
+              </span>
+            ) : (
+              <span class="badge badge-sm badge-ghost font-medium opacity-70">
+                Out of Stock
+              </span>
+            )}
+          </div>
+        </div>
+
+        <!-- Price -->
+        <div class="flex items-baseline gap-3 py-2 border-y border-base-300">
+          <span class="text-3xl sm:text-4xl font-black">{price}</span>
+          {originalPrice && (
+            <span class="text-lg line-through opacity-50 font-medium">{originalPrice}</span>
+          )}
+          {originalPrice && (
+            <span class="badge badge-error badge-sm font-bold text-error-content">
+              Save 21%
+            </span>
+          )}
+        </div>
+
+        <!-- Description -->
+        <p class={`text-sm sm:text-base leading-relaxed ${dark ? 'text-neutral-content/70' : 'text-base-content/70'}`}>
+          {description}
+        </p>
+
+        <!-- Color Swatches -->
+        {colors.length > 0 && (
+          <div class="space-y-2.5">
+            <span class="text-xs font-bold uppercase tracking-wider block">Finish / Color</span>
+            <div class="flex items-center gap-3">
+              {colors.map((c, idx) => (
+                <button
+                  type="button"
+                  title={c.name}
+                  class={`size-8 rounded-full border-2 transition-transform hover:scale-110 ${c.class} ${
+                    idx === 0 ? 'border-primary ring-2 ring-primary/40' : 'border-base-300'
+                  }`}
+                  aria-label={c.name}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        <!-- Size / Layout Options -->
+        {sizes.length > 0 && (
+          <div class="space-y-2.5">
+            <div class="flex justify-between items-center text-xs font-bold uppercase tracking-wider">
+              <span>Layout Edition</span>
+              <a href="#size-guide" class="link link-primary lowercase font-normal">guide</a>
+            </div>
+            <div class="grid grid-cols-3 gap-2">
+              {sizes.map((s, idx) => (
+                <button
+                  type="button"
+                  class={`btn btn-sm ${idx === 0 ? 'btn-primary' : 'btn-outline'}`}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <!-- Quantity & Add to Cart -->
+        <div class="pt-4 space-y-3">
+          <div class="flex items-center gap-3">
+            <!-- Quantity counter mock -->
+            <div class="join border border-base-300 rounded-lg">
+              <button class="join-item btn btn-sm btn-ghost px-3" aria-label="Decrease">−</button>
+              <span class="join-item px-4 flex items-center text-sm font-semibold">1</span>
+              <button class="join-item btn btn-sm btn-ghost px-3" aria-label="Increase">+</button>
+            </div>
+
+            <button class="btn btn-primary flex-1">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
+                <path d="M1 1.75A.75.75 0 011.75 1h1.628a1.75 1.75 0 011.734 1.51L5.342 4H16.25a1.75 1.75 0 011.706 2.164l-1.5 6A1.75 1.75 0 0114.75 13.5H7.132a1.75 1.75 0 01-1.734-1.51L4.22 3.125a.25.25 0 00-.248-.215H1.75A.75.75 0 011 1.75zM6 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm9 0a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
+              </svg>
+              Add to Bag
+            </button>
+          </div>
+
+          <button class="btn btn-outline w-full">
+            Buy Now with 1-Click
+          </button>
+        </div>
+
+        <!-- Assurances -->
+        <div class="grid grid-cols-2 gap-4 pt-4 border-t border-base-300 text-xs opacity-80">
+          <div class="flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4 text-success">
+              <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
+            </svg>
+            <span>Free 2-day express shipping</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4 text-success">
+              <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
+            </svg>
+            <span>30-day hassle-free returns</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

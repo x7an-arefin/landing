@@ -1,0 +1,89 @@
+---
+/**
+ * OnboardingForm — reproduces Relume's `onboarding-forms` (17).
+ *
+ * Patterns supported:
+ * 1. Visual welcome card + role selection tiles.
+ * 2. Multi-select capability tags / team setup.
+ * 3. Progress bar indicator.
+ * 4. Tone: light | dark.
+ *
+ * Zero external JS; 100% semantic DaisyUI 5 tokens.
+ */
+interface Props {
+  tone?: 'light' | 'dark';
+  tagline?: string;
+  heading?: string;
+  subtext?: string;
+}
+
+const {
+  tone = 'light',
+  tagline = "Welcome Aboard",
+  heading = "How do you plan to use the component library?",
+  subtext = "Help us personalize your dashboard experience by selecting your primary focus."
+} = Astro.props;
+
+const dark = tone === 'dark';
+
+const roles = [
+  { id: 'solo', title: 'Solo Developer / Freelancer', desc: 'Building client websites and independent side products', icon: '💻' },
+  { id: 'agency', title: 'Digital Agency / Studio', desc: 'Delivering multiple client landing pages every month', icon: '🚀' },
+  { id: 'startup', title: 'Startup / Product Team', desc: 'Rapidly shipping UI features for a core software product', icon: '⚡' },
+  { id: 'enterprise', title: 'Enterprise Design System', desc: 'Standardizing accessible UI across global business units', icon: '🏢' }
+];
+---
+
+<section class={dark ? 'bg-neutral text-neutral-content' : 'bg-base-100'}>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+    <!-- Progress Indicator -->
+    <div class="max-w-md mx-auto mb-8">
+      <div class="flex justify-between text-xs font-bold uppercase tracking-wider mb-2 opacity-70">
+        <span>Setup Progress</span>
+        <span>Step 2 of 3</span>
+      </div>
+      <progress class="progress progress-primary w-full" value="66" max="100"></progress>
+    </div>
+
+    <!-- Header -->
+    <div class="text-center mb-10">
+      {tagline && (
+        <span class="badge badge-sm badge-primary uppercase font-bold tracking-wider mb-2">
+          {tagline}
+        </span>
+      )}
+      <h2 class="text-3xl font-extrabold tracking-tight">{heading}</h2>
+      <p class={`mt-2 text-sm max-w-xl mx-auto ${dark ? 'text-neutral-content/70' : 'text-base-content/70'}`}>
+        {subtext}
+      </p>
+    </div>
+
+    <!-- Role Selection Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+      {roles.map((r) => (
+        <label class={`card border rounded-2xl p-6 cursor-pointer hover:border-primary transition-all duration-200 flex flex-row items-start gap-4 ${
+          dark ? 'bg-neutral-content/5 border-neutral-content/10' : 'bg-base-100 border-base-300'
+        }`}>
+          <div class="text-3xl p-2 rounded-xl bg-base-200 shrink-0">
+            {r.icon}
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-base">{r.title}</span>
+              <input type="radio" name="onboarding-role" class="radio radio-primary radio-sm" />
+            </div>
+            <p class={`text-xs mt-1 leading-relaxed ${dark ? 'text-neutral-content/70' : 'text-base-content/70'}`}>
+              {r.desc}
+            </p>
+          </div>
+        </label>
+      ))}
+    </div>
+
+    <!-- Bottom Actions -->
+    <div class="flex items-center justify-between max-w-md mx-auto pt-4">
+      <button class="btn btn-ghost text-xs">Skip for now</button>
+      <button class="btn btn-primary">Continue to Dashboard →</button>
+    </div>
+  </div>
+</section>

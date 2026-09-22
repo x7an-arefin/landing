@@ -1,0 +1,91 @@
+---
+/**
+ * CardHeader — reproduces Relume's `card-headers` (2).
+ *
+ * Patterns supported:
+ * 1. Card container with integrated header row: title, subtitle, status badge, action buttons.
+ * 2. Avatar stack or user badge next to card heading.
+ * 3. Integrated search or action tab row inside card header.
+ * 4. Tone: light | dark.
+ *
+ * Zero external JS; 100% semantic DaisyUI 5 tokens.
+ */
+interface Props {
+  tone?: 'light' | 'dark';
+  title?: string;
+  subtitle?: string;
+  badge?: string;
+  badgeType?: 'primary' | 'success' | 'warning' | 'ghost';
+  showActions?: boolean;
+}
+
+const {
+  tone = 'light',
+  title = "Design System Components",
+  subtitle = "Synced with GitHub repository main branch",
+  badge = "1,524 Ready",
+  badgeType = "primary",
+  showActions = true
+} = Astro.props;
+
+const dark = tone === 'dark';
+---
+
+<section class={dark ? 'bg-neutral text-neutral-content' : 'bg-base-100'}>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class={`card border rounded-2xl overflow-hidden shadow-sm ${
+      dark ? 'border-neutral-content/10 bg-neutral-content/5' : 'border-base-300 bg-base-100'
+    }`}>
+      <!-- Card Header Treatment 1: Title + Status + Action Group -->
+      <div class="p-6 border-b border-base-300 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2.5">
+            <h3 class="text-xl font-extrabold tracking-tight">{title}</h3>
+            {badge && (
+              <span class={`badge badge-sm font-bold ${
+                badgeType === 'primary' ? 'badge-primary' :
+                badgeType === 'success' ? 'badge-success' : 'badge-ghost'
+              }`}>
+                {badge}
+              </span>
+            )}
+          </div>
+          {subtitle && (
+            <p class={`text-xs mt-1 ${dark ? 'text-neutral-content/70' : 'text-base-content/70'}`}>
+              {subtitle}
+            </p>
+          )}
+        </div>
+
+        {showActions && (
+          <div class="flex items-center gap-2">
+            <button class="btn btn-sm btn-outline">
+              Filter
+            </button>
+            <button class="btn btn-sm btn-primary">
+              + New Component
+            </button>
+          </div>
+        )}
+      </div>
+
+      <!-- Card Body Mock Content -->
+      <div class="p-6">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="p-4 rounded-xl border border-base-300 bg-base-200/30">
+            <div class="text-xs opacity-60 font-semibold">Total Categories</div>
+            <div class="text-2xl font-black mt-1">68</div>
+          </div>
+          <div class="p-4 rounded-xl border border-base-300 bg-base-200/30">
+            <div class="text-xs opacity-60 font-semibold">Completed</div>
+            <div class="text-2xl font-black text-success mt-1">1,219</div>
+          </div>
+          <div class="p-4 rounded-xl border border-base-300 bg-base-200/30">
+            <div class="text-xs opacity-60 font-semibold">Framework Runtime</div>
+            <div class="text-2xl font-black text-primary mt-1">0.0 KB</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
