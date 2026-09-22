@@ -1,0 +1,385 @@
+# ASTRO + DAISYUI COMPONENT REGISTRY — LLM AGENT SPECIFICATION & DEVELOPER MANUAL
+# File: llms.txt
+# Version: 1.0.0
+# Framework: Astro 5.x + DaisyUI 5.x + Tailwind CSS 4.x
+# Catalog: 1,524 Components across 68 Categories (Full Relume Reproduction)
+
+> This document is designed for AI Coding Agents and LLMs to construct, compose, and assemble any kind of high-converting, accessible, and ultra-fast landing page in Astro.js using this component registry.
+
+---
+
+## 1. CORE ARCHITECTURAL LAWS
+
+When building any Astro landing page with this registry, you MUST adhere to these four fundamental laws:
+
+1. **Strict Zero-JS Runtime Overhead**:
+   - All navigation drawers, dropdowns, accordions, tabs, dialog modals, and rating stars MUST rely exclusively on native HTML5 (`<dialog>`, `<details>`, `<summary>`, radio/checkbox inputs) and CSS pseudo-classes.
+   - Do NOT import React, Vue, Svelte, or client-side UI libraries.
+   - Script tags are only permissible for minor state transitions (e.g. progressive multi-step forms or theme switching), kept under 15 lines of raw vanilla JavaScript.
+
+2. **Instant Semantic Theming (Zero Hardcoded Hex / Colors)**:
+   - NEVER use hardcoded color values (`#ffffff`, `rgb(...)`, `#0f172a`) or arbitrary Tailwind shades (`bg-gray-100`, `text-blue-500`, `border-slate-800`).
+   - ALWAYS use DaisyUI 5 semantic color tokens:
+     - Backgrounds: `bg-base-100`, `bg-base-200`, `bg-base-300`, `bg-neutral`
+     - Text: `text-base-content`, `text-neutral-content`, `text-primary-content`
+     - Brand Tokens: `bg-primary`, `text-primary`, `bg-secondary`, `bg-accent`
+     - Status: `badge-success`, `badge-warning`, `badge-error`, `badge-info`
+     - Borders: `border-base-300`, `divide-base-300`
+   - By following this, switching `data-theme="..."` on `<html>` (e.g., `light`, `dark`, `cyberpunk`, `retro`, `synthwave`, `cupcake`, `dracula`) instantly re-skins the entire site with ZERO stylesheet rebuilds.
+
+3. **Tone Inversion Rule**:
+   - Section components support `tone="light"` (default `bg-base-100`) and `tone="dark"` (using `bg-neutral text-neutral-content`).
+   - Inside `tone="dark"` sections, child cards must use translucent overlays (e.g., `bg-neutral-content/10 border-neutral-content/10`) to maintain flawless color harmony in any theme.
+
+4. **Self-Contained Composable Architecture**:
+   - Every section lives in `src/components/sections/<ComponentName>.astro`.
+   - Every DaisyUI primitive lives in `src/components/daisy/<PrimitiveName>.astro`.
+   - Import what you need directly in your Astro frontmatter (`---`).
+
+---
+
+## 2. COMPONENT DIRECTORY & IMPORT CATALOG
+
+All components are located in `src/components/sections/` and can be imported directly into any `.astro` page.
+
+### A. Navigation & Shells
+- `Navbar.astro` — Full responsive header (inline links, mega-menus, dark tone, mobile drawer)
+  `import Navbar from '../components/sections/Navbar.astro';`
+- `Topbar.astro` — Utility banner strip with search, currency, notifications, user avatar
+  `import Topbar from '../components/sections/Topbar.astro';`
+- `AppShell.astro` — Full responsive SaaS application shell with collapsible drawer and dashboard header
+  `import AppShell from '../components/sections/AppShell.astro';`
+- `Sidebar.astro` — Vertical navigation tree with workspace switcher and profile footer
+  `import Sidebar from '../components/sections/Sidebar.astro';`
+- `Footer.astro` — Multi-column footer with newsletter capture and social links
+  `import Footer from '../components/sections/Footer.astro';`
+- `CategoryFilter.astro` — Horizontal scrollable tag filter pills with active state
+  `import CategoryFilter from '../components/sections/CategoryFilter.astro';`
+
+### B. Hero & CTA Headers
+- `Hero.astro` — Standard & centered heroes with image/video media, button group, or email capture
+  `import Hero from '../components/sections/Hero.astro';`
+- `HeroOffGrid.astro` — Asymmetric editorial hero with off-grid floating image compositions
+  `import HeroOffGrid from '../components/sections/HeroOffGrid.astro';`
+- `PageHeader.astro` — Editorial subpage header with breadcrumbs and metadata
+  `import PageHeader from '../components/sections/PageHeader.astro';`
+- `HeaderSection.astro` — Large typographic header with search input bar and breadcrumbs
+  `import HeaderSection from '../components/sections/HeaderSection.astro';`
+- `Cta.astro` — High-conversion call-to-action bands (contained card, split, email subscribe)
+  `import Cta from '../components/sections/Cta.astro';`
+
+### C. Feature Sections
+- `FeatureSplit.astro` — Classic 50/50 side-by-side feature block (text left/right, media opposite)
+  `import FeatureSplit from '../components/sections/FeatureSplit.astro';`
+- `FeatureCols.astro` — 2, 3, or 4 column feature grid with cards, icons, and CTA links
+  `import FeatureCols from '../components/sections/FeatureCols.astro';`
+- `FeatureBento.astro` — High-impact Bento grids (6 asymmetric layout presets `a` through `f`)
+  `import FeatureBento from '../components/sections/FeatureBento.astro';`
+- `FeatureOffGrid.astro` — Editorial magazine-style feature layouts with broken grids
+  `import FeatureOffGrid from '../components/sections/FeatureOffGrid.astro';`
+- `FeatureOverlapping.astro` — Layered image cards with overlapping text panels
+  `import FeatureOverlapping from '../components/sections/FeatureOverlapping.astro';`
+- `FeatureTabs.astro` — Pure CSS interactive tabbed feature showcase (`underline` or `box` tabs)
+  `import FeatureTabs from '../components/sections/FeatureTabs.astro';`
+- `LongForm.astro` — Technical documentation and article layout with optional media floats
+  `import LongForm from '../components/sections/LongForm.astro';`
+
+### D. Social Proof, Trust & Metrics
+- `LogoGrid.astro` — Partner/client logo trust banner (centered or split layout)
+  `import LogoGrid from '../components/sections/LogoGrid.astro';`
+- `Testimonial.astro` — Customer quote cards, rating stars, reviewer avatars, single or multi-grid
+  `import Testimonial from '../components/sections/Testimonial.astro';`
+- `Stats.astro` — Metric highlights (numeric counters, percentage pills, card or band layout)
+  `import Stats from '../components/sections/Stats.astro';`
+- `Team.astro` — Team member directory with squircle avatars, roles, bios, and social links
+  `import Team from '../components/sections/Team.astro';`
+- `Faq.astro` — Single-open pure CSS accordion using `<input type="radio">` and `.collapse-plus`
+  `import Faq from '../components/sections/Faq.astro';`
+- `Timeline.astro` — Company history, roadmap, or product milestones in vertical daisyUI timeline
+  `import Timeline from '../components/sections/Timeline.astro';`
+- `Comparison.astro` — Feature comparison table with check/cross badges across pricing tiers
+  `import Comparison from '../components/sections/Comparison.astro';`
+
+### E. Content, Marketing & Media
+- `Blog.astro` — Blog post cards with category badges, author avatars, and read times
+  `import Blog from '../components/sections/Blog.astro';`
+- `Gallery.astro` — Responsive image showcases (grid, featured hero, or masonry layout)
+  `import Gallery from '../components/sections/Gallery.astro';`
+- `Portfolio.astro` — Case study and project portfolio showcase with category filter pills
+  `import Portfolio from '../components/sections/Portfolio.astro';`
+- `Events.astro` — Upcoming event cards with calendar date badges, RSVP actions, and summit hero
+  `import Events from '../components/sections/Events.astro';`
+- `Careers.astro` — Job openings grouped by department with location pills and apply buttons
+  `import Careers from '../components/sections/Careers.astro';`
+- `LinksPage.astro` — Mobile-first link-in-bio hub with profile avatar and action buttons
+  `import LinksPage from '../components/sections/LinksPage.astro';`
+
+### F. Pricing, Commerce & Lists
+- `Pricing.astro` — 2, 3, or 4 tier plan cards with pure CSS monthly/yearly toggle and popular plan badge
+  `import Pricing from '../components/sections/Pricing.astro';`
+- `ProductList.astro` — Responsive e-commerce product catalog with star ratings and quick-add
+  `import ProductList from '../components/sections/ProductList.astro';`
+- `ProductHeader.astro` — Product detail hero with gallery thumbnails, color swatches, and purchase CTA
+  `import ProductHeader from '../components/sections/ProductHeader.astro';`
+- `DataTable.astro` — DaisyUI zebra data table with pin headers, squircle avatars, and pagination
+  `import DataTable from '../components/sections/DataTable.astro';`
+- `StackedList.astro` — Divided activity feed and deployment logs with status pills
+  `import StackedList from '../components/sections/StackedList.astro';`
+- `DescriptionList.astro` — Semantic `<dl>/<dt>/<dd>` key-value specification grid with file download badges
+  `import DescriptionList from '../components/sections/DescriptionList.astro';`
+- `CardHeader.astro` — Reusable container header with action buttons and summary metrics
+  `import CardHeader from '../components/sections/CardHeader.astro';`
+
+### G. Forms, Auth & Modals
+- `FormSection.astro` — Multi-field contact/inquiry form with select dropdowns, textareas, and consent checkbox
+  `import FormSection from '../components/sections/FormSection.astro';`
+- `MultiStepForm.astro` — 4-step progressive stepper with next/back state navigation
+  `import MultiStepForm from '../components/sections/MultiStepForm.astro';`
+- `OnboardingForm.astro` — User setup flow with progress bar and selectable role tiles
+  `import OnboardingForm from '../components/sections/OnboardingForm.astro';`
+- `AuthForm.astro` — Split-screen or centered login/sign-up page with Google/GitHub OAuth buttons
+  `import AuthForm from '../components/sections/AuthForm.astro';`
+- `AuthModal.astro` — Native HTML5 `<dialog>` authentication modal with backdrop dismiss
+  `import AuthModal from '../components/sections/AuthModal.astro';`
+- `Contact.astro` — Contact info cards (email, phone, address) + inquiry message form
+  `import Contact from '../components/sections/Contact.astro';`
+- `ContactModal.astro` — Direct inquiry `<dialog>` modal with instant feedback
+  `import ContactModal from '../components/sections/ContactModal.astro';`
+
+### H. System Chrome & Experimental
+- `Banner.astro` — Top announcement bar or floating notification toast with dismiss button
+  `import Banner from '../components/sections/Banner.astro';`
+- `GridList.astro` — Dense category directory tiles with icon badges and count tags
+  `import GridList from '../components/sections/GridList.astro';`
+- `Loader.astro` — Spinners, dots, rings, and skeleton content card placeholders
+  `import Loader from '../components/sections/Loader.astro';`
+- `CookieConsent.astro` — Cookie banner with privacy policy link and customizable choice buttons
+  `import CookieConsent from '../components/sections/CookieConsent.astro';`
+- `UncommonExperimental.astro` — Pure CSS continuous marquee ticker, asymmetric bento mosaic, and sticker hero
+  `import UncommonExperimental from '../components/sections/UncommonExperimental.astro';`
+
+---
+
+## 3. PROPS CHEAT SHEET FOR MAJOR COMPONENTS
+
+### `Hero.astro`
+```typescript
+interface Props {
+  align?: 'start' | 'center';
+  tone?: 'light' | 'dark';
+  contained?: boolean;
+  capture?: 'buttons' | 'email' | 'none';
+  note?: string;
+  title?: string;
+  text?: string;
+  media?: { kind?: 'image' | 'video'; src?: string; alt?: string } | false;
+}
+```
+
+### `FeatureSplit.astro`
+```typescript
+interface Props {
+  tone?: 'light' | 'dark';
+  align?: 'start' | 'center';
+  mediaSide?: 'right' | 'left' | 'above' | 'below' | 'watermark' | false;
+  mediaKind?: 'image' | 'video';
+  tagline?: string;
+  title?: string;
+  text?: string;
+  stats?: { value: string; caption: string }[];
+}
+```
+
+### `Pricing.astro`
+```typescript
+interface Props {
+  tone?: 'light' | 'dark';
+  layout?: 'cards' | 'horizontal' | 'split' | 'banner';
+  columns?: 2 | 3 | 4;
+  tagline?: string;
+  heading?: string;
+  subtext?: string;
+  showToggle?: boolean;
+  plans?: Array<{
+    name: string;
+    priceMonthly: string;
+    priceYearly: string;
+    description: string;
+    popular?: boolean;
+    ctaText?: string;
+    ctaVariant?: 'primary' | 'secondary' | 'outline';
+    features: (string | { text: string; included?: boolean })[];
+  }>;
+}
+```
+
+### `Faq.astro`
+```typescript
+interface Props {
+  layout?: 'centered' | 'split' | 'grid';
+  tone?: 'light' | 'dark';
+  heading?: string;
+  subtext?: string;
+  items?: Array<{ q: string; a: string }>;
+}
+```
+
+### `Stats.astro`
+```typescript
+interface Props {
+  layout?: 'band' | 'cards' | 'split';
+  cols?: 2 | 3 | 4;
+  tone?: 'light' | 'dark';
+  heading?: string;
+  subtext?: string;
+  items?: Array<{ value: string; label: string; desc?: string }>;
+}
+```
+
+### `Testimonial.astro`
+```typescript
+interface Props {
+  layout?: 'single' | 'grid' | 'split';
+  cols?: 2 | 3 | 4;
+  tone?: 'light' | 'dark';
+  heading?: string;
+  items?: Array<{
+    quote: string;
+    name: string;
+    role?: string;
+    avatar?: string;
+    rating?: number;
+  }>;
+}
+```
+
+### `UncommonExperimental.astro`
+```typescript
+interface Props {
+  tone?: 'light' | 'dark' | 'gradient';
+  layout?: 'marquee' | 'bento' | 'angled' | 'stickers';
+  tagline?: string;
+  heading?: string;
+  subtext?: string;
+}
+```
+
+---
+
+## 4. STANDARD LANDING PAGE RECIPES FOR AGENTS
+
+When an LLM agent is asked to generate a landing page, choose one of the following battle-tested page structures:
+
+### Recipe 1: Modern SaaS Product Landing Page
+```astro
+---
+import Layout from '../layouts/Layout.astro';
+import Banner from '../components/sections/Banner.astro';
+import Navbar from '../components/sections/Navbar.astro';
+import Hero from '../components/sections/Hero.astro';
+import LogoGrid from '../components/sections/LogoGrid.astro';
+import FeatureBento from '../components/sections/FeatureBento.astro';
+import FeatureSplit from '../components/sections/FeatureSplit.astro';
+import Stats from '../components/sections/Stats.astro';
+import Pricing from '../components/sections/Pricing.astro';
+import Testimonial from '../components/sections/Testimonial.astro';
+import Faq from '../components/sections/Faq.astro';
+import Cta from '../components/sections/Cta.astro';
+import Footer from '../components/sections/Footer.astro';
+---
+
+<Layout title="Next-Gen SaaS Platform">
+  <Banner message="New feature release: AI Workflow Automation is live!" />
+  <Navbar links={[{ label: 'Features', href: '#features' }, { label: 'Pricing', href: '#pricing' }, { label: 'FAQ', href: '#faq' }]} />
+  <main>
+    <Hero
+      title="Scale your engineering velocity effortlessly"
+      text="Automate complex deployments, eliminate boilerplate, and empower your team to ship daily."
+      capture="email"
+    />
+    <LogoGrid heading="Trusted by market leaders worldwide" />
+    <FeatureBento heading="Designed for modern developer workflows" layout="a" />
+    <FeatureSplit
+      mediaSide="right"
+      tagline="Real-Time Analytics"
+      title="Observe performance metrics with zero latency"
+      text="Get granular insights into response times, memory consumption, and error rates across all microservices."
+    />
+    <Stats layout="cards" tone="dark" />
+    <Pricing layout="cards" columns={3} showToggle={true} />
+    <Testimonial layout="grid" cols={3} />
+    <Faq layout="centered" />
+    <Cta contained={true} align="center" tone="dark" />
+  </main>
+  <Footer />
+</Layout>
+```
+
+### Recipe 2: High-Converting Marketing Agency / Studio
+```astro
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/sections/Navbar.astro';
+import UncommonExperimental from '../components/sections/UncommonExperimental.astro';
+import Portfolio from '../components/sections/Portfolio.astro';
+import FeatureCols from '../components/sections/FeatureCols.astro';
+import Team from '../components/sections/Team.astro';
+import Contact from '../components/sections/Contact.astro';
+import Footer from '../components/sections/Footer.astro';
+---
+
+<Layout title="Hyperion Creative Studio">
+  <Navbar links={[{ label: 'Work', href: '#work' }, { label: 'Services', href: '#services' }, { label: 'Contact', href: '#contact' }]} />
+  <main>
+    <UncommonExperimental layout="stickers" tone="gradient" />
+    <UncommonExperimental layout="marquee" />
+    <Portfolio layout="grid" cols={3} heading="Featured Case Studies" />
+    <FeatureCols
+      heading="End-to-End Digital Transformation"
+      cols={[
+        { title: 'Brand Identity', text: 'Visual design systems that captivate audiences.' },
+        { title: 'Fullstack Engineering', text: 'Blazing fast Astro applications with 100% Lighthouse scores.' },
+        { title: 'Growth & SEO', text: 'Data-driven acquisition funnels that scale revenue.' }
+      ]}
+    />
+    <Team cols={3} heading="Meet the Creators" />
+    <Contact tone="dark" heading="Let's build your next digital product" />
+  </main>
+  <Footer />
+</Layout>
+```
+
+### Recipe 3: E-Commerce / Digital Assets Catalog
+```astro
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/sections/Navbar.astro';
+import ProductHeader from '../components/sections/ProductHeader.astro';
+import ProductList from '../components/sections/ProductList.astro';
+import Comparison from '../components/sections/Comparison.astro';
+import Faq from '../components/sections/Faq.astro';
+import Footer from '../components/sections/Footer.astro';
+---
+
+<Layout title="Prism UI Marketplace">
+  <Navbar links={[{ label: 'Templates', href: '#templates' }, { label: 'Kits', href: '#kits' }]} />
+  <main>
+    <ProductHeader title="Complete Astro Landing Page Kit" price="$49.00" originalPrice="$99.00" />
+    <ProductList columns={4} showFilters={true} heading="Popular Collections" />
+    <Comparison heading="Compare Editions" />
+    <Faq layout="centered" />
+  </main>
+  <Footer />
+</Layout>
+```
+
+---
+
+## 5. DEVELOPER CHECKLIST FOR AGENTS
+
+Before completing any landing page generation:
+- [ ] **Semantic CSS Only**: Ensure no hardcoded hex codes exist in the generated template.
+- [ ] **Test Theme Swapping**: Verify that changing `data-theme` on `<html>` switches every section seamlessly.
+- [ ] **Responsive Viewports**: Check that grids stack on mobile (`grid-cols-1 sm:grid-cols-2 lg:grid-cols-3/4`).
+- [ ] **Interactive Primitive Verification**: Accordions and tabs must open/close properly without requiring external npm packages.
+- [ ] **Run Build**: Verify that `npx astro build` generates clean static HTML with 0 compile errors.

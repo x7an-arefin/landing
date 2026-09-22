@@ -30,6 +30,7 @@ npm run preview  # Preview production build locally
 | `/components/<slug>` | **1,524 Spec Pages**: Reference screenshots, predicted behaviors, copyable Astro import snippets, and Relume preview links. |
 | `/demo` | **Primitives Demo**: Interactive playground for every single DaisyUI 5 primitive (Buttons, Badges, Modals, Drawers, Steppers, Timelines, etc.). |
 | `/planning` | **Architecture & Mapping**: Full reproduction roadmap and design methodology. |
+| `/llms.txt` | **LLM Agent Specification**: Complete agent manual, component catalog, props cheat sheet, and landing page recipes. |
 
 ---
 
